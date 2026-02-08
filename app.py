@@ -3,9 +3,36 @@ from flask import session, redirect, url_for
 from functools import wraps
 from duckduckgo_search import DDGS
 from nltk.tokenize import sent_tokenize
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeTimedSerializer
+from models import db, User
+import random
+
 
 app = Flask(__name__)
 app.secret_key = "change-this-later"
+# ---------- DATABASE CONFIG ----------
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+# ---------- MAIL CONFIG ----------
+app.config.update(
+    MAIL_SERVER="smtp.gmail.com",
+    MAIL_PORT=587,
+    MAIL_USE_TLS=True,
+    MAIL_USERNAME="yourgmail@gmail.com",
+    MAIL_PASSWORD="your-app-password"
+)
+
+# ---------- INIT EXTENSIONS ----------
+db.init_app(app)
+mail = Mail(app)
+serializer = URLSafeTimedSerializer(app.secret_key)
+
+with app.app_context():
+    db.create_all()
+
 
 # ---------------- LOGIN REQUIRED DECORATOR ----------------
 def login_required(f):
