@@ -1,96 +1,82 @@
 from flask import Flask, render_template, request
-from flask_sqlalchemy import SQLAlchemy
-db = SQLAlchemy(app)
-import nltk
-from nltk.tokenize import sent_tokenize
 from duckduckgo_search import DDGS
-nltk.download('punkt')
+from nltk.tokenize import sent_tokenize
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-# ---------------- DATABASE ----------------
-class QuizResult(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100))
-    score = db.Column(db.Integer)
 
 # ---------------- ROUTES ----------------
-@app.route('/')
+
+@app.route("/")
 def index():
-    return render_template('index.html')
+    return render_template("index.html")
+
 
 # LEARN / SEARCH
-@app.route('/search', methods=['GET', 'POST'])
+@app.route("/search", methods=["GET", "POST"])
 def search():
     results = []
     query = ""
 
-    if request.method == 'POST':
-        query = request.form['topic']
+    if request.method == "POST":
+        query = request.form.get("topic", "")
 
         with DDGS() as ddgs:
             for r in ddgs.text(query, max_results=5):
                 results.append({
-                    "title": r["title"],
-                    "link": r["href"],
-                    "snippet": r["body"]
+                    "title": r.get("title"),
+                    "link": r.get("href"),
+                    "snippet": r.get("body")
                 })
 
-    return render_template(
-        'search.html',
-        results=results,
-        query=query
-    )
-# QUIZ
-@app.route('/quiz')
-def quiz():
-    return render_template('quiz.html')
+    return render_template("search.html", results=results, query=query)
 
-@app.route('/result', methods=['POST'])
+
+# QUIZ (no DB for now)
+@app.route("/quiz")
+def quiz():
+    return render_template("quiz.html")
+
+
+@app.route("/result", methods=["POST"])
 def result():
-    name = request.form['name']
-    score = int(request.form['score'])
-    db.session.add(QuizResult(name=name, score=score))
-    db.session.commit()
-    return render_template('result.html', name=name, score=score)
+    name = request.form.get("name")
+    score = request.form.get("score")
+    return render_template("result.html", name=name, score=score)
+
 
 # SUMMARY
-@app.route('/summary', methods=['GET', 'POST'])
+@app.route("/summary", methods=["GET", "POST"])
 def summary():
     summarized = ""
-    if request.method == 'POST':
-        text = request.form['text']
+    if request.method == "POST":
+        text = request.form.get("text", "")
         sentences = sent_tokenize(text)
         summarized = " ".join(sentences[:3])
-    return render_template('summary.html', summarized=summarized)
+    return render_template("summary.html", summarized=summarized)
 
-# DASHBOARD (Content Part)
-@app.route('/dashboard')
+
+# DASHBOARD
+@app.route("/dashboard")
 def dashboard():
-    return render_template('dashboard.html')
+    return render_template("dashboard.html")
+
 
 # DOCUMENTATION
-@app.route('/docs')
+@app.route("/docs")
 def docs():
-    return render_template('docs.html')
+    return render_template("docs.html")
 
-# CONVERTER (placeholder)
-@app.route('/converter')
+
+# CONVERTER
+@app.route("/converter")
 def converter():
-    return render_template('converter.html')
+    return render_template("converter.html")
 
-# LOGIN / SIGNING
-@app.route('/login')
+
+# LOGIN
+@app.route("/login")
 def login():
-    return render_template('login.html')
-
-# ---------------- RUN ----------------
-if __name__ == "__main__":
-    app.run()
+    return render_template("login.html")
 
 
-
-
+# ❌ DO NOT USE app.run() ON VERCEL
