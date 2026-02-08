@@ -1,3 +1,6 @@
-Flask
-duckduckgo-search
-nltk
+flask
+flask-mail
+flask-sqlalchemy
+itsdangerous
+werkzeug
+gunicorn
