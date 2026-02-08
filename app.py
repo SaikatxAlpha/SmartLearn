@@ -1,8 +1,21 @@
 from flask import Flask, render_template, request
+from flask import session, redirect, url_for
+from functools import wraps
 from duckduckgo_search import DDGS
 from nltk.tokenize import sent_tokenize
 
 app = Flask(__name__)
+app.secret_key = "change-this-later"
+
+# ---------------- LOGIN REQUIRED DECORATOR ----------------
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "user" not in session:
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
 
 # ---------------- ROUTES ----------------
 
@@ -74,9 +87,24 @@ def converter():
 
 
 # LOGIN
-@app.route("/login")
+@app.route("/login", methods=["GET", "POST"])
 def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+
+        # simple login for now
+        if username:
+            session["user"] = username
+            return redirect(url_for("dashboard"))
+
     return render_template("login.html")
 
+#LOGOUT ROUTE
+@app.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
 
-# ❌ DO NOT USE app.run() ON VERCEL
+
+
+
