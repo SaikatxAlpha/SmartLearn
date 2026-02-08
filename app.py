@@ -26,6 +26,7 @@ def index():
 
 # LEARN / SEARCH
 @app.route("/search", methods=["GET", "POST"])
+@login_required
 def search():
     results = []
     query = ""
@@ -46,6 +47,7 @@ def search():
 
 # QUIZ (no DB for now)
 @app.route("/quiz")
+@login_required
 def quiz():
     return render_template("quiz.html")
 
@@ -59,6 +61,7 @@ def result():
 
 # SUMMARY
 @app.route("/summary", methods=["GET", "POST"])
+@login_required
 def summary():
     summarized = ""
     if request.method == "POST":
@@ -70,6 +73,7 @@ def summary():
 
 # DASHBOARD
 @app.route("/dashboard")
+@login_required
 def dashboard():
     return render_template("dashboard.html")
 
@@ -82,6 +86,7 @@ def docs():
 
 # CONVERTER
 @app.route("/converter")
+@login_required
 def converter():
     return render_template("converter.html")
 
