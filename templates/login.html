@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qerrastar</title>
+    <style>
+        /* --- VARIABLES --- */
+        :root {
+            --bg-color: #000000;
+            --text-main: #ffffff;
+            --text-muted: #a1a1a1;
+            --accent-purple: #6600c5;
+            --accent-glow: rgba(102, 0, 197, 0.5);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- THE MAIN BOX (The Glowing Border) --- */
+        .login-box {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            padding: 2px; /* Control the thickness of the border here */
+            background: linear-gradient(to right, #656565, #7f42a7, #6600c5, #5300a0, #757575, #656565);
+            background-size: 200%;
+            border-radius: 24px;
+            animation: animationgradient 2.5s linear infinite;
+            box-shadow: 0 0 20px rgba(102, 0, 197, 0.3);
+        }
+
+        /* --- THE SOLID INNER CONTENT --- */
+        .login-content {
+            background: #0a0a0a; 
+            padding: 45px 40px;
+            border-radius: 22px; 
+            text-align: center;
+        }
+
+        .layer-blur{
+            height: 0;
+            width: 30rem;
+            position: absolute;
+            top: 20%;
+            right: 0;
+            box-shadow: 0 0 700px 15px white;
+            rotate: -30deg;
+            z-index: -1;
+        }
+
+        /* Animation for the border */
+        @keyframes animationgradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* --- LOGO & TITLES --- */
+        .logo {
+            font-size: 18px;
+            letter-spacing: 4px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        h2 { font-size: 28px; margin-bottom: 8px; }
+        p.subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 35px; }
+
+        /* --- INPUT FIELDS & FOCUS GLOW --- */
+        .form-group { margin-bottom: 22px; text-align: left; }
+        label { display: block; margin-bottom: 8px; font-size: 10px; color: var(--text-muted); letter-spacing: 1px; }
+
+        input {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.3s ease; /* Smooth transition for the glow */
+        }
+
+        /* This is the purple glow when you tap the bars */
+        input:focus {
+            border-color: var(--accent-purple);
+            background: rgba(102, 0, 197, 0.05);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
+
+        /* --- BUTTON & LINKS --- */
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: transform 0.2s;
+        }
+
+        .btn-login:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        .links { margin-top: 30px; display: flex; justify-content: space-between; font-size: 13px; }
+        a { color: var(--text-muted); text-decoration: none; transition: 0.3s; }
+        a:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <div class="login-content">
+            <div class="logo">SmartLearn</div>
+            
+            <h2>Sign In</h2>
+            <p class="subtitle">Access your intelligent assistant.</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>EMAIL ADDRESS</label>
+                    <input type="email" placeholder="student@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label>PASSWORD</label>
+                    <input type="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-login">Get Started</button>
+            </form>
+
+            <div class="links">
+                <a href="#">Forgot password?</a>
+                <a href="#">Join SmartLearn</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert("Logging in...");
+            // Link this to your next page
+            window.location.href = "dashboard.html"; 
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Learn | SmartLearn</title>
+</head>
+<body>
+
+<h2>Search a Topic</h2>
+
+<form method="POST">
+    <input type="text" name="topic" placeholder="Enter a topic" required>
+    <button type="submit">Search</button>
+</form>
+
+<hr>
+
+{% if results %}
+    <h3>Results for "{{ query }}"</h3>
+    <ul>
+        {% for item in results %}
+            <li>
+                <a href="{{ item.link }}" target="_blank">
+                    {{ item.title }}
+                </a>
+                <p>{{ item.snippet }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<a href="/">⬅ Back</a>
+
+</body>
+</html>
