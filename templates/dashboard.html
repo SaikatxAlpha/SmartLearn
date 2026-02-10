@@ -27,26 +27,26 @@
         }
 
 
-        /* --- SIDEBAR --- */
-        .sidebar {
-            width: 280px;
-            border-right: 1px solid var(--border-soft);
-            padding: 40px 24px;
-            display: flex;
-            flex-direction: column;
-            background: rgba(5, 5, 5, 0.8);
-            backdrop-filter: blur(20px);
-        }
+/* Sidebar resize line */
+.sidebar {
+    position: relative;
+    min-width: 200px;
+    max-width: 420px;
+}
 
-        /* Sidebar slide behavior */
-        .sidebar {
-            transition: transform 0.35s ease;
-        }
+.sidebar-resizer {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6px;
+    height: 100%;
+    cursor: ew-resize;
+    background: rgba(255,255,255,0.05);
+}
 
-        /* Hidden state */
-        .sidebar.collapsed {
-            transform: translateX(-220px);
-        }
+.sidebar-resizer:hover {
+    background: rgba(138,43,226,0.4);
+}
 
         /* Toggle button */
         .sidebar-toggle {
@@ -277,6 +277,8 @@ h3 {
             <a href="#" class="nav-link">Settings</a>
         </nav>
         <a href="login.html" class="nav-link logout">Logout</a>
+
+        <div class="sidebar-resizer"></div>
     </aside>
 
     <main class="main">
@@ -333,6 +335,34 @@ const toggle = document.querySelector('.sidebar-toggle');
 
 toggle.addEventListener('click', () => {
     sidebar.classList.toggle('collapsed');
+});
+</script>
+
+
+<script>
+const sidebar = document.querySelector('.sidebar');
+const resizer = document.querySelector('.sidebar-resizer');
+
+let isResizing = false;
+
+resizer.addEventListener('mousedown', () => {
+    isResizing = true;
+    document.body.style.cursor = 'ew-resize';
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isResizing) return;
+
+    const newWidth = e.clientX;
+
+    if (newWidth >= 200 && newWidth <= 420) {
+        sidebar.style.width = newWidth + 'px';
+    }
+});
+
+document.addEventListener('mouseup', () => {
+    isResizing = false;
+    document.body.style.cursor = 'default';
 });
 </script>
 
