@@ -30,7 +30,7 @@
             min-height: 100vh;
             overflow: hidden; /* 🔥 removes scrollbar */
         }
-
+        }
 
         /* --- SIDEBAR --- */
         .sidebar {
@@ -343,28 +343,28 @@
     </main>
 
     <script>
-const sidebar = document.querySelector('.sidebar');
-const resizer = document.querySelector('.sidebar-resizer');
+        const sidebar = document.querySelector('.sidebar');
+        const resizer = document.querySelector('.sidebar-resizer');
 
-let isResizing = false;
+        let isResizing = false;
 
-resizer.addEventListener('mousedown', () => {
-    isResizing = true;
-    document.body.style.cursor = 'ew-resize';
-});
+        resizer.addEventListener('mousedown', () => {
+            isResizing = true;
+            document.body.style.cursor = 'ew-resize';
+        });
 
-document.addEventListener('mousemove', (e) => {
-    if (!isResizing) return;
-    const newWidth = e.clientX;
-    if (newWidth >= 200 && newWidth <= 380) {
-        sidebar.style.width = newWidth + 'px';
-    }
-});
+        document.addEventListener('mousemove', (e) => {
+            if (!isResizing) return;
+            const newWidth = e.clientX;
+            if (newWidth >= 200 && newWidth <= 380) {
+                sidebar.style.width = newWidth + 'px';
+            }
+        });
 
-document.addEventListener('mouseup', () => {
-    isResizing = false;
-    document.body.style.cursor = 'default';
-});
+        document.addEventListener('mouseup', () => {
+            isResizing = false;
+            document.body.style.cursor = 'default';
+        });
 </script>
 
 
