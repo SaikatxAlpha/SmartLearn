@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartLearn | Intelligence Center</title>
@@ -21,40 +20,23 @@
         body {
             background-color: #000;
             color: var(--text-main);
-            h1, h2, h3 {
-            font-family: 'Space Grotesk', sans-serif;
-            letter-spacing: -0.5px;
-
             font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
             min-height: 100vh;
             overflow: hidden; /* 🔥 removes scrollbar */
         }
-        }
+
 
         /* --- SIDEBAR --- */
         .sidebar {
             width: 280px;
-            min-width: 200px;
-            max-width: 380px;
-            position: relative;
-            transition: widht 0.15s ease;
+            border-right: 1px solid var(--border-soft);
+            padding: 40px 24px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(5, 5, 5, 0.8);
+            backdrop-filter: blur(20px);
         }
-
-        .sidebar-resizer {
-            position: absolute;
-            top: 0;
-            right: -4px;
-            width: 8px;
-            height: 100%;
-            cursor: ew-resize;
-            background: transparent;
-        }
-
-        .sidebar-resizer:hover {
-            background: rgba(138, 43, 226, 0.15);
-        }
-
 
         .logo {
             font-weight: 900;
@@ -73,8 +55,6 @@
         .nav-group { flex-grow: 1; }
         
         .nav-link {
-            font-weight: 500;
-            letter-spacing: 0.3px;
             display: flex;
             align-items: center;
             padding: 14px 18px;
@@ -139,7 +119,6 @@
         }
 
         h1 { font-size: 36px; font-weight: 800; letter-spacing: -1px; }
-        h3 {font-size: 20px; font-weight: 700;}
 
         .online-status {
             padding: 6px 16px;
@@ -229,53 +208,39 @@
         -webkit-text-fill-color: transparent;
 }
 
-        h3 {
-            font-size: 20px;
-            font-weight: 700;
-        }
+h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    margin-bottom: 28px;
+}
 
 
-        .desc {
-            font-size: 14px;
-            font-weight: 500;
-            line-height: 1.7;
-        }
+       .launch-btn {
+    margin-top: auto;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), #5e17eb);
+    box-shadow: 0 10px 25px rgba(138,43,226,0.4);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-
-/* LAUNCH BUTTON */
-        .launch-btn {
-            margin-top: auto;
-            padding: 14px 0;
-            border-radius: 14px;
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-
-            display: flex;
-            align-items: center;
-            justify-content: center; /* ✅ centered */
-
-            color: #fff;
-            background: linear-gradient(
-                135deg,
-                #8A2BE2,
-                #5e17eb
-            );
-
-            box-shadow:
-                0 10px 30px rgba(138,43,226,0.45),
-                inset 0 1px 0 rgba(255,255,255,0.25);
-
-            transition: all 0.35s ease;
-        }
-
-
-        .card-outer:hover .launch-btn {
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 15px 45px rgba(138,43,226,0.65);
-        }
-
+.card-outer:hover .launch-btn {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(138,43,226,0.6);
+}
 
 
     </style>
@@ -283,7 +248,6 @@
 <body>
 
     <aside class="sidebar">
-        <div class="sidebar-resizer"></div>
         <div class="logo">SMARTLEARN</div>
         <nav class="nav-group">
             <a href="#" class="nav-link active">Dashboard</a>
@@ -341,32 +305,6 @@
             </div>
         </div>
     </main>
-
-    <script>
-        const sidebar = document.querySelector('.sidebar');
-        const resizer = document.querySelector('.sidebar-resizer');
-
-        let isResizing = false;
-
-        resizer.addEventListener('mousedown', () => {
-            isResizing = true;
-            document.body.style.cursor = 'ew-resize';
-        });
-
-        document.addEventListener('mousemove', (e) => {
-            if (!isResizing) return;
-            const newWidth = e.clientX;
-            if (newWidth >= 200 && newWidth <= 380) {
-                sidebar.style.width = newWidth + 'px';
-            }
-        });
-
-        document.addEventListener('mouseup', () => {
-            isResizing = false;
-            document.body.style.cursor = 'default';
-        });
-</script>
-
 
 </body>
 </html>
