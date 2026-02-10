@@ -38,6 +38,26 @@
             backdrop-filter: blur(20px);
         }
 
+        /* Sidebar slide behavior */
+        .sidebar {
+            transition: transform 0.35s ease;
+        }
+
+        /* Hidden state */
+        .sidebar.collapsed {
+            transform: translateX(-220px);
+        }
+
+        /* Toggle button */
+        .sidebar-toggle {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            margin-bottom: 24px;
+        }
+
         .logo {
             font-weight: 900;
             letter-spacing: 4px;
@@ -248,6 +268,7 @@ h3 {
 <body>
 
     <aside class="sidebar">
+        <button class="sidebar-toggle">☰</button>
         <div class="logo">SMARTLEARN</div>
         <nav class="nav-group">
             <a href="#" class="nav-link active">Dashboard</a>
@@ -305,6 +326,15 @@ h3 {
             </div>
         </div>
     </main>
+
+    <script>
+const sidebar = document.querySelector('.sidebar');
+const toggle = document.querySelector('.sidebar-toggle');
+
+toggle.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+});
+</script>
 
 </body>
 </html>
