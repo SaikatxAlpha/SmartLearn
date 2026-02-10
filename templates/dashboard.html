@@ -18,13 +18,14 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            background-color: var(--bg);
+            background-color: #000;
             color: var(--text-main);
             font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow: hidden; /* 🔥 removes scrollbar */
         }
+
 
         /* --- SIDEBAR --- */
         .sidebar {
@@ -79,22 +80,36 @@
         .main {
             flex-grow: 1;
             padding: 60px;
-            overflow-y: auto;
             position: relative;
+            overflow: hidden; /* 🔥 no inner scroll */
         }
 
+
         /* Background glow effect like your landing page */
-        .main::after {
+        .main::before {
             content: "";
             position: absolute;
-            top: -10%;
-            right: -10%;
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            inset: 0;
+            background:
+                radial-gradient(
+                    600px circle at 45% 30%,
+                    rgba(138, 43, 226, 0.35),
+                    transparent 60%
+                ),
+                radial-gradient(
+                    800px circle at 80% 20%,
+                    rgba(138, 43, 226, 0.25),
+                    transparent 65%
+                ),
+                radial-gradient(
+                    1000px circle at 50% 80%,
+                    rgba(138, 43, 226, 0.15),
+                    transparent 70%
+                );
             z-index: -1;
             pointer-events: none;
         }
+
 
         .header {
             display: flex;
