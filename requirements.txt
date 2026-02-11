@@ -4,3 +4,4 @@ flask-sqlalchemy
 itsdangerous
 werkzeug
 gunicorn
+requests
