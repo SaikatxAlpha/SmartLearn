@@ -1,34 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Learn | SmartLearn</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SmartLearn Search</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #000;
+    color: #fff;
+    padding: 60px;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(600px circle at 60% 30%, rgba(138,43,226,0.35), transparent 60%),
+        radial-gradient(800px circle at 80% 80%, rgba(138,43,226,0.2), transparent 65%);
+    z-index: -1;
+}
+
+h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 36px;
+    margin-bottom: 30px;
+}
+
+.search-box {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 14px;
+}
+
+.search-box button {
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #8A2BE2, #5e17eb);
+    color: #fff;
+    cursor: pointer;
+}
+
+.results {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.result-card {
+    padding: 20px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+.result-card h3 {
+    margin-bottom: 8px;
+}
+.result-card a {
+    color: #8A2BE2;
+    text-decoration: none;
+}
+</style>
 </head>
+
 <body>
 
-<h2>Search a Topic</h2>
+<h1>Search Intelligence</h1>
 
-<form method="POST">
-    <input type="text" name="topic" placeholder="Enter a topic" required>
-    <button type="submit">Search</button>
-</form>
+<div class="search-box">
+    <input type="text" id="query" placeholder="Search any topic..." />
+    <button onclick="searchTopic()">SEARCH</button>
+</div>
 
-<hr>
+<div class="results" id="results"></div>
 
-{% if results %}
-    <h3>Results for "{{ query }}"</h3>
-    <ul>
-        {% for item in results %}
-            <li>
-                <a href="{{ item.link }}" target="_blank">
-                    {{ item.title }}
-                </a>
-                <p>{{ item.snippet }}</p>
-            </li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<script>
+async function searchTopic() {
+    const query = document.getElementById("query").value;
+    const res = await fetch(`/api/search?q=${query}`);
 
-<a href="/">⬅ Back</a>
+    const resultsDiv = document.getElementById("results");
+    resultsDiv.innerHTML = "";
+
+    data.items.forEach(item => {
+        resultsDiv.innerHTML += `
+            <div class="result-card">
+                <h3>${item.title}</h3>
+                <p>${item.snippet}</p>
+                <a href="${item.link}" target="_blank">Read More</a>
+            </div>
+        `;
+    });
+}
+</script>
 
 </body>
 </html>

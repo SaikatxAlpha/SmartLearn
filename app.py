@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 from flask import session, redirect, url_for
 from functools import wraps
+import requests
 #from duckduckgo_search import DDGS
 
 #from flask_sqlalchemy import SQLAlchemy
@@ -31,25 +32,26 @@ def index():
 
 
 # LEARN / SEARCH
-@app.route("/search", methods=["GET", "POST"])
-@login_required
-def search():
-    results = []
-    query = ""
+GOOGLE_API_KEY = "AIzaSyB40TdvExJTji-R5rA4mnyk-p0-3ORFN2I"
+SEARCH_ENGINE_ID = "b6c75e2af78a0408c"
+@app.route("/search")
+def search_page():
+    return render_template("search.html")
 
-    if request.method == "POST":
-        query = request.form.get("topic", "")
+@app.route("/api/search")
+def api_search():
+    query = request.args.get("q")
 
-        #with DDGS() as ddgs:
-            #for r in ddgs.text(query, max_results=5):
-                #results.append({
-                    #"title": r.get("title"),
-                    #"link": r.get("href"),
-                    #"snippet": r.get("body")
-               #})
+    url = "https://www.googleapis.com/customsearch/v1"
+    params = {
+        "key": GOOGLE_API_KEY,
+        "cx": SEARCH_ENGINE_ID,
+        "q": query,
+        "num":10
+    }
 
-    return render_template("search.html", results=results, query=query)
-
+    response = requests.get(url, params=params)
+    return jsonify(response.json())
 
 # QUIZ (no DB for now)
 @app.route("/quiz")
