@@ -60,7 +60,7 @@ def api_search():
 
     for item in data.get("results", []):
         content = item.get("content", "")
-        short_snippet = " ".join(content.split()[:12]) + "..."
+        short_snippet = " ".join(content.split()[:7]) + "..."
 
         results.append({
             "title": item.get("title"),
