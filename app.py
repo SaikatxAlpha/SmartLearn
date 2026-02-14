@@ -48,7 +48,8 @@ def api_search():
         "q": query,
         "format": "json",
         "no_redirect": 1,
-        "no_html": 1
+        "no_html": 1,
+        "skip_disambig": 1
     }
 
     response = requests.get(url, params=params)
@@ -56,16 +57,25 @@ def api_search():
 
     results = []
 
-    if "RelatedTopics" in data:
-        for item in data["RelatedTopics"]:
-            if "Text" in item and "FirstURL" in item:
-                results.append({
-                    "title": item["Text"],
-                    "snippet": item["Text"],
-                    "link": item["FirstURL"]
-                })
+    # Direct abstract result
+    if data.get("AbstractText"):
+        results.append({
+            "title": data.get("Heading"),
+            "snippet": data.get("AbstractText"),
+            "link": data.get("AbstractURL")
+        })
+
+    # Related topics
+    for item in data.get("RelatedTopics", []):
+        if "Text" in item and "FirstURL" in item:
+            results.append({
+                "title": item["Text"],
+                "snippet": item["Text"],
+                "link": item["FirstURL"]
+            })
 
     return jsonify({"items": results})
+
 
 
 
