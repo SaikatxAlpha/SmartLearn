@@ -156,20 +156,32 @@ def summarize():
                 max_results=3
             )
 
-            content = ""
-            for result in response["results"]:
-                content += result["content"] + " "
+            print("Tavily Response:", response)
 
-            sentences = content.split(".")
-            cleaned = [s.strip() for s in sentences if len(s.strip()) > 40]
+            if not response.get("results"):
+                summary = "No results found from Tavily."
+            else:
+                content = ""
+                for result in response["results"]:
+                    content += result.get("content", "") + " "
 
-            summarize_sentences = cleaned[:5]
-            summary = ". ".join(summarize_sentences) + "."
+                if not content:
+                    summary = "No content extracted."
+                else:
+                    sentences = content.split(".")
+                    cleaned = [s.strip() for s in sentences if len(s.strip()) > 40]
+
+                    if not cleaned:
+                        summary = "Content found but not enough data to summarize."
+                    else:
+                        summarize_sentences = cleaned[:5]
+                        summary = ". ".join(summarize_sentences) + "."
 
         except Exception as e:
-            summary = f"Error occurred: {str(e)}"
+            summary = f"Error: {str(e)}"
 
     return render_template("summarize.html", summary=summary)
+
 
 
 
