@@ -50,7 +50,7 @@ def api_search():
         "query": query,
         "search_depth": "advanced",
         "include_answer": False,
-        "max_results": 5
+        "max_results": 10
     }
 
     response = requests.post(url, json=payload)
@@ -58,15 +58,18 @@ def api_search():
 
     results = []
 
-    if "results" in data:
-        for item in data["results"]:
-            results.append({
-                "title": item.get("title"),
-                "snippet": item.get("content"),
-                "link": item.get("url")
-            })
+    for item in data.get("results", []):
+        content = item.get("content", "")
+        short_snippet = " ".join(content.split()[:12]) + "..."
+
+        results.append({
+            "title": item.get("title"),
+            "snippet": short_snippet,
+            "link": item.get("url")
+        })
 
     return jsonify({"items": results})
+
 
 
 
