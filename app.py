@@ -43,16 +43,23 @@ def search_page():
 def api_search():
     query = request.args.get("q")
 
+    print("QUERY:", query)
+    print("API KEY:", GOOGLE_API_KEY)
+    print("ENGINE ID:", SEARCH_ENGINE_ID)
+
     url = "https://www.googleapis.com/customsearch/v1"
     params = {
         "key": GOOGLE_API_KEY,
         "cx": SEARCH_ENGINE_ID,
         "q": query,
-        "num":10
+        "num": 10
     }
 
     response = requests.get(url, params=params)
+    print("GOOGLE RESPONSE:", response.json())
+
     return jsonify(response.json())
+
 
 
 
