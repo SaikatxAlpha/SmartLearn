@@ -4,6 +4,7 @@ from functools import wraps
 import requests
 import os
 from tavily import TavilyClient
+import re
 #from duckduckgo_search import DDGS
 
 #from flask_sqlalchemy import SQLAlchemy
@@ -156,32 +157,26 @@ def summarize():
                 max_results=3
             )
 
-            print("Tavily Response:", response)
+            content = ""
+            for result in response["results"]:
+                content += result.get("content", "") + " "
 
-            if not response.get("results"):
-                summary = "No results found from Tavily."
-            else:
-                content = ""
-                for result in response["results"]:
-                    content += result.get("content", "") + " "
+            import re
+            sentences = re.split(r'\.\s+', content)
 
-                if not content:
-                    summary = "No content extracted."
-                else:
-                    sentences = content.split(".")
-                    cleaned = [s.strip() for s in sentences if len(s.strip()) > 40]
+            cleaned = []
+            for s in sentences:
+                s = s.strip()
+                if len(s) > 60 and s not in cleaned:
+                    cleaned.append(s)
 
-                    if not cleaned:
-                        summary = "Content found but not enough data to summarize."
-                    else:
-                        summarize_sentences = cleaned[:5]
-                        summary = ". ".join(summarize_sentences) + "."
+            summary_sentences = cleaned[:3]
+            summary = ". ".join(summary_sentences) + "."
 
         except Exception as e:
             summary = f"Error: {str(e)}"
 
     return render_template("summarize.html", summary=summary)
-
 
 
 
