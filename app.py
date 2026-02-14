@@ -3,13 +3,14 @@ from flask import session, redirect, url_for
 from functools import wraps
 import requests
 import os
+from tavily import TavilyClient
 #from duckduckgo_search import DDGS
 
 #from flask_sqlalchemy import SQLAlchemy
 #from flask_mail import Mail, Message
 #from itsdangerous import URLSafeTimedSerializer
 #from models import db, User
-#import random
+import random
 
 
 app = Flask(__name__)
@@ -33,6 +34,7 @@ def index():
 
 
 # LEARN / SEARCH
+
 TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 @app.route("/search")
@@ -74,17 +76,67 @@ def api_search():
 
 
 # QUIZ (no DB for now)
-@app.route("/quiz")
-@login_required
+
+# Temporary sample question generator
+tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
+def generate_quiz(topic):
+    response = tavily.search(query=topic, search_depth="basic", max_results=3)
+    
+    content = ""
+    for result in response["results"]:
+        content += result["content"] + " "
+
+    sentences = content.split(".")
+    sentences = [s.strip() for s in sentences if len(s.strip()) > 40]
+
+    questions = []
+
+    for i in range(min(5, len(sentences))):
+        sentence = sentences[i]
+
+        question = f"What does this statement describe?\n\n'{sentence}'"
+
+        correct_answer = topic
+
+        options = [
+            topic,
+            "Artificial Intelligence",
+            "A programming language",
+            "A scientific theory"
+        ]
+
+        random.shuffle(options)
+
+        questions.append({
+            "question": question,
+            "options": options,
+            "answer": topic
+        })
+
+    return questions
+
+
+@app.route("/quiz", methods=["GET", "POST"])
 def quiz():
-    return render_template("quiz.html")
+    if request.method == "POST":
+        topic = request.form["topic"]
+        questions = generate_quiz(topic)
+        return render_template("quiz.html", questions=questions, topic=topic)
+    return render_template("quiz.html", questions=None)
 
 
-@app.route("/result", methods=["POST"])
-def result():
-    name = request.form.get("name")
-    score = request.form.get("score")
-    return render_template("result.html", name=name, score=score)
+@app.route("/submit_quiz", methods=["POST"])
+def submit_quiz():
+    score = 0
+    total = int(request.form["total"])
+
+    for i in range(total):
+        selected = request.form.get(f"q{i}")
+        correct = request.form.get(f"correct{i}")
+        if selected == correct:
+            score += 1
+
+    return render_template("result.html", score=score, total=total)
 
 
 # SUMMARY

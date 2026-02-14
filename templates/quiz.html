@@ -1,1 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quiz</title>
+</head>
+<body>
+
+<h2>Generate Quiz</h2>
+
+<form method="POST">
+    <input type="text" name="topic" placeholder="Enter topic..." required>
+    <button type="submit">Generate Quiz</button>
+</form>
+
+{% if questions %}
+<hr>
+<h3>Quiz on {{ topic }}</h3>
+
+<form method="POST" action="/submit_quiz">
+    {% for q in questions %}
+        <p><strong>{{ loop.index }}. {{ q.question }}</strong></p>
+
+        {% for option in q.options %}
+            <input type="radio" name="q{{ loop.index0 }}" value="{{ option }}" required>
+            {{ option }}<br>
+        {% endfor %}
+
+        <input type="hidden" name="correct{{ loop.index0 }}" value="{{ q.answer }}">
+        <br>
+    {% endfor %}
+
+    <input type="hidden" name="total" value="{{ questions|length }}">
+    <button type="submit">Submit Quiz</button>
+</form>
+
+{% endif %}
+
+</body>
+</html>
 
