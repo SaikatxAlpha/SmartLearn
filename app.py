@@ -43,22 +43,30 @@ def search_page():
 def api_search():
     query = request.args.get("q")
 
-    print("QUERY:", query)
-    print("API KEY:", GOOGLE_API_KEY)
-    print("ENGINE ID:", SEARCH_ENGINE_ID)
-
-    url = "https://www.googleapis.com/customsearch/v1"
+    url = "https://api.duckduckgo.com/"
     params = {
-        "key": GOOGLE_API_KEY,
-        "cx": SEARCH_ENGINE_ID,
         "q": query,
-        "num": 10
+        "format": "json",
+        "no_redirect": 1,
+        "no_html": 1
     }
 
     response = requests.get(url, params=params)
-    print("GOOGLE RESPONSE:", response.json())
+    data = response.json()
 
-    return jsonify(response.json())
+    results = []
+
+    if "RelatedTopics" in data:
+        for item in data["RelatedTopics"]:
+            if "Text" in item and "FirstURL" in item:
+                results.append({
+                    "title": item["Text"],
+                    "snippet": item["Text"],
+                    "link": item["FirstURL"]
+                })
+
+    return jsonify({"items": results})
+
 
 
 
