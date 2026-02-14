@@ -71,14 +71,14 @@
     <form method="POST">
         <div class="search-box">
             <input type="text" name="topic" placeholder="Enter your text to summarize..." required>
-            <button class="btn">Summarize</button>
+            <button class="btn">Summary</button>
         </div>
     </form>
 
-    {% if summarize %}
+    {% if summary %}
     <div class="card">
-        <h3>Summarize</h3>
-        <p>{{ summarize }}</p>
+        <h3>Summary</h3>
+        <p>{{ summary }}</p>
     </div>
     {% endif %}
 
