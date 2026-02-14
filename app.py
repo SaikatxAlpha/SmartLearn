@@ -77,10 +77,6 @@ def api_search():
     return jsonify({"items": results})
 
 
-
-
-
-
 # QUIZ (no DB for now)
 @app.route("/quiz")
 @login_required
