@@ -142,9 +142,9 @@ def submit_quiz():
 
 
 # SUMMARIZE
-@app.route("/summarize", methods=["GET", "POST"])
+@app.route("/summary", methods=["GET", "POST"])
 def summarize():
-    summarize = None
+    summary = None
 
     if request.method == "POST":
         topic = request.form["topic"]
