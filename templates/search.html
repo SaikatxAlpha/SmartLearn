@@ -88,7 +88,7 @@ h1 {
 
 <body>
 
-<h1>Search Intelligence</h1>
+<h1>Search Your Topic Here</h1>
 
 <div class="search-box">
     <input type="text" id="query" placeholder="Search any topic..." />
@@ -101,9 +101,15 @@ h1 {
 async function searchTopic() {
     const query = document.getElementById("query").value;
     const res = await fetch(`/api/search?q=${query}`);
+    const data = await res.json();  
 
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "";
+
+    if (!data.items) {
+    resultsDiv.innerHTML = "<p>No results found.</p>";
+    return;
+    }
 
     data.items.forEach(item => {
         resultsDiv.innerHTML += `
