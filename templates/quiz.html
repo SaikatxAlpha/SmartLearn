@@ -1,40 +1,130 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Quiz</title>
+    <title>Quiz | SmartLearn</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            background: radial-gradient(circle at center, #2a004f, #000000);
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 70%;
+            margin: 60px auto;
+        }
+
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: #111;
+            color: white;
+            font-size: 16px;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, #8e2de2, #4a00e0);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 20px #8e2de2;
+        }
+
+        .card {
+            background: #0d0d0d;
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 20px rgba(142, 45, 226, 0.2);
+        }
+
+        .options label {
+            display: block;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #141414;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.2s ease;
+        }
+
+        .options label:hover {
+            background: #1f1f1f;
+        }
+
+        input[type="radio"] {
+            margin-right: 8px;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+    </style>
 </head>
 <body>
 
-<h2>Generate Quiz</h2>
+<div class="container">
 
-<form method="POST">
-    <input type="text" name="topic" placeholder="Enter topic..." required>
-    <button type="submit">Generate Quiz</button>
-</form>
+    <h2>Quiz Generator</h2>
 
-{% if questions %}
-<hr>
-<h3>Quiz on {{ topic }}</h3>
+    <form method="POST">
+        <div class="search-box">
+            <input type="text" name="topic" placeholder="Search any topic..." required>
+            <button class="btn">Generate</button>
+        </div>
+    </form>
 
-<form method="POST" action="/submit_quiz">
-    {% for q in questions %}
-        <p><strong>{{ loop.index }}. {{ q.question }}</strong></p>
+    {% if questions %}
+    <form method="POST" action="/submit_quiz">
 
-        {% for option in q.options %}
-            <input type="radio" name="q{{ loop.index0 }}" value="{{ option }}" required>
-            {{ option }}<br>
+        {% for q in questions %}
+        <div class="card">
+            <h3>{{ loop.index }}. {{ q.question }}</h3>
+
+            <div class="options">
+                {% for option in q.options %}
+                <label>
+                    <input type="radio" name="q{{ loop.index0 }}" value="{{ option }}" required>
+                    {{ option }}
+                </label>
+                {% endfor %}
+            </div>
+
+            <input type="hidden" name="correct{{ loop.index0 }}" value="{{ q.answer }}">
+        </div>
         {% endfor %}
 
-        <input type="hidden" name="correct{{ loop.index0 }}" value="{{ q.answer }}">
-        <br>
-    {% endfor %}
+        <input type="hidden" name="total" value="{{ questions|length }}">
+        <button class="btn submit-btn">Submit Quiz</button>
+    </form>
+    {% endif %}
 
-    <input type="hidden" name="total" value="{{ questions|length }}">
-    <button type="submit">Submit Quiz</button>
-</form>
-
-{% endif %}
+</div>
 
 </body>
 </html>
-

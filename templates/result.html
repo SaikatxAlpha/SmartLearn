@@ -2,13 +2,46 @@
 <html>
 <head>
     <title>Quiz Result</title>
+    <style>
+        body {
+            background: radial-gradient(circle at center, #2a004f, #000000);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        .result-box {
+            background: #111;
+            padding: 40px;
+            border-radius: 20px;
+            display: inline-block;
+            box-shadow: 0 0 20px rgba(142, 45, 226, 0.4);
+        }
+
+        .btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: linear-gradient(90deg, #8e2de2, #4a00e0);
+            padding: 12px 25px;
+            border-radius: 12px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 20px #8e2de2;
+        }
+    </style>
 </head>
 <body>
 
-<h2>Your Score</h2>
-<p>You scored {{ score }} out of {{ total }}</p>
-
-<a href="/quiz">Try Again</a>
+<div class="result-box">
+    <h2>Your Score</h2>
+    <h1>{{ score }} / {{ total }}</h1>
+    <a href="/quiz" class="btn">Try Again</a>
+</div>
 
 </body>
 </html>
