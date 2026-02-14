@@ -33,7 +33,7 @@ def index():
 
 
 # LEARN / SEARCH
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
 SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 @app.route("/search")
 def search_page():
@@ -43,38 +43,31 @@ def search_page():
 def api_search():
     query = request.args.get("q")
 
-    url = "https://api.duckduckgo.com/"
-    params = {
-        "q": query,
-        "format": "json",
-        "no_redirect": 1,
-        "no_html": 1,
-        "skip_disambig": 1
+    url = "https://api.tavily.com/search"
+
+    payload = {
+        "api_key": TAVILY_API_KEY,
+        "query": query,
+        "search_depth": "advanced",
+        "include_answer": False,
+        "max_results": 5
     }
 
-    response = requests.get(url, params=params)
+    response = requests.post(url, json=payload)
     data = response.json()
 
     results = []
 
-    # Direct abstract result
-    if data.get("AbstractText"):
-        results.append({
-            "title": data.get("Heading"),
-            "snippet": data.get("AbstractText"),
-            "link": data.get("AbstractURL")
-        })
-
-    # Related topics
-    for item in data.get("RelatedTopics", []):
-        if "Text" in item and "FirstURL" in item:
+    if "results" in data:
+        for item in data["results"]:
             results.append({
-                "title": item["Text"],
-                "snippet": item["Text"],
-                "link": item["FirstURL"]
+                "title": item.get("title"),
+                "snippet": item.get("content"),
+                "link": item.get("url")
             })
 
     return jsonify({"items": results})
+
 
 
 # QUIZ (no DB for now)
