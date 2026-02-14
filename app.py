@@ -74,8 +74,7 @@ def api_search():
 
 
 
-
-# QUIZ (no DB for now)
+# QUIZ 
 
 # Temporary sample question generator
 tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
@@ -139,15 +138,36 @@ def submit_quiz():
     return render_template("result.html", score=score, total=total)
 
 
-# SUMMARY
-@app.route("/summary", methods=["GET", "POST"])
-@login_required
-def summary():
-    summarized = ""
-    if request.method == "POST":
-        text = request.form.get("text", "")
 
-    return render_template("summary.html", summarized=summarized)
+
+
+# SUMMARY
+@app.route("/summarize", methods=["GET", "POST"])
+def summarize():
+    summary = None
+
+    if request.method == "POST":
+        topic = request.form["topic"]
+
+        response = tavily.search(
+            query=topic,
+            search_depth="basic",
+            max_results=3
+        )
+
+        content = ""
+        for result in response["results"]:
+            content += result["content"] + " "
+
+        # Simple summarization logic
+        sentences = content.split(".")
+        cleaned = [s.strip() for s in sentences if len(s.strip()) > 40]
+
+        summary_sentences = cleaned[:5]  # take first 5 meaningful sentences
+        summary = ". ".join(summary_sentences) + "."
+
+    return render_template("summary.html", summary=summary)
+
 
 
 # DASHBOARD

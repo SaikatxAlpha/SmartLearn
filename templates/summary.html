@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Summarise | SmartLearn</title>
+    <style>
+        body {
+            background: radial-gradient(circle at center, #2a004f, #000000);
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 70%;
+            margin: 60px auto;
+        }
+
+        h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 40px;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            background: #111;
+            color: white;
+            font-size: 16px;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, #8e2de2, #4a00e0);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 12px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .btn:hover {
+            box-shadow: 0 0 20px #8e2de2;
+        }
+
+        .card {
+            background: #0d0d0d;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(142, 45, 226, 0.3);
+            line-height: 1.6;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Summarise Topic</h2>
+
+    <form method="POST">
+        <div class="search-box">
+            <input type="text" name="topic" placeholder="Enter topic to summarize..." required>
+            <button class="btn">Summarise</button>
+        </div>
+    </form>
+
+    {% if summary %}
+    <div class="card">
+        <h3>Summary</h3>
+        <p>{{ summary }}</p>
+    </div>
+    {% endif %}
+
+</div>
+
+</body>
+</html>
