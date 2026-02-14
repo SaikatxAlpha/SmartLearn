@@ -255,6 +255,10 @@ h3 {
     box-shadow: 0 10px 25px rgba(138,43,226,0.4);
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .card-outer:hover .launch-btn {
@@ -286,7 +290,7 @@ h3 {
                 <h1>Intelligence Center</h1>
                 <p style="color: var(--text-dim); margin-top: 5px;">Ready to enhance your learning experience?</p>
             </div>
-            <div class="online-status">System Online</div>
+            <div class="online-status">Online</div>
         </header>
 
         <div class="tool-grid">
@@ -295,13 +299,15 @@ h3 {
                     <div class="tool-icon">🧠</div>
                     <h3>Learner</h3>
                     <p class="desc">Deep dive into any topic with AI-guided explanations and research assistance.</p>
-                    <div class="launch-btn">Initialize Tool →</div>
+                    <a href="{{ url_for('search_page') }}" class="launch-btn">Initialize Tool →</a>
+
                 </div>
             </div>
 
             <div class="card-outer">
                 <div class="card-inner">
-                    <div class="tool-icon">🎯</div>
+                    <a href="/quiz" class="launch-btn">Initialize Tool →</a>
+
                     <h3>Quiz</h3>
                     <p class="desc">Test your knowledge with custom-generated quizzes based on your study material.</p>
                     <div class="launch-btn">Initialize Tool →</div>
@@ -310,7 +316,8 @@ h3 {
 
             <div class="card-outer">
                 <div class="card-inner">
-                    <div class="tool-icon">💎</div>
+                    <a href="/summary" class="launch-btn">Initialize Tool →</a>
+
                     <h3>Summarise</h3>
                     <p class="desc">Instantly turn long documents or videos into concise, readable summaries.</p>
                     <div class="launch-btn">Initialize Tool →</div>
@@ -319,7 +326,8 @@ h3 {
 
             <div class="card-outer">
                 <div class="card-inner">
-                    <div class="tool-icon">🧬</div>
+                    <a href="/converter" class="launch-btn">Initialize Tool →</a>
+
                     <h3>Converter</h3>
                     <p class="desc">Convert files between formats with high accuracy for seamless compatibility.</p>
                     <div class="launch-btn">Initialize Tool →</div>
