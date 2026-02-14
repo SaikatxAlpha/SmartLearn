@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, jsonify
 from flask import session, redirect, url_for
 from functools import wraps
 import requests
+import os
 #from duckduckgo_search import DDGS
 
 #from flask_sqlalchemy import SQLAlchemy
@@ -32,8 +33,8 @@ def index():
 
 
 # LEARN / SEARCH
-GOOGLE_API_KEY = "AIzaSyB40TdvExJTji-R5rA4mnyk-p0-3ORFN2I"
-SEARCH_ENGINE_ID = "b6c75e2af78a0408c"
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+SEARCH_ENGINE_ID = os.getenv("SEARCH_ENGINE_ID")
 @app.route("/search")
 def search_page():
     return render_template("search.html")
@@ -52,6 +53,8 @@ def api_search():
 
     response = requests.get(url, params=params)
     return jsonify(response.json())
+
+
 
 # QUIZ (no DB for now)
 @app.route("/quiz")
