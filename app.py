@@ -141,10 +141,10 @@ def submit_quiz():
 
 
 
-# SUMMARY
+# SUMMARIZE
 @app.route("/summarize", methods=["GET", "POST"])
 def summarize():
-    summary = None
+    summarize = None
 
     if request.method == "POST":
         topic = request.form["topic"]
@@ -163,10 +163,10 @@ def summarize():
         sentences = content.split(".")
         cleaned = [s.strip() for s in sentences if len(s.strip()) > 40]
 
-        summary_sentences = cleaned[:5]  # take first 5 meaningful sentences
-        summary = ". ".join(summary_sentences) + "."
+        summarize_sentences = cleaned[:5]  # take first 5 meaningful sentences
+        summarize = ". ".join(summarize_sentences) + "."
 
-    return render_template("summary.html", summary=summary)
+    return render_template("summarize.html", summary=summarize)
 
 
 
