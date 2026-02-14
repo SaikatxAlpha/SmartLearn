@@ -149,41 +149,35 @@ def summarize():
 
     if request.method == "POST":
         try:
-            topic = request.form.get("topic")
+            text = request.form.get("topic")
 
-            if not topic:
-                summary = "Please enter a topic."
+            if not text:
+                summary = "Please enter text."
                 return render_template("summarize.html", summary=summary)
 
-            response = tavily.search(
-                query=topic,
-                search_depth="basic",
-                max_results=3
-            )
+            # If short input → use Tavily search
+            if len(text) <= 400:
+                response = tavily.search(
+                    query=text,
+                    search_depth="basic",
+                    max_results=3
+                )
 
-            content = ""
+                content = ""
+                if response and response.get("results"):
+                    for result in response["results"]:
+                        content += result.get("content", "") + " "
+                text = content
 
-            if response and response.get("results"):
-                for result in response["results"]:
-                    content += result.get("content", "") + " "
-
-            if not content.strip():
-                summary = "No content found for this topic."
-                return render_template("summarize.html", summary=summary)
-
+            # Now summarize the text directly
             import re
 
-            # Remove markdown links [text](url)
-            content = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', content)
+            # Clean markdown links
+            text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
+            text = re.sub(r'http\S+', '', text)
+            text = re.sub(r'\s+', ' ', text)
 
-            # Remove raw URLs
-            content = re.sub(r'http\S+', '', content)
-
-            # Remove extra spaces
-            content = re.sub(r'\s+', ' ', content)
-
-            # Split into sentences
-            sentences = re.split(r'\.\s+', content)
+            sentences = re.split(r'\.\s+', text)
 
             cleaned = []
             seen = set()
@@ -199,8 +193,7 @@ def summarize():
             if not cleaned:
                 summary = "Not enough meaningful content to summarize."
             else:
-                summary_sentences = cleaned[:3]
-                summary = ". ".join(summary_sentences) + "."
+                summary = ". ".join(cleaned[:3]) + "."
 
         except Exception as e:
             summary = f"Error occurred: {str(e)}"
