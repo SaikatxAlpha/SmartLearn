@@ -68,12 +68,31 @@
 
     <h2>Summarize Topic</h2>
 
-    <form method="POST">
-        <div class="search-box">
-            <input type="text" name="topic" placeholder="Enter your text to summarize..." required>
-            <button class="btn">Summary</button>
-        </div>
-    </form>
+<form method="POST">
+    <div class="search-box" style="flex-direction: column; gap: 15px;">
+        
+        <textarea 
+            name="topic" 
+            placeholder="Paste your text here to summarize..."
+            rows="8"
+            style="
+                width: 100%;
+                padding: 15px;
+                border-radius: 12px;
+                border: none;
+                background: #111;
+                color: white;
+                font-size: 16px;
+                resize: vertical;
+            "
+            required
+        ></textarea>
+
+        <button type="submit" class="btn">Summarize</button>
+
+    </div>
+</form>
+
 
     {% if summary %}
     <div class="card">

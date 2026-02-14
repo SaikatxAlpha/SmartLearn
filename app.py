@@ -4,7 +4,6 @@ from functools import wraps
 import requests
 import os
 from tavily import TavilyClient
-import re
 #from duckduckgo_search import DDGS
 
 #from flask_sqlalchemy import SQLAlchemy
@@ -142,14 +141,19 @@ def submit_quiz():
 
 
 
-# SUMMARIZE
+# ================= SUMMARIZE =================
+
 @app.route("/summary", methods=["GET", "POST"])
 def summarize():
     summary = None
 
     if request.method == "POST":
         try:
-            topic = request.form["topic"]
+            topic = request.form.get("topic")
+
+            if not topic:
+                summary = "Please enter a topic."
+                return render_template("summarize.html", summary=summary)
 
             response = tavily.search(
                 query=topic,
@@ -158,25 +162,51 @@ def summarize():
             )
 
             content = ""
-            for result in response["results"]:
-                content += result.get("content", "") + " "
+
+            if response and response.get("results"):
+                for result in response["results"]:
+                    content += result.get("content", "") + " "
+
+            if not content.strip():
+                summary = "No content found for this topic."
+                return render_template("summarize.html", summary=summary)
 
             import re
+
+            # Remove markdown links [text](url)
+            content = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', content)
+
+            # Remove raw URLs
+            content = re.sub(r'http\S+', '', content)
+
+            # Remove extra spaces
+            content = re.sub(r'\s+', ' ', content)
+
+            # Split into sentences
             sentences = re.split(r'\.\s+', content)
 
             cleaned = []
+            seen = set()
+
             for s in sentences:
                 s = s.strip()
-                if len(s) > 60 and s not in cleaned:
-                    cleaned.append(s)
+                if len(s) > 60:
+                    key = s.lower()
+                    if key not in seen:
+                        seen.add(key)
+                        cleaned.append(s)
 
-            summary_sentences = cleaned[:3]
-            summary = ". ".join(summary_sentences) + "."
+            if not cleaned:
+                summary = "Not enough meaningful content to summarize."
+            else:
+                summary_sentences = cleaned[:3]
+                summary = ". ".join(summary_sentences) + "."
 
         except Exception as e:
-            summary = f"Error: {str(e)}"
+            summary = f"Error occurred: {str(e)}"
 
     return render_template("summarize.html", summary=summary)
+
 
 
 
