@@ -147,26 +147,30 @@ def summarize():
     summary = None
 
     if request.method == "POST":
-        topic = request.form["topic"]
+        try:
+            topic = request.form["topic"]
 
-        response = tavily.search(
-            query=topic,
-            search_depth="basic",
-            max_results=3
-        )
+            response = tavily.search(
+                query=topic,
+                search_depth="basic",
+                max_results=3
+            )
 
-        content = ""
-        for result in response["results"]:
-            content += result["content"] + " "
+            content = ""
+            for result in response["results"]:
+                content += result["content"] + " "
 
-        # Simple summarization logic
-        sentences = content.split(".")
-        cleaned = [s.strip() for s in sentences if len(s.strip()) > 40]
+            sentences = content.split(".")
+            cleaned = [s.strip() for s in sentences if len(s.strip()) > 40]
 
-        summarize_sentences = cleaned[:5]  # take first 5 meaningful sentences
-        summarize = ". ".join(summarize_sentences) + "."
+            summarize_sentences = cleaned[:5]
+            summary = ". ".join(summarize_sentences) + "."
 
-    return render_template("summarize.html", summary=summarize)
+        except Exception as e:
+            summary = f"Error occurred: {str(e)}"
+
+    return render_template("summarize.html", summary=summary)
+
 
 
 
