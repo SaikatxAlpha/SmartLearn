@@ -224,12 +224,6 @@ os.makedirs(CONVERTED_FOLDER, exist_ok=True)
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["CONVERTED_FOLDER"] = CONVERTED_FOLDER
-# ================= DASHBOARD =================
-@app.route("/")
-def dashboard():
-    return render_template("dashboard.html")
-
-
 # ================= CONVERTER PAGE =================
 @app.route("/converter")
 def converter():
