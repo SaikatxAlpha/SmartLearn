@@ -29,9 +29,12 @@
 
 /* Sidebar resize line */
 .sidebar {
-    position: relative;
-    min-width: 200px;
-    max-width: 420px;
+    width: 240px;
+    background: #000;
+    padding: 50px 25px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid rgba(255,255,255,0.05);
 }
 
 .sidebar-resizer {
@@ -59,44 +62,65 @@
         }
 
         .logo {
-            font-weight: 900;
-            letter-spacing: 4px;
-            font-size: 22px;
-            margin-bottom: 60px;
-            text-transform: uppercase;
-            /* Corrected gradient code to fix your warning */
-            background: linear-gradient(to right, #ffffff, var(--accent));
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 5px;
+            margin-bottom: 70px;
+            background: linear-gradient(to right, #ffffff, #8A2BE2);
             -webkit-background-clip: text;
-            background-clip: text;
             -webkit-text-fill-color: transparent;
-            color: transparent; 
         }
 
-        .nav-group { flex-grow: 1; }
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
         
         .nav-link {
-            display: flex;
-            align-items: center;
             padding: 14px 18px;
-            color: var(--text-dim);
+            font-size: 15px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: #aaa;
             text-decoration: none;
             border-radius: 12px;
-            margin-bottom: 8px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-size: 15px;
+            transition: all 0.25s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background: var(--card-bg);
+
+        .nav-link:hover {
+            background: rgba(138,43,226,0.15);
             color: #fff;
+            transform: translateX(4px);
         }
-
         .nav-link.active {
-            border-left: 3px solid var(--accent);
-            background: linear-gradient(90deg, rgba(138, 43, 226, 0.1) 0%, transparent 100%);
+            background: linear-gradient(
+                90deg,
+                rgba(138,43,226,0.25),
+                rgba(138,43,226,0.05)
+            );
+            color: #fff;
+            border-left: 3px solid #8A2BE2;
         }
 
-        /* --- MAIN CONTENT --- */
+        /* ===== LOGOUT SECTION ===== */
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 40px;
+        }
+
+        .logout {
+            color: #ff4d4d;
+            font-weight: 600;
+        }
+
+        .logout:hover {
+            background: rgba(255,77,77,0.1);
+            color: #ff4d4d;
+        }
+                /* --- MAIN CONTENT --- */
         .main {
             flex-grow: 1;
             padding: 60px;
@@ -318,17 +342,24 @@ h3 {
 </head>
 <body>
 
-    <aside class="sidebar">
-        <nav class="nav-group">
-            <a href="#" class="nav-link active">Dashboard</a>
-            <a href="#" class="nav-link">My Progress</a>
-            <a href="#" class="nav-link">Library</a>
-            <a href="#" class="nav-link">Settings</a>
-        </nav>
-        <a href="login.html" class="nav-link logout">Logout</a>
+<aside class="sidebar">
 
-        <div class="sidebar-resizer"></div>
-    </aside>
+    <div class="logo">QERRASTAR</div>
+
+    <nav class="nav-group">
+        <a href="/" class="nav-link active">Dashboard</a>
+        <a href="#" class="nav-link">My Progress</a>
+        <a href="#" class="nav-link">Library</a>
+        <a href="#" class="nav-link">Settings</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+        <a href="/logout" class="nav-link logout">Logout</a>
+    </div>
+
+    <div class="sidebar-resizer"></div>
+
+</aside>
 
 <main class="main">
     <header class="header">
