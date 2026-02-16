@@ -30,6 +30,7 @@ app.config['MAIL_USERNAME'] = 'saikatmahara7895@gmail.com'
 app.config['MAIL_PASSWORD'] = 'tvesmzoqwzfsotzp'
 
 mail = Mail(app)
+from flask import Flask
 from models import db, User
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
@@ -351,13 +352,6 @@ def login():
         return redirect(url_for("dashboard"))
 
     return render_template("login.html")
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(200), nullable=False)
-    verified = db.Column(db.Boolean, default=False)
-    otp = db.Column(db.String(6))
 
 #+++++++ SIGNUP ++++++++++
 @app.route("/signup", methods=["GET", "POST"])
