@@ -23,7 +23,7 @@
             font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
             min-height: 100vh;
-            overflow: hidden; /* 🔥 removes scrollbar */
+            overflow: hidden; /*Scollbar hidden*/
         }
 
 
@@ -266,6 +266,53 @@ h3 {
     box-shadow: 0 15px 40px rgba(138,43,226,0.6);
 }
 
+/* ===== PROFESSIONAL TYPOGRAPHY ===== */
+
+.dashboard-title {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.dashboard-sub {
+    color: var(--text-dim);
+    margin-top: 8px;
+}
+
+/* Bigger Grid */
+.tool-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+}
+
+/* Bigger Cards */
+.card-inner {
+    padding: 50px 40px;
+    min-height: 260px;
+}
+
+/* Center content inside cards */
+.centered {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* Premium Tool Name */
+.tool-name {
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+}
+
+/* Improve description spacing */
+.desc {
+    font-size: 15px;
+    margin-bottom: 40px;
+}
 
     </style>
 </head>
@@ -284,57 +331,60 @@ h3 {
         <div class="sidebar-resizer"></div>
     </aside>
 
-    <main class="main">
-        <header class="header">
-            <div>
-                <h1>Dashboard</h1>
-                <p style="color: var(--text-dim); margin-top: 5px;">Ready to enhance your learning experience?</p>
-            </div>
-            <div class="online-status">ONLINE</div>
-        </header>
+<main class="main">
+    <header class="header">
+        <div>
+            <h1 class="dashboard-title">DASHBOARD</h1>
+            <p class="dashboard-sub">Ready to enhance your learning experience?</p>
+        </div>
+        <div class="online-status">ONLINE</div>
+    </header>
 
-        <div class="tool-grid">
-            <div class="card-outer">
-                <div class="card-inner">
-                    <div class="tool-icon">🧠</div>
-                    <h3>Learner</h3>
-                    <p class="desc">Deep dive into any topic with AI-guided explanations and research assistance.</p>
-                    <a href="{{ url_for('search_page') }}" class="launch-btn">Initialize Tool</a>
+    <div class="tool-grid">
 
-                </div>
-            </div>
-
-            <div class="card-outer">
-                <div class="card-inner">
-                    <div class="tool-icon">🎯</div>
-                    <h3>Quiz</h3>
-                    <p class="desc">Test your knowledge with custom-generated quizzes based on your study material.</p>
-                    <a href="/quiz" class="launch-btn">Initialize Tool</a>
-
-                </div>
-            </div>
-
-            <div class="card-outer">
-                <div class="card-inner">
-                    <div class="tool-icon">💎</div>
-                    <h3>Summarize</h3>
-                    <p class="desc">Instantly turn long documents or videos into concise, readable summaries.</p>
-                    <a href="/summary" class="launch-btn">Initialize Tool</a>
-
-                </div>
-            </div>
-
-            <div class="card-outer">
-                <div class="card-inner">
-                    <div class="tool-icon">🧬</div>
-                    <h3>Converter</h3>
-                    <p class="desc">Convert files between formats with high accuracy for seamless compatibility.</p>
-                    <a href="/converter" class="launch-btn">Initialize Tool</a>
-
-                </div>
+        <div class="card-outer">
+            <div class="card-inner centered">
+                <h3 class="tool-name">LEARNER</h3>
+                <p class="desc">
+                    Deep dive into any topic with AI-guided explanations and research assistance.
+                </p>
+                <a href="/learner" class="launch-btn">INITIALIZE TOOL</a>
             </div>
         </div>
-    </main>
+
+        <div class="card-outer">
+            <div class="card-inner centered">
+                <h3 class="tool-name">QUIZ</h3>
+                <p class="desc">
+                    Test your knowledge with custom-generated quizzes based on your study material.
+                </p>
+                <a href="/quiz" class="launch-btn">INITIALIZE TOOL</a>
+            </div>
+        </div>
+
+        <div class="card-outer">
+            <div class="card-inner centered">
+                <h3 class="tool-name">SUMMARIZE</h3>
+                <p class="desc">
+                    Instantly turn long documents or videos into concise, readable summaries.
+                </p>
+                <a href="/summary" class="launch-btn">INITIALIZE TOOL</a>
+            </div>
+        </div>
+
+        <div class="card-outer">
+            <div class="card-inner centered">
+                <h3 class="tool-name">CONVERTER</h3>
+                <p class="desc">
+                    Convert files between formats with high accuracy for seamless compatibility.
+                </p>
+                <a href="/converter" class="launch-btn">INITIALIZE TOOL</a>
+            </div>
+        </div>
+
+    </div>
+</main>
+
 
 
 <script>
