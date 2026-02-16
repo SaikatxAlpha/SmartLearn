@@ -11,11 +11,27 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
 from docx import Document
-import fitz  # PyMuPDF
+import fitz  
+from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail, Message
+import random
 
 
 app = Flask(__name__)
 app.secret_key = "change-this-later"
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+# Email config (USE YOUR REAL EMAIL)
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'saikatmahara7895@gmail.com'
+app.config['MAIL_PASSWORD'] = 'tvesmzoqwzfsotzp'
+
+db = SQLAlchemy(app)
+mail = Mail(app)
+
 
 # ---------------- LOGIN REQUIRED DECORATOR ----------------
 def login_required(f):
@@ -205,6 +221,7 @@ def summarize():
 
 # ======================= DASHBOARD =======================
 @app.route("/dashboard")
+@login_required
 def dashboard():
     return render_template("dashboard.html")
 
@@ -310,14 +327,74 @@ def pdf_to_word():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        username = request.form.get("username")
+        email = request.form.get("email")
+        password = request.form.get("password")
 
-        # simple login for now
-        if username:
-            session["user"] = username
-            return redirect(url_for("dashboard"))
+        user = User.query.filter_by(email=email, password=password).first()
+
+        if not user:
+            return "Invalid credentials"
+
+        if not user.verified:
+            return "Please verify your email first."
+
+        session["user"] = user.email
+        return redirect(url_for("dashboard"))
 
     return render_template("login.html")
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    verified = db.Column(db.Boolean, default=False)
+    otp = db.Column(db.String(6))
+
+#+++++++ SIGNUP ++++++++++
+@app.route("/signup", methods=["GET", "POST"])
+def signup():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            return "Email already registered!"
+
+        otp = str(random.randint(100000, 999999))
+
+        new_user = User(email=email, password=password, otp=otp)
+        db.session.add(new_user)
+        db.session.commit()
+
+        msg = Message("Verify Your Qerrastar Account",
+                      sender=app.config['MAIL_USERNAME'],
+                      recipients=[email])
+        msg.body = f"Your OTP is: {otp}"
+        mail.send(msg)
+
+        return redirect(url_for("verify", email=email))
+
+    return render_template("signup.html")
+
+#+++++++++++++ OTP +++++++++++++++
+@app.route("/verify/<email>", methods=["GET", "POST"])
+def verify(email):
+    user = User.query.filter_by(email=email).first()
+
+    if request.method == "POST":
+        entered_otp = request.form.get("otp")
+
+        if user and user.otp == entered_otp:
+            user.verified = True
+            user.otp = None
+            db.session.commit()
+            return redirect(url_for("login"))
+
+        return "Invalid OTP"
+
+    return render_template("verify.html", email=email)
+
 
 #LOGOUT ROUTE
 @app.route("/logout")

@@ -12,3 +12,6 @@ Pillow
 reportlab
 python-docx
 PyMuPDF
+Flask-Mail
+Flask-SQLAlchemy
+itsdangerous
