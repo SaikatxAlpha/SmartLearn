@@ -29,7 +29,6 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = 'saikatmahara7895@gmail.com'
 app.config['MAIL_PASSWORD'] = 'tvesmzoqwzfsotzp'
 
-db = SQLAlchemy(app)
 mail = Mail(app)
 from models import db, User
 
