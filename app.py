@@ -1,16 +1,17 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify , send_file
 from flask import session, redirect, url_for
 from functools import wraps
 import requests
 import os
 from tavily import TavilyClient
-#from duckduckgo_search import DDGS
-
-#from flask_sqlalchemy import SQLAlchemy
-#from flask_mail import Mail, Message
-#from itsdangerous import URLSafeTimedSerializer
-#from models import db, User
 import random
+from werkzeug.utils import secure_filename
+from PIL import Image
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.pdfgen import canvas
+from docx import Document
+import fitz  # PyMuPDF
 
 
 app = Flask(__name__)
@@ -74,7 +75,7 @@ def api_search():
 
 
 
-# QUIZ 
+# ======================= QUIZ =======================
 
 # Temporary sample question generator
 tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
@@ -202,26 +203,116 @@ def summarize():
 
 
 
-# DASHBOARD
+# ======================= DASHBOARD =======================
 @app.route("/dashboard")
 def dashboard():
     return render_template("dashboard.html")
 
 
-# DOCUMENTATION
+# ======================= DOCUMENTATION =======================
 @app.route("/docs")
 def docs():
     return render_template("docs.html")
 
 
-# CONVERTER
+# ======================= CONVERTER =======================
+UPLOAD_FOLDER = "uploads"
+CONVERTED_FOLDER = "converted"
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(CONVERTED_FOLDER, exist_ok=True)
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["CONVERTED_FOLDER"] = CONVERTED_FOLDER
+# ================= DASHBOARD =================
+@app.route("/")
+def dashboard():
+    return render_template("dashboard.html")
+
+
+# ================= CONVERTER PAGE =================
 @app.route("/converter")
-@login_required
 def converter():
     return render_template("converter.html")
 
 
-# LOGIN
+# ================= JPG → PDF =================
+@app.route("/convert/jpg-to-pdf", methods=["POST"])
+def jpg_to_pdf():
+    file = request.files["file"]
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    file.save(filepath)
+
+    image = Image.open(filepath).convert("RGB")
+    output_path = os.path.join(app.config["CONVERTED_FOLDER"], filename.rsplit(".", 1)[0] + ".pdf")
+    image.save(output_path)
+
+    return send_file(output_path, as_attachment=True)
+
+
+# ================= PDF → JPG =================
+@app.route("/convert/pdf-to-jpg", methods=["POST"])
+def pdf_to_jpg():
+    file = request.files["file"]
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    file.save(filepath)
+
+    doc = fitz.open(filepath)
+    page = doc[0]
+    pix = page.get_pixmap()
+
+    output_path = os.path.join(app.config["CONVERTED_FOLDER"], filename.rsplit(".", 1)[0] + ".jpg")
+    pix.save(output_path)
+
+    return send_file(output_path, as_attachment=True)
+
+
+# ================= WORD → PDF =================
+@app.route("/convert/word-to-pdf", methods=["POST"])
+def word_to_pdf():
+    file = request.files["file"]
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    file.save(filepath)
+
+    doc = Document(filepath)
+    text = "\n".join([para.text for para in doc.paragraphs])
+
+    output_path = os.path.join(app.config["CONVERTED_FOLDER"], filename.rsplit(".", 1)[0] + ".pdf")
+    pdf = SimpleDocTemplate(output_path)
+    styles = getSampleStyleSheet()
+    elements = [Paragraph(text, styles["Normal"])]
+    pdf.build(elements)
+
+    return send_file(output_path, as_attachment=True)
+
+
+# ================= PDF → WORD =================
+@app.route("/convert/pdf-to-word", methods=["POST"])
+def pdf_to_word():
+    file = request.files["file"]
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+    file.save(filepath)
+
+    doc = fitz.open(filepath)
+    text = ""
+    for page in doc:
+        text += page.get_text()
+
+    output_path = os.path.join(app.config["CONVERTED_FOLDER"], filename.rsplit(".", 1)[0] + ".docx")
+
+    document = Document()
+    document.add_paragraph(text)
+    document.save(output_path)
+
+    return send_file(output_path, as_attachment=True)
+
+
+
+# ======================= LOGIN =======================
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Converter | Qerrastar</title>
+
+<style>
+:root {
+    --accent: #8A2BE2;
+    --accent-soft: rgba(138,43,226,0.25);
+    --text-dim: #a1a1a1;
+}
+
+/* ===== BASE ===== */
+body {
+    margin: 0;
+    background: #000;
+    color: #fff;
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 60px;
+    position: relative;
+}
+
+/* Purple glow background */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(700px circle at 30% 20%, rgba(138,43,226,0.3), transparent 60%),
+        radial-gradient(900px circle at 70% 60%, rgba(138,43,226,0.2), transparent 70%);
+    z-index: -1;
+}
+
+/* ===== HEADER ===== */
+.header {
+    margin-bottom: 60px;
+}
+
+.header h1 {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 3px;
+}
+
+.header p {
+    margin-top: 10px;
+    color: var(--text-dim);
+}
+
+/* ===== GRID ===== */
+.converter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+}
+
+/* ===== CARD ===== */
+.converter-card {
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.08),
+        rgba(255,255,255,0.02)
+    );
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 28px;
+    padding: 50px 40px;
+    text-align: center;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow:
+        0 30px 60px rgba(0,0,0,0.6),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+    transition: all 0.35s ease;
+}
+
+.converter-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 60px var(--accent-soft);
+}
+
+/* ===== TITLE ===== */
+.converter-title {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+/* ===== BUTTON ===== */
+.convert-btn {
+    display: inline-block;
+    padding: 14px 35px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), #5e17eb);
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-decoration: none;
+    transition: 0.3s ease;
+}
+
+.convert-btn:hover {
+    box-shadow: 0 0 30px var(--accent);
+}
+
+input[type="file"] {
+    margin-bottom: 20px;
+    color: var(--text-dim);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>FILE CONVERTER</h1>
+    <p>Convert your files instantly with precision and speed.</p>
+</div>
+
+<div class="converter-grid">
+
+    <!-- JPG → PDF -->
+    <div class="converter-card">
+        <div class="converter-title">JPG → PDF</div>
+        <form action="/convert/jpg-to-pdf" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button class="convert-btn">CONVERT</button>
+        </form>
+    </div>
+
+    <!-- PDF → JPG -->
+    <div class="converter-card">
+        <div class="converter-title">PDF → JPG</div>
+        <form action="/convert/pdf-to-jpg" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button class="convert-btn">CONVERT</button>
+        </form>
+    </div>
+
+    <!-- WORD → PDF -->
+    <div class="converter-card">
+        <div class="converter-title">WORD → PDF</div>
+        <form action="/convert/word-to-pdf" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button class="convert-btn">CONVERT</button>
+        </form>
+    </div>
+
+    <!-- PDF → WORD -->
+    <div class="converter-card">
+        <div class="converter-title">PDF → WORD</div>
+        <form action="/convert/pdf-to-word" method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" required>
+            <button class="convert-btn">CONVERT</button>
+        </form>
+    </div>
+
+</div>
+</body>
+</html>

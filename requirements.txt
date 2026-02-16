@@ -6,4 +6,9 @@ werkzeug
 gunicorn
 requests
 tavily-python
-
+Flask
+gunicorn
+Pillow
+reportlab
+python-docx
+PyMuPDF
