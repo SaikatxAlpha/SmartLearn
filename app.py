@@ -168,11 +168,9 @@ def summarize():
                     for result in response["results"]:
                         content += result.get("content", "") + " "
                 text = content
-
-            # Now summarize the text directly
             import re
 
-            # Clean markdown links
+            # Markdown links
             text = re.sub(r'\[([^\]]+)\]\([^)]+\)', r'\1', text)
             text = re.sub(r'http\S+', '', text)
             text = re.sub(r'\s+', ' ', text)
