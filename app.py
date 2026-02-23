@@ -343,39 +343,62 @@ def pyq():
 #++++++++++++++ Search & Download ++++++++++++++++
 @app.route("/pyq/search", methods=["POST"])
 def search_pyq():
+
     university = secure_filename(request.form.get("university"))
-    year = request.form.get("year")
+    degree = secure_filename(request.form.get("degree"))
+    department = secure_filename(request.form.get("department"))
+    year = secure_filename(request.form.get("year"))
+    subject = secure_filename(request.form.get("subject"))
 
-    university_folder = os.path.join(app.config["PYQ_FOLDER"], university)
-    filepath = os.path.join(university_folder, f"{year}.pdf")
+    file_path = os.path.join(
+        app.config["PYQ_FOLDER"],
+        university,
+        degree,
+        department,
+        year,
+        f"{subject}.pdf"
+    )
 
-    if os.path.exists(filepath):
-        return send_file(filepath, as_attachment=True)
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
     else:
-        return "PYQ not found for this university and year."
+        return "PYQ not found."
     
 #++++++++++++++ UPLOAD ROUTE +++++++++++++
 @app.route("/pyq/upload", methods=["POST"])
 @login_required
 def upload_pyq():
+
     university = secure_filename(request.form.get("university"))
-    year = request.form.get("year")
+    degree = secure_filename(request.form.get("degree"))
+    department = secure_filename(request.form.get("department"))
+    year = secure_filename(request.form.get("year"))
+    subject = secure_filename(request.form.get("subject"))
+
     file = request.files.get("file")
 
-    if not university or not year or not file:
-        return "Missing required fields."
+    if not all([university, degree, department, year, subject, file]):
+        return "All fields are required."
 
     if not file.filename.endswith(".pdf"):
-        return "Only PDF files are allowed."
+        return "Only PDF files allowed."
 
-    university_folder = os.path.join(app.config["PYQ_FOLDER"], university)
-    os.makedirs(university_folder, exist_ok=True)
+    folder_path = os.path.join(
+        app.config["PYQ_FOLDER"],
+        university,
+        degree,
+        department,
+        year
+    )
 
-    filepath = os.path.join(university_folder, f"{year}.pdf")
+    os.makedirs(folder_path, exist_ok=True)
 
-    if os.path.exists(filepath):
-        return "PYQ for this year already exists."
-    file.save(filepath)
+    file_path = os.path.join(folder_path, f"{subject}.pdf")
+
+    if os.path.exists(file_path):
+        return "This subject paper already exists."
+
+    file.save(file_path)
 
     return "PYQ uploaded successfully."
 
