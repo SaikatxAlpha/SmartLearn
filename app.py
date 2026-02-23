@@ -331,11 +331,12 @@ def pdf_to_word():
     return send_file(output_path, as_attachment=True)
 
 # ================= PYQ =================
-PYQ_FOLDER = "pyq_storage"
+BASE_DIR = os.getcwd()
+PYQ_FOLDER = os.path.join(BASE_DIR, "pyq_storage")
+
 os.makedirs(PYQ_FOLDER, exist_ok=True)
 
 app.config["PYQ_FOLDER"] = PYQ_FOLDER
-
 @app.route("/pyq")  #ROUTE
 def pyq():
     return render_template("pyq.html")
