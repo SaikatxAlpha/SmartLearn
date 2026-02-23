@@ -231,7 +231,6 @@ def summarize():
 
 # ======================= DASHBOARD =======================
 @app.route("/dashboard")
-@login_required
 def dashboard():
     return render_template("dashboard.html")
 
@@ -353,7 +352,7 @@ def login():
 
     return render_template("login.html")
 
-#+++++++ SIGNUP ++++++++++
+#++++++++++++++++++++ SIGNUP +++++++++++++++++++++++
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
