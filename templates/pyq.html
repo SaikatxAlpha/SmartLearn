@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PYQ - Qerrastar</title>
+
+<style>
+:root {
+    --bg: #000;
+    --accent: #8A2BE2;
+    --text-dim: #a1a1a1;
+}
+
+body {
+    margin: 0;
+    background: #000;
+    color: white;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Background Glow */
+body::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(700px circle at 40% 30%, rgba(138,43,226,0.35), transparent 60%),
+        radial-gradient(800px circle at 70% 70%, rgba(138,43,226,0.25), transparent 70%);
+    z-index: -1;
+}
+
+/* Main Container */
+.container {
+    width: 90%;
+    max-width: 1100px;
+}
+
+/* Title */
+h1 {
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    margin-bottom: 10px;
+}
+
+.subtitle {
+    color: var(--text-dim);
+    margin-bottom: 60px;
+}
+
+/* Two Column Layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 40px;
+}
+
+/* Card */
+.card {
+    background: #0d0d0d;
+    padding: 40px;
+    border-radius: 24px;
+    border: 1px solid rgba(255,255,255,0.08);
+    backdrop-filter: blur(15px);
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+}
+
+/* Card Title */
+.card h2 {
+    font-size: 22px;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+/* Input */
+input, select {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 20px;
+    background: #111;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    color: white;
+    font-size: 14px;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+/* Button */
+button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--accent), #5e17eb);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(138,43,226,0.4);
+    transition: 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 40px rgba(138,43,226,0.6);
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <h1>PYQ</h1>
+    <p class="subtitle">Access and contribute Previous Year Questions</p>
+
+    <div class="grid">
+
+        <!-- SEARCH CARD -->
+        <div class="card">
+            <h2>SEARCH & DOWNLOAD</h2>
+            <form method="POST" action="/pyq/search">
+                <input type="text" name="university" placeholder="University / School Name" required>
+                <input type="number" name="year" placeholder="Year (e.g. 2023)" required>
+                <button type="submit">Download PYQ</button>
+            </form>
+        </div>
+
+        <!-- UPLOAD CARD -->
+        <div class="card">
+            <h2>UPLOAD PYQ</h2>
+            <form method="POST" action="/pyq/upload" enctype="multipart/form-data">
+                <input type="text" name="university" placeholder="University / School Name" required>
+                <input type="number" name="year" placeholder="Year" required>
+                <input type="file" name="file" accept=".pdf" required>
+                <button type="submit">Upload Question Paper</button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -330,7 +330,54 @@ def pdf_to_word():
 
     return send_file(output_path, as_attachment=True)
 
+# ================= PYQ =================
+PYQ_FOLDER = "pyq_storage"
+os.makedirs(PYQ_FOLDER, exist_ok=True)
 
+app.config["PYQ_FOLDER"] = PYQ_FOLDER
+
+@app.route("/pyq")  #ROUTE
+def pyq():
+    return render_template("pyq.html")
+
+#++++++++++++++ Search & Download ++++++++++++++++
+@app.route("/pyq/search", methods=["POST"])
+def search_pyq():
+    university = secure_filename(request.form.get("university"))
+    year = request.form.get("year")
+
+    university_folder = os.path.join(app.config["PYQ_FOLDER"], university)
+    filepath = os.path.join(university_folder, f"{year}.pdf")
+
+    if os.path.exists(filepath):
+        return send_file(filepath, as_attachment=True)
+    else:
+        return "PYQ not found for this university and year."
+    
+#++++++++++++++ UPLOAD ROUTE +++++++++++++
+@app.route("/pyq/upload", methods=["POST"])
+@login_required
+def upload_pyq():
+    university = secure_filename(request.form.get("university"))
+    year = request.form.get("year")
+    file = request.files.get("file")
+
+    if not university or not year or not file:
+        return "Missing required fields."
+
+    if not file.filename.endswith(".pdf"):
+        return "Only PDF files are allowed."
+
+    university_folder = os.path.join(app.config["PYQ_FOLDER"], university)
+    os.makedirs(university_folder, exist_ok=True)
+
+    filepath = os.path.join(university_folder, f"{year}.pdf")
+
+    if os.path.exists(filepath):
+        return "PYQ for this year already exists."
+    file.save(filepath)
+
+    return "PYQ uploaded successfully."
 
 # ======================= LOGIN =======================
 @app.route("/login", methods=["GET", "POST"])
@@ -407,5 +454,3 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
-
