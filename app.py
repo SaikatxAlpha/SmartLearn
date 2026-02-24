@@ -367,15 +367,23 @@ def search_pyq():
     
 #++++++++++++++ UPLOAD ROUTE +++++++++++++
 @app.route("/pyq/upload", methods=["POST"])
-@login_required
 def upload_pyq():
     try:
-        university = secure_filename(request.form.get("university"))
-        degree = secure_filename(request.form.get("degree"))
-        department = secure_filename(request.form.get("department"))
-        year = secure_filename(request.form.get("year"))
-        subject = secure_filename(request.form.get("subject"))
+        university = request.form.get("university")
+        degree = request.form.get("degree")
+        department = request.form.get("department")
+        year = request.form.get("year")
+        subject = request.form.get("subject")
         file = request.files.get("file")
+
+        # Check missing fields 
+        if not all([university, degree, department, year, subject, file]):
+            return "Missing required fields"
+        university = secure_filename(university)
+        degree = secure_filename(degree)
+        department = secure_filename(department)
+        year = secure_filename(year)
+        subject = secure_filename(subject)
 
         folder_path = os.path.join(
             app.config["PYQ_FOLDER"],
