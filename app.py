@@ -340,7 +340,7 @@ app.config["PYQ_FOLDER"] = PYQ_FOLDER
 @app.route("/pyq")  #ROUTE
 def pyq():
     return render_template("pyq.html")
-
+app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024  # 3MB limit
 #++++++++++++++ Search & Download ++++++++++++++++
 @app.route("/pyq/search", methods=["POST"])
 def search_pyq():
@@ -402,7 +402,6 @@ def upload_pyq():
 
     except Exception as e:
         return f"Error: {str(e)}"
-
 # ======================= LOGIN =======================
 @app.route("/login", methods=["GET", "POST"])
 def login():
