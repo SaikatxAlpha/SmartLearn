@@ -368,58 +368,82 @@ def search_pyq():
 #++++++++++++++ UPLOAD ROUTE +++++++++++++
 @app.route("/pyq/upload", methods=["POST"])
 def upload_pyq():
-    try:
-        university = request.form.get("university")
-        degree = request.form.get("degree")
-        department = request.form.get("department")
-        year = request.form.get("year")
-        subject = request.form.get("subject")
-        file = request.files.get("file")
+    university_input = request.form.get("university")
+    degree = request.form.get("degree")
+    department = request.form.get("department")
+    year = request.form.get("year")
+    subject = request.form.get("subject")
+    file = request.files.get("file")
 
-        # Check missing fields 
-        if not all([university, degree, department, year, subject, file]):
-            return "Missing required fields"
-        university = secure_filename(university).lower()
-        degree = secure_filename(degree).lower()
-        department = secure_filename(department).lower()
-        year = secure_filename(year).lower()
-        subject = secure_filename(subject).lower()
+    if not all([university_input, degree, department, year, subject, file]):
+        return "Missing required fields"
 
-        folder_path = os.path.join(
-            app.config["PYQ_FOLDER"],
-            university,
-            degree,
-            department,
-            year
-        )
+    base_root = app.config["PYQ_FOLDER"]
 
-        os.makedirs(folder_path, exist_ok=True)
+    # 🔥 Case-insensitive match for existing university
+    matched_university = None
+    for folder in os.listdir(base_root):
+        if folder.lower() == university_input.lower():
+            matched_university = folder
+            break
 
-        file_path = os.path.join(folder_path, f"{subject}.pdf")
-        file.save(file_path)
+    if not matched_university:
+        # If not exists → create new
+        matched_university = secure_filename(university_input)
 
-        return "Uploaded Successfully"
+    # Clean inputs
+    degree = secure_filename(degree)
+    department = secure_filename(department)
+    year = secure_filename(year)
+    subject = secure_filename(subject)
 
-    except Exception as e:
-        return f"Error: {str(e)}"
+    folder_path = os.path.join(
+        base_root,
+        matched_university,
+        degree,
+        department,
+        year
+    )
+
+    os.makedirs(folder_path, exist_ok=True)
+
+    # 🔥 Prevent overwrite (auto-numbering)
+    file_path = os.path.join(folder_path, f"{subject}.pdf")
+    counter = 1
+
+    while os.path.exists(file_path):
+        file_path = os.path.join(folder_path, f"{subject}_{counter}.pdf")
+        counter += 1
+
+    file.save(file_path)
+
+    return "Uploaded Successfully"
     
 #======================= LIST ======================
 @app.route("/pyq/list", methods=["POST"])
 def list_pyq():
-    university = request.form.get("university")
+    university_input = request.form.get("university")
 
-    if not university:
+    if not university_input:
         return "University required"
 
-    university = secure_filename(university).lower()
+    base_root = app.config["PYQ_FOLDER"]
 
-    base_path = os.path.join(app.config["PYQ_FOLDER"], university)
+    # 🔥 Case-insensitive match for university folder
+    matched_university = None
+    for folder in os.listdir(base_root):
+        if folder.lower() == university_input.lower():
+            matched_university = folder
+            break
 
-    if not os.path.exists(base_path):
+    if not matched_university:
         return "No records found"
+
+    base_path = os.path.join(base_root, matched_university)
 
     files = []
 
+    # 🔥 Walk through ALL subfolders
     for root, dirs, filenames in os.walk(base_path):
         for filename in filenames:
             if filename.endswith(".pdf"):
@@ -433,9 +457,8 @@ def list_pyq():
     return render_template(
         "pyq_list.html",
         files=files,
-        university=university
+        university=matched_university
     )
-
 #======================= DOWNLOAD ROUTE ===================
 @app.route("/pyq/download/<path:filepath>")
 def download_pyq(filepath):
