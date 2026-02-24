@@ -1,0 +1,9 @@
+<h2>Available Papers</h2>
+
+{% for file in files %}
+    <div>
+        <a href="/pyq/download/{{ file.path }}?university={{ university }}">
+            {{ file.name }}
+        </a>
+    </div>
+{% endfor %}

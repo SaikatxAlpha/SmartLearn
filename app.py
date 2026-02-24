@@ -345,11 +345,11 @@ app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024  # 3MB limit
 @app.route("/pyq/search", methods=["POST"])
 def search_pyq():
 
-    university = secure_filename(request.form.get("university"))
-    degree = secure_filename(request.form.get("degree"))
-    department = secure_filename(request.form.get("department"))
-    year = secure_filename(request.form.get("year"))
-    subject = secure_filename(request.form.get("subject"))
+    university = secure_filename(request.form.get("university")).lower()
+    degree = secure_filename(request.form.get("degree")).lower()
+    department = secure_filename(request.form.get("department")).lower()
+    year = secure_filename(request.form.get("year")).lower()
+    subject = secure_filename(request.form.get("subject")).lower()
 
     file_path = os.path.join(
         app.config["PYQ_FOLDER"],
@@ -379,11 +379,11 @@ def upload_pyq():
         # Check missing fields 
         if not all([university, degree, department, year, subject, file]):
             return "Missing required fields"
-        university = secure_filename(university)
-        degree = secure_filename(degree)
-        department = secure_filename(department)
-        year = secure_filename(year)
-        subject = secure_filename(subject)
+        university = secure_filename(university).lower()
+        degree = secure_filename(degree).lower()
+        department = secure_filename(department).lower()
+        year = secure_filename(year).lower()
+        subject = secure_filename(subject).lower()
 
         folder_path = os.path.join(
             app.config["PYQ_FOLDER"],
@@ -402,6 +402,51 @@ def upload_pyq():
 
     except Exception as e:
         return f"Error: {str(e)}"
+    
+#======================= LIST ======================
+@app.route("/pyq/list", methods=["POST"])
+def list_pyq():
+    university = request.form.get("university")
+
+    if not university:
+        return "University required"
+
+    university = secure_filename(university).lower()
+
+    base_path = os.path.join(app.config["PYQ_FOLDER"], university)
+
+    if not os.path.exists(base_path):
+        return "No records found"
+
+    files = []
+
+    for root, dirs, filenames in os.walk(base_path):
+        for filename in filenames:
+            if filename.endswith(".pdf"):
+                full_path = os.path.join(root, filename)
+                relative_path = os.path.relpath(full_path, base_path)
+
+                files.append({
+                    "name": filename.replace(".pdf", ""),
+                    "path": relative_path.replace("\\", "/")
+                })
+
+    return render_template("pyq_list.html", files=files, university=university)
+
+#======================= DOWNLOAD ROUTE ===================
+@app.route("/pyq/download/<path:filepath>")
+def download_pyq(filepath):
+    university = request.args.get("university")
+
+    university = secure_filename(university).lower()
+
+    full_path = os.path.join(app.config["PYQ_FOLDER"], university, filepath)
+
+    if os.path.exists(full_path):
+        return send_file(full_path, as_attachment=True)
+
+    return "File not found"
+
 # ======================= LOGIN =======================
 @app.route("/login", methods=["GET", "POST"])
 def login():
