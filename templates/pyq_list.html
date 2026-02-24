@@ -1,9 +1,111 @@
-<h2>Available Papers</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Available PYQs</title>
 
-{% for file in files %}
-    <div>
-        <a href="/pyq/download/{{ file.path }}?university={{ university }}">
-            {{ file.name }}
-        </a>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #1a0033, #000000);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+
+        .card {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 0 40px rgba(138, 43, 226, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .file-item:hover {
+            background: rgba(138, 43, 226, 0.15);
+            border-color: rgba(138, 43, 226, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .file-item a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            display: block;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 12px 25px;
+            border-radius: 30px;
+            background: linear-gradient(90deg, #8a2be2, #6a0dad);
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        .back-btn:hover {
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.6);
+        }
+
+        .empty {
+            text-align: center;
+            opacity: 0.7;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>PYQs for {{ university }}</h2>
+
+    <div class="card">
+
+        {% if files %}
+            {% for file in files %}
+                <div class="file-item">
+                    <a href="/pyq/download/{{ file }}?university={{ university }}">
+                        📄 {{ file }}
+                    </a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="empty">No PYQs found for this university.</p>
+        {% endif %}
+
+        <div style="text-align:center;">
+            <a href="/pyq" class="back-btn">← Back to Search</a>
+        </div>
+
     </div>
-{% endfor %}
+</div>
+
+</body>
+</html>

@@ -423,24 +423,29 @@ def list_pyq():
     for root, dirs, filenames in os.walk(base_path):
         for filename in filenames:
             if filename.endswith(".pdf"):
-                full_path = os.path.join(root, filename)
-                relative_path = os.path.relpath(full_path, base_path)
+                relative_path = os.path.relpath(
+                    os.path.join(root, filename),
+                    base_path
+                ).replace("\\", "/")
 
-                files.append({
-                    "name": filename.replace(".pdf", ""),
-                    "path": relative_path.replace("\\", "/")
-                })
+                files.append(relative_path)
 
-    return render_template("pyq_list.html", files=files, university=university)
+    return render_template(
+        "pyq_list.html",
+        files=files,
+        university=university
+    )
 
 #======================= DOWNLOAD ROUTE ===================
 @app.route("/pyq/download/<path:filepath>")
 def download_pyq(filepath):
     university = request.args.get("university")
 
-    university = secure_filename(university).lower()
-
-    full_path = os.path.join(app.config["PYQ_FOLDER"], university, filepath)
+    full_path = os.path.join(
+        app.config["PYQ_FOLDER"],
+        university,
+        filepath
+    )
 
     if os.path.exists(full_path):
         return send_file(full_path, as_attachment=True)
