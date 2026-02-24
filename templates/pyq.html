@@ -138,33 +138,31 @@ button:hover {
     <div class="grid">
 
         <!-- SEARCH CARD -->
-        <div class="card">
-            <h2>SEARCH & DOWNLOAD</h2>
-            <form method="POST" action="/pyq/search">
-            <form class="form-box"></form>
-                <input type="text" name="university" placeholder="University / School Name" required>
-                <input type="number" name="year" placeholder="Year (e.g. 2023)" required>
-                <input type="text" name="degree" placeholder="Degree (BTECH / BCA / MCA)" required>
-                <input type="text" name="department" placeholder="Department (CSE / ECE / MECH)" required>
-                <input type="text" name="subject" placeholder="Subject Name (Data Structures)" required>
-                <button type="submit">Download PYQ</button>
-            </form>
-        </div>
+    <div class="card">
+        <h2>SEARCH & DOWNLOAD</h2>
+        <form method="POST" action="/pyq/search" class="form-box">
+            <input type="text" name="university" placeholder="University / School Name" required>
+            <input type="number" name="year" placeholder="Year (e.g. 2023)" required>
+            <input type="text" name="degree" placeholder="Degree (BTECH / BCA / MCA)" required>
+            <input type="text" name="department" placeholder="Department (CSE / ECE / MECH)" required>
+            <input type="text" name="subject" placeholder="Subject Name (Data Structures)" required>
+            <button type="submit">Download PYQ</button>
+        </form>
+    </div>
 
         <!-- UPLOAD CARD -->
-        <div class="card">
-            <h2>UPLOAD PYQ</h2>
-            <form method="POST" action="/pyq/upload" enctype="multipart/form-data">
-            <form class="form-box"></form>
-                <input type="text" name="university" placeholder="University / School Name" required>
-                <input type="number" name="year" placeholder="Year" required>
-                <input type="file" name="file" accept=".pdf" required>
-                <input type="text" name="degree" placeholder="Degree (BTECH / BCA / MCA)" required>
-                <input type="text" name="department" placeholder="Department (CSE / ECE / MECH)" required>
-                <input type="text" name="subject" placeholder="Subject Name (Data Structures)" required>
-                <button type="submit">Upload Question Paper</button>
-            </form>
-        </div>
+    <div class="card">
+        <h2>UPLOAD PYQ</h2>
+        <form method="POST" action="/pyq/upload" enctype="multipart/form-data" class="form-box">
+            <input type="text" name="university" placeholder="University / School Name" required>
+            <input type="number" name="year" placeholder="Year" required>
+            <input type="file" name="file" accept=".pdf" required>
+            <input type="text" name="degree" placeholder="Degree (BTECH / BCA / MCA)" required>
+            <input type="text" name="department" placeholder="Department (CSE / ECE / MECH)" required>
+            <input type="text" name="subject" placeholder="Subject Name (Data Structures)" required>
+            <button type="submit">Upload Question Paper</button>
+        </form>
+    </div>
 
     </div>
 
