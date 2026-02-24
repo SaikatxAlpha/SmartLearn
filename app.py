@@ -369,39 +369,31 @@ def search_pyq():
 @app.route("/pyq/upload", methods=["POST"])
 @login_required
 def upload_pyq():
+    try:
+        university = secure_filename(request.form.get("university"))
+        degree = secure_filename(request.form.get("degree"))
+        department = secure_filename(request.form.get("department"))
+        year = secure_filename(request.form.get("year"))
+        subject = secure_filename(request.form.get("subject"))
+        file = request.files.get("file")
 
-    university = secure_filename(request.form.get("university"))
-    degree = secure_filename(request.form.get("degree"))
-    department = secure_filename(request.form.get("department"))
-    year = secure_filename(request.form.get("year"))
-    subject = secure_filename(request.form.get("subject"))
+        folder_path = os.path.join(
+            app.config["PYQ_FOLDER"],
+            university,
+            degree,
+            department,
+            year
+        )
 
-    file = request.files.get("file")
+        os.makedirs(folder_path, exist_ok=True)
 
-    if not all([university, degree, department, year, subject, file]):
-        return "All fields are required."
+        file_path = os.path.join(folder_path, f"{subject}.pdf")
+        file.save(file_path)
 
-    if not file.filename.endswith(".pdf"):
-        return "Only PDF files allowed."
+        return "Uploaded Successfully"
 
-    folder_path = os.path.join(
-        app.config["PYQ_FOLDER"],
-        university,
-        degree,
-        department,
-        year
-    )
-
-    os.makedirs(folder_path, exist_ok=True)
-
-    file_path = os.path.join(folder_path, f"{subject}.pdf")
-
-    if os.path.exists(file_path):
-        return "This subject paper already exists."
-
-    file.save(file_path)
-
-    return "PYQ uploaded successfully."
+    except Exception as e:
+        return f"Error: {str(e)}"
 
 # ======================= LOGIN =======================
 @app.route("/login", methods=["GET", "POST"])
