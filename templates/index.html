@@ -6,6 +6,17 @@
     <title>Qerrastar</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+    <meta property="og:image" content="{{ url_for('static', filename='images/qerra-logo.png', _external=True) }}">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Qerra",
+  "url": "https://qerrastar.online",
+  "logo": "https://qerrastar.online/static/images/qerra-logo.png"
+}
+</script>
 </head>
 <body>
     <div class="layer-blur"></div>
