@@ -42,7 +42,7 @@ body {
     margin: 0 auto;
     padding: 0 2rem;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* HEADER */
@@ -187,7 +187,7 @@ main{
   .content {
     max-width: 100%;
     margin: 0 auto;
-    padding: 0 1rem;
+    padding: 0 20px;
   }
 
   .btn-get-started {
@@ -277,17 +277,20 @@ main{
         right: 0;
     }
 
-    .content{
-        max-width: 30rem;
-        margin-left: 10%;
+    .content {
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    .content h1 {
+        font-size: 2.2rem;
+        line-height: 1.2;
+        word-wrap: break-word;
     }
 
     .tag-box{
         width: 12rem;
-    }
-
-    .content h1{
-        font-size: 2.5rem;
     }
 
     .description{
