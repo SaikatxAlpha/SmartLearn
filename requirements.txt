@@ -15,4 +15,3 @@ PyMuPDF
 Flask-Mail
 Flask-SQLAlchemy
 itsdangerous
-whitenoise

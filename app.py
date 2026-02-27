@@ -16,7 +16,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 import random
 
-
 app = Flask(__name__)
 app.secret_key = "change-this-later"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
