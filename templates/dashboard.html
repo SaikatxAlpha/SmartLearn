@@ -25,22 +25,34 @@
             min-height: 100vh;
             overflow-x: hidden; /*Scollbar hidden*/
         }
-        @media (max-width: 768px) {   /* Mobile res solution */
+@media (max-width: 768px) {    /*mobile res*/
 
-            body {
-                flex-direction: column;
-            }
+    body {
+        flex-direction: column;
+    }
 
-            .sidebar {
-                width: 100%;
-                padding: 30px 20px;
-            }
+    .sidebar {
+        width: 100%;
+        padding: 25px 20px;
+    }
 
-            .main {
-                padding: 30px 20px;
-            }
+    .logo {
+        margin-bottom: 40px;
+    }
 
-        }
+    .main {
+        padding: 30px 20px;
+    }
+
+    .dashboard-title {
+        font-size: 28px;
+    }
+
+    .tool-grid {
+        gap: 20px;
+    }
+
+}
 
 /* Sidebar resize line */
 .sidebar {
