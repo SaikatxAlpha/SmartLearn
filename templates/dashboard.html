@@ -23,9 +23,24 @@
             font-family: 'Inter', -apple-system, sans-serif;
             display: flex;
             min-height: 100vh;
-            overflow: hidden; /*Scollbar hidden*/
+            overflow-x: hidden; /*Scollbar hidden*/
         }
+        @media (max-width: 768px) {   /* Mobile res solution */
 
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 30px 20px;
+            }
+
+            .main {
+                padding: 30px 20px;
+            }
+
+        }
 
 /* Sidebar resize line */
 .sidebar {
