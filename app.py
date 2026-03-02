@@ -45,7 +45,7 @@ with app.app_context():
 # FOR SITEMAP
 @app.route('/sitemap.xml')
 def sitemap():
-    return send_from_directory('', 'sitemap.xml')
+    return send_from_directory(os.getcwd(), 'sitemap.xml')
 #----------------------------------------------------------------
 
 # ---------------- LOGIN REQUIRED DECORATOR ----------------
