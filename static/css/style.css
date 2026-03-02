@@ -308,3 +308,56 @@ main{
     }
 
 }
+
+/* ============================= */
+/* MOBILE VERSION ONLY */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+    header {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    header nav {
+        display: none; /* hide nav links on mobile */
+    }
+
+    .btn-signing {
+        display: none; /* hide top sign up button */
+    }
+
+    main {
+        text-align: center;
+        padding: 40px 20px;
+    }
+
+    .content h1 {
+        font-size: 32px;
+        line-height: 1.2;
+    }
+
+    .description {
+        font-size: 14px;
+        padding: 0 10px;
+    }
+
+    .button {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .btn-get-started,
+    .btn-signing-main {
+        width: 80%;
+        text-align: center;
+    }
+
+    .robot-3d {
+        display: none; /* hide 3D model on mobile */
+    }
+}
