@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
     <title>Qerrastar</title>
     <style>
         :root {
@@ -30,67 +30,46 @@
 /* ========================= */
 
 @media (max-width: 768px) {
-
     body {
-        overflow-x: hidden;
+        flex-direction: column; /* Stack sidebar on top or hide it */
     }
 
-    /* Smaller sidebar but still left */
+    /* Hide sidebar by default on mobile */
     .sidebar {
-        width: 180px;
-        padding: 30px 15px;
+        position: fixed;
+        left: -100%; /* Move off-screen */
+        top: 0;
+        height: 100vh;
+        z-index: 1000;
+        transition: 0.3s ease;
+        width: 250px;
+        background: #000;
     }
 
-    .logo {
-        font-size: 16px;
-        margin-bottom: 40px;
-    }
-
-    .nav-link {
-        font-size: 13px;
-        padding: 10px 12px;
+    /* Class to show sidebar when clicking a menu button */
+    .sidebar.active {
+        left: 0;
     }
 
     .main {
-        padding: 30px 20px;
+        padding: 80px 20px 20px 20px; /* Space for a top header */
     }
 
     .dashboard-title {
-        font-size: 28px;
+        font-size: 32px;
     }
 
-    .dashboard-sub {
-        font-size: 13px;
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
     }
 
     .tool-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
-    }
-
-    .card-inner {
-        padding: 25px 20px;
-        min-height: auto;
-    }
-
-    .tool-name {
-        font-size: 18px;
-    }
-
-    .desc {
-        font-size: 13px;
-    }
-
-    .launch-btn {
-        font-size: 11px;
-        padding: 10px 14px;
-    }
-
-    /* Disable sidebar resize on mobile */
-    .sidebar-resizer {
-        display: none;
+        grid-template-columns: 1fr; /* Single column for cards */
     }
 }
+
 /* Sidebar resize line */
 .sidebar {
     width: 240px;
