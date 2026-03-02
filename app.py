@@ -15,6 +15,8 @@ import fitz
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 import random
+from flask import send_from_directory
+
 
 app = Flask(__name__)
 app.secret_key = "change-this-later"
@@ -39,8 +41,12 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-
-
+#----------------------------------------------------------------
+# FOR SITEMAP
+@app.route('/sitemap.xml')
+def sitemap():
+    return send_from_directory('', 'sitemap.xml')
+#----------------------------------------------------------------
 
 # ---------------- LOGIN REQUIRED DECORATOR ----------------
 def login_required(f):
