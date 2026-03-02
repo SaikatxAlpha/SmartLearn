@@ -25,64 +25,42 @@
             min-height: 100vh;
             overflow-x: hidden; /*Scollbar hidden*/
         }
-/* ============================= */
-/* MOBILE DASHBOARD ONLY */
-/* ============================= */
+/* ========================= */
+/* MOBILE – SAME DESKTOP LOOK */
+/* ========================= */
 
 @media (max-width: 768px) {
 
     body {
-        flex-direction: column;
+        overflow-x: hidden;
     }
 
-    /* Sidebar becomes top navigation */
+    /* Smaller sidebar but still left */
     .sidebar {
-        width: 100%;
-        padding: 20px;
-        border-right: none;
-        border-bottom: 1px solid rgba(255,255,255,0.08);
+        width: 180px;
+        padding: 30px 15px;
     }
 
     .logo {
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 18px;
-    }
-
-    .nav-group {
-        flex-direction: row;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 10px;
+        font-size: 16px;
+        margin-bottom: 40px;
     }
 
     .nav-link {
-        padding: 10px 12px;
         font-size: 13px;
-        text-align: center;
-        flex: 1;
-    }
-
-    .sidebar-bottom {
-        margin-top: 15px;
-        padding-top: 15px;
-        text-align: center;
+        padding: 10px 12px;
     }
 
     .main {
         padding: 30px 20px;
     }
 
-    .header {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 10px;
-    }
-
     .dashboard-title {
         font-size: 28px;
-        letter-spacing: 1px;
+    }
+
+    .dashboard-sub {
+        font-size: 13px;
     }
 
     .tool-grid {
@@ -91,12 +69,26 @@
     }
 
     .card-inner {
-        padding: 30px 20px;
+        padding: 25px 20px;
         min-height: auto;
     }
 
+    .tool-name {
+        font-size: 18px;
+    }
+
+    .desc {
+        font-size: 13px;
+    }
+
+    .launch-btn {
+        font-size: 11px;
+        padding: 10px 14px;
+    }
+
+    /* Disable sidebar resize on mobile */
     .sidebar-resizer {
-        display: none; /* disable resize on mobile */
+        display: none;
     }
 }
 /* Sidebar resize line */
