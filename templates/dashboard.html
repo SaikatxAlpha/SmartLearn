@@ -5,68 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
     <title>Qerrastar</title>
     <style>
-        :root {
-            --bg: #000000;
-            --card-bg: rgba(255, 255, 255, 0.03);
-            --accent: #8A2BE2; /* Matching the purple in your image */
-            --accent-glow: rgba(138, 43, 226, 0.3);
-            --border-soft: rgba(255, 255, 255, 0.1);
-            --text-main: #ffffff;
-            --text-dim: #a1a1a1;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background-color: #000;
-            color: var(--text-main);
-            font-family: 'Inter', -apple-system, sans-serif;
-            display: flex;
-            min-height: 100vh;
-            overflow-x: hidden; /*Scollbar hidden*/
-        }
-/* ========================= */
-/* MOBILE – SAME DESKTOP LOOK */
-/* ========================= */
-/* Dashboard Mobile Optimization */
-@media (max-width: 768px) {
-    .main {
-        padding: 40px 20px; /* Reduce massive padding */
-    }
-
-    .dashboard-title {
-        font-size: 28px;
-        text-align: center;
-    }
-
-    .dashboard-sub {
-        text-align: center;
-        font-size: 14px;
-        margin-bottom: 30px;
-    }
-
-    .header {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-
-    /* Ensure cards stack neatly */
-    .tool-grid {
-        grid-template-columns: 1fr; 
-        gap: 20px;
-    }
-
-    /* Adjust card internal padding so text isn't squashed */
-    .card-inner {
-        padding: 30px 20px;
-        min-height: auto;
-    }
-
-    .tool-name {
-        font-size: 20px;
-    }
+:root {
+  --bg: #000000;
+  --card-bg: rgba(255, 255, 255, 0.03);
+  --accent: #8A2BE2;
+  --accent-glow: rgba(138, 43, 226, 0.3);
+  --border-soft: rgba(255, 255, 255, 0.1);
+  --text-main: #ffffff;
+  --text-dim: #a1a1a1;
 }
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #000;
+  color: var(--text-main);
+  font-family: Inter, -apple-system, sans-serif;
+  display: flex;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Dashboard Specific */
+.sidebar {
+  width: 240px;
+  background: #000;
+  padding: 50px 25px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid rgba(255,255,255,0.05);
+  /* Hide on mobile by default */
+}
+@media (max-width: 768px) {
+  .sidebar {
+    display: none !important; /* Key fix: Hide sidebar */
+  }
+}
+.sidebar-resizer { /* etc., keep your existing sidebar styles */ }
+.logo { /* keep existing */ }
+/* ... keep all your .nav-link, .main::before, .header, .tool-grid, .card-outer, etc. styles unchanged ... */
+
+/* Mobile Overrides for Dashboard */
+@media (max-width: 768px) {
+  body {
+    flex-direction: column !important;
+  }
+  .main {
+    padding: 2rem 1.5rem !important;
+    width: 100%;
+  }
+  .dashboard-title {
+    font-size: 2.5rem !important;
+    line-height: 1.1;
+    text-align: center;
+  }
+  .dashboard-sub {
+    font-size: 1rem;
+    text-align: center;
+  }
+  .header {
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .online-status {
+    width: fit-content;
+  }
+  .tool-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1.5rem !important;
+  }
+  .card-inner {
+    padding: 2rem 1.5rem !important;
+  }
+  .tool-name {
+    font-size: 1.5rem !important;
+  }
+  .desc {
+    font-size: 1rem;
+  }
+  .launch-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+}
+</style>
 
 
 /* Sidebar resize line */
