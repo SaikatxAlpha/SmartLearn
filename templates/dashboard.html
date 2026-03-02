@@ -28,47 +28,46 @@
 /* ========================= */
 /* MOBILE – SAME DESKTOP LOOK */
 /* ========================= */
-
+/* Dashboard Mobile Optimization */
 @media (max-width: 768px) {
-    body {
-        flex-direction: column; /* Stack sidebar on top or hide it */
-    }
-
-    /* Hide sidebar by default on mobile */
-    .sidebar {
-        position: fixed;
-        left: -100%; /* Move off-screen */
-        top: 0;
-        height: 100vh;
-        z-index: 1000;
-        transition: 0.3s ease;
-        width: 250px;
-        background: #000;
-    }
-
-    /* Class to show sidebar when clicking a menu button */
-    .sidebar.active {
-        left: 0;
-    }
-
     .main {
-        padding: 80px 20px 20px 20px; /* Space for a top header */
+        padding: 40px 20px; /* Reduce massive padding */
     }
 
     .dashboard-title {
-        font-size: 32px;
+        font-size: 28px;
+        text-align: center;
+    }
+
+    .dashboard-sub {
+        text-align: center;
+        font-size: 14px;
+        margin-bottom: 30px;
     }
 
     .header {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+        align-items: center;
+        gap: 10px;
     }
 
+    /* Ensure cards stack neatly */
     .tool-grid {
-        grid-template-columns: 1fr; /* Single column for cards */
+        grid-template-columns: 1fr; 
+        gap: 20px;
+    }
+
+    /* Adjust card internal padding so text isn't squashed */
+    .card-inner {
+        padding: 30px 20px;
+        min-height: auto;
+    }
+
+    .tool-name {
+        font-size: 20px;
     }
 }
+
 
 /* Sidebar resize line */
 .sidebar {
