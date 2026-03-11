@@ -111,30 +111,41 @@ def api_search():
 # Temporary sample question generator
 tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 def generate_quiz(topic):
-    response = tavily.search(query=topic, search_depth="basic", max_results=3)
-    
+
+    response = tavily.search(
+        query=f"{topic} facts explanation definition",
+        search_depth="advanced",
+        max_results=5
+    )
+
     content = ""
     for result in response["results"]:
         content += result["content"] + " "
 
     sentences = content.split(".")
-    sentences = [s.strip() for s in sentences if len(s.strip()) > 40]
+    sentences = [s.strip() for s in sentences if len(s.strip()) > 50]
+
+    if len(sentences) < 5:
+        return []
+
+    selected = random.sample(sentences, 5)
 
     questions = []
 
-    for i in range(min(5, len(sentences))):
-        sentence = sentences[i]
+    for sentence in selected:
 
-        question = f"What does this statement describe?\n\n'{sentence}'"
+        question = f"What concept is described below?\n\n{sentence}"
 
-        correct_answer = topic
-
-        options = [
-            topic,
-            "Artificial Intelligence",
-            "A programming language",
-            "A scientific theory"
+        # generate random wrong answers
+        distractors = [
+            f"{topic} theory",
+            f"{topic} process",
+            f"{topic} principle",
+            f"{topic} method",
+            f"{topic} system"
         ]
+
+        options = [topic] + random.sample(distractors, 3)
 
         random.shuffle(options)
 
