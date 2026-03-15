@@ -311,45 +311,64 @@
         }
 
         /* --- GLASSMORPHISM CMS CARDS --- */
-        .card-outer {
-            position: relative;
-            border-radius: 24px;
-            background: linear-gradient(
-                135deg,
-                rgba(255,255,255,0.08),
-                rgba(255,255,255,0.02)
-            );
-            border: 1px solid rgba(255,255,255,0.12);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            box-shadow:
-                0 30px 60px rgba(0,0,0,0.6),
-                inset 0 1px 0 rgba(255,255,255,0.15);
-            transition: all 0.35s ease;
-        }
+.card-outer {
+    position: relative;
+    border-radius: 24px;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.06) 0%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(138,43,226,0.04) 100%
+    );
+    border: 1px solid rgba(255,255,255,0.09);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow:
+        0 4px 24px rgba(0,0,0,0.5),
+        inset 0 1px 0 rgba(255,255,255,0.1),
+        inset 0 -1px 0 rgba(0,0,0,0.2);
+    transition: transform 0.4s cubic-bezier(0.23,1,0.32,1), box-shadow 0.4s ease, border-color 0.4s ease;
+    overflow: hidden;
+}
 
-        .card-outer::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            border-radius: 24px;
-            background: radial-gradient(
-                circle at top left,
-                rgba(138,43,226,0.35),
-                transparent 60%
-            );
-            opacity: 0;
-            transition: opacity 0.35s ease;
-            pointer-events: none;
-        }
+/* Gloss sheen at top */
+.card-outer::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255,255,255,0.07) 0%, transparent 100%);
+    border-radius: 24px 24px 0 0;
+    pointer-events: none;
+    z-index: 1;
+}
 
-        .card-outer:hover::before {
-            opacity: 1;
-        }
+/* Mouse glow element */
+.card-outer::after {
+    content: "";
+    position: absolute;
+    width: 220px; height: 220px;
+    background: radial-gradient(circle, rgba(138,43,226,0.45), transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+    left: var(--mx, 50%);
+    top: var(--my, 50%);
+}
 
-        .card-outer:hover {
-            transform: translateY(-10px) scale(1.01);
-        }
+.card-outer:hover::after { opacity: 1; }
+
+.card-outer:hover {
+    transform: translateY(-10px) scale(1.01);
+    box-shadow:
+        0 30px 60px rgba(0,0,0,0.6),
+        0 0 40px rgba(138,43,226,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.15);
+    border-color: rgba(138,43,226,0.35);
+}
 
         .card-inner {
             padding: 32px;
@@ -593,6 +612,15 @@ menuToggle.addEventListener('click', () => {
 overlay.addEventListener('click', () => {
     sidebar.classList.remove('active');
     overlay.classList.remove('active');
+});
+
+// Card mouse glow follow
+document.querySelectorAll('.card-outer').forEach(card => {
+    card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - r.top) + 'px');
+    });
 });
 </script>
 

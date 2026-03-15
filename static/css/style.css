@@ -251,16 +251,16 @@ main{
     .robot-3d {
         position: relative !important;
         width: 100% !important;
-        height: 260px !important;
+        height: 220px !important;
         top: 0 !important;
         right: 0 !important;
         scale: 1 !important;
         order: -1;
-        margin-bottom: -60px !important;
+        margin-bottom: -40px !important;
     }
 
     .content {
-        margin-top: 1rem;
+        margin-top: 0.5rem;
         max-width: 100%;
         padding: 0 1.2rem;
     }
