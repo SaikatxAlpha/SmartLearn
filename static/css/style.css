@@ -230,61 +230,68 @@ main{
 }
 
 /* MOBILE RESPONSIVE */
-@media (max-width:768px) {
-    header{
-        padding: 1rem 0.1rem;
+@media (max-width: 768px) {
+    header {
+        padding: 1rem 0.5rem;
     }
 
-    nav{
-        display:none;
+    header h1 {
+        font-size: 1.4rem;
     }
 
-    header h1{
-        font-size: 2rem;
+    nav {
+        display: none;
     }
 
-    .btn-signing{
-        padding: 0.6rem 1.5rem;
+    .btn-signing {
+        padding: 0.5rem 1.2rem;
+        font-size: 0.9rem;
     }
 
-    .content{
-        margin-top: 25rem;
-    }
-
-    .robot-3d{
-        scale: 0.5;
-        top: -25%;
-        right: 0;
+    .robot-3d {
+        position: relative !important;
+        width: 100% !important;
+        height: 260px !important;
+        top: 0 !important;
+        right: 0 !important;
+        scale: 1 !important;
+        order: -1;
+        margin-bottom: -60px !important;
     }
 
     .content {
+        margin-top: 1rem;
         max-width: 100%;
-        margin: 0 auto;
-        padding: 0 20px;
+        padding: 0 1.2rem;
     }
 
     .content h1 {
         font-size: 2.2rem;
         line-height: 1.2;
-        word-wrap: break-word;
     }
 
-    .tag-box{
+    .tag-box {
         width: 12rem;
     }
 
-    .description{
+    .description {
         font-size: 1rem;
     }
 
-    .btn-get-started{
-        font-size: 0.8rem;
-        padding: 0.8rem 1.2rem;
+    .button {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-top: 1.8rem;
     }
 
-    .btn-signing-main{
-        font-size: 0.8rem;
-        padding: 0.8rem 2rem;
+    .btn-get-started {
+        font-size: 0.9rem;
+        padding: 0.7rem 1.4rem !important;
     }
 
+    .btn-signing-main {
+        font-size: 0.9rem;
+        padding: 0.7rem 1.4rem;
+    }
 }
