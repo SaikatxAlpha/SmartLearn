@@ -211,6 +211,14 @@ main{
     top: 0;
     right: -20%;
 }
+spline-viewer {
+    background: transparent !important;
+    --background-color: transparent;
+}
+
+spline-viewer::part(canvas) {
+    background: transparent !important;
+}
 
 /* TABLET */
 @media (max-width: 1300px) {
@@ -271,6 +279,9 @@ main{
         margin: 0 !important;
         order: 0;
         flex-shrink: 0;
+        background: transparent !important;  /* ← ADD */
+        --spline-viewer-background: transparent; /* ← ADD */
+        overflow: hidden;                     /* ← ADD */
     }
 
     /* Main sits below the robot */
