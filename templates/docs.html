@@ -3,84 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <title>Qerrastar | Documentation</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
     <style>
+        :root {
+            --accent: #8A2BE2;
+            --accent-glow: rgba(138, 43, 226, 0.3);
+            --border-soft: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+            --text-dim: #a1a1a1;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             background: #000;
-            color: white;
-            font-family: 'Inter', sans-serif;
-            padding: 60px;
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        h1 {
-            font-size: 40px;
-            background: linear-gradient(to right, #fff, #8A2BE2);
+        /* ── Background glow ── */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(600px circle at 20% 20%, rgba(138,43,226,0.2), transparent 60%),
+                radial-gradient(800px circle at 80% 80%, rgba(138,43,226,0.12), transparent 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 4rem;
+            border-bottom: 1px solid var(--border-soft);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(20px);
+        }
+
+        .nav-logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            background: linear-gradient(to right, #ffffff, #8A2BE2);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-        }
-
-        h2 {
-            margin-top: 40px;
-            color: #8A2BE2;
-        }
-
-        p {
-            margin-top: 10px;
-            color: #ccc;
-            line-height: 1.6;
-        }
-
-        .section {
-            margin-bottom: 40px;
-        }
-
-        a {
-            color: #8A2BE2;
             text-decoration: none;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .nav-back {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            transition: color 0.2s;
+        }
+
+        .nav-back:hover { color: #fff; }
+
+        /* ── WRAPPER ── */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 80px 2rem 120px;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            margin-bottom: 80px;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--accent);
+            border: 1px solid rgba(138,43,226,0.4);
+            padding: 5px 14px;
+            border-radius: 50px;
+            margin-bottom: 24px;
+            background: rgba(138,43,226,0.08);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.4rem, 6vw, 4rem);
+            font-weight: 900;
+            letter-spacing: -1px;
+            line-height: 1.1;
+            background: linear-gradient(135deg, #fff 40%, #8A2BE2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.05rem;
+            color: var(--text-dim);
+            max-width: 520px;
+            line-height: 1.7;
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, rgba(138,43,226,0.5), transparent);
+            margin: 60px 0;
+        }
+
+        /* ── SECTION LABEL ── */
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 32px;
+        }
+
+        /* ── TOOL CARDS ── */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .tool-card {
+            position: relative;
+            background: linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01));
+            border: 1px solid var(--border-soft);
+            border-radius: 20px;
+            padding: 32px 28px;
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+        }
+
+        .tool-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: radial-gradient(circle at top left, rgba(138,43,226,0.18), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .tool-card:hover { 
+            transform: translateY(-6px);
+            border-color: rgba(138,43,226,0.4);
+            box-shadow: 0 20px 50px rgba(138,43,226,0.15);
+        }
+
+        .tool-card:hover::before { opacity: 1; }
+
+        .tool-icon {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            display: block;
+        }
+
+        .tool-card h2 {
+            font-size: 1rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .tool-card p {
+            font-size: 0.88rem;
+            color: var(--text-dim);
+            line-height: 1.65;
+        }
+
+        .tool-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 20px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            text-decoration: none;
+            transition: gap 0.2s;
+        }
+
+        .tool-link:hover { gap: 10px; }
+
+        /* ── HOW IT WORKS ── */
+        .steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 8px;
+        }
+
+        .step {
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            padding: 28px 0;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .step:last-child { border-bottom: none; }
+
+        .step-num {
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(138,43,226,0.15);
+            border: 1px solid rgba(138,43,226,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 0;
+            margin-top: 2px;
+        }
+
+        .step-content h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #fff;
+        }
+
+        .step-content p {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            line-height: 1.6;
+        }
+
+        /* ── CTA ── */
+        .cta {
+            margin-top: 80px;
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(138,43,226,0.12), rgba(138,43,226,0.04));
+            border: 1px solid rgba(138,43,226,0.2);
+            border-radius: 24px;
+        }
+
+        .cta h2 {
+            font-size: 1.8rem;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+            margin-bottom: 12px;
+        }
+
+        .cta p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-bottom: 32px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 36px;
+            background: linear-gradient(135deg, var(--accent), #5e17eb);
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: #fff;
+            text-decoration: none;
+            box-shadow: 0 10px 30px rgba(138,43,226,0.4);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(138,43,226,0.55);
+        }
+
+        /* ── MOBILE ── */
+        @media (max-width: 768px) {
+            nav { padding: 1rem 1.2rem; }
+
+            .wrapper { padding: 50px 1.2rem 80px; }
+
+            .hero { margin-bottom: 50px; }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+
+            .tool-card { padding: 24px 20px; }
+
+            .cta { padding: 40px 20px; }
+
+            .cta h2 { font-size: 1.4rem; }
         }
     </style>
 </head>
 <body>
 
-<h1>SmartLearn Documentation</h1>
+    <!-- NAV -->
+    <nav>
+        <a href="/" class="nav-logo">QERRASTAR</a>
+        <a href="/" class="nav-back">← Back to Home</a>
+    </nav>
 
-<div class="section">
-    <h2>🔎 Learner (Search)</h2>
-    <p>
-        Search any topic and get curated information from across the internet.
-        Simply type your topic and press search.
-    </p>
-</div>
+    <div class="wrapper">
 
-<div class="section">
-    <h2>🎯 Quiz Generator</h2>
-    <p>
-        Generate practice quizzes based on your learning topics.
-        Improve your retention and understanding.
-    </p>
-</div>
+        <!-- HERO -->
+        <div class="hero" data-aos="fade-up" data-aos-duration="800">
+            <span class="hero-tag">Documentation</span>
+            <h1>Everything You<br>Need to Know</h1>
+            <p>Qerrastar is a smart learning platform with powerful tools to help students learn faster, practice smarter, and stay organized.</p>
+        </div>
 
-<div class="section">
-    <h2>💎 Summariser</h2>
-    <p>
-        Convert long documents into short, easy-to-read summaries instantly.
-    </p>
-</div>
+        <div class="divider"></div>
 
-<div class="section">
-    <h2>🧬 Converter</h2>
-    <p>
-        Convert file formats easily and securely.
-    </p>
-</div>
+        <!-- TOOLS -->
+        <p class="section-label" data-aos="fade-up" data-aos-duration="600">Platform Tools</p>
 
-<br>
-<a href="/">← Back to Home</a>
+        <div class="tools-grid">
+
+            <div class="tool-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="0">
+                <span class="tool-icon">🔎</span>
+                <h2>Learner</h2>
+                <p>Search any topic and get curated, AI-powered information from across the internet. Deep-dive into any subject instantly.</p>
+                <a href="/search" class="tool-link">Open Tool →</a>
+            </div>
+
+            <div class="tool-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="100">
+                <span class="tool-icon">🎯</span>
+                <h2>Quiz</h2>
+                <p>Generate practice quizzes based on any topic. Test your understanding and improve retention with custom questions.</p>
+                <a href="/quiz" class="tool-link">Open Tool →</a>
+            </div>
+
+            <div class="tool-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="200">
+                <span class="tool-icon">💎</span>
+                <h2>Summariser</h2>
+                <p>Paste long text or enter a topic and get a clean, concise summary. Saves hours of reading in seconds.</p>
+                <a href="/summary" class="tool-link">Open Tool →</a>
+            </div>
+
+            <div class="tool-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="300">
+                <span class="tool-icon">🧬</span>
+                <h2>Converter</h2>
+                <p>Convert between file formats — JPG to PDF, PDF to Word, Word to PDF and more. Fast, secure, and accurate.</p>
+                <a href="/converter" class="tool-link">Open Tool →</a>
+            </div>
+
+            <div class="tool-card" data-aos="fade-up" data-aos-duration="600" data-aos-delay="400" style="grid-column: 1 / -1;">
+                <span class="tool-icon">📄</span>
+                <h2>PYQ</h2>
+                <p>Find Previous Year Questions from your own university or school. Upload and download question papers by university, degree, department, year, and subject.</p>
+                <a href="/pyq" class="tool-link">Open Tool →</a>
+            </div>
+
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- HOW IT WORKS -->
+        <p class="section-label" data-aos="fade-up" data-aos-duration="600">How It Works</p>
+
+        <div class="steps">
+            <div class="step" data-aos="fade-up" data-aos-duration="500" data-aos-delay="0">
+                <div class="step-num">01</div>
+                <div class="step-content">
+                    <h3>Create an Account</h3>
+                    <p>Sign up with your email. Verify via OTP and you're in — takes under a minute.</p>
+                </div>
+            </div>
+            <div class="step" data-aos="fade-up" data-aos-duration="500" data-aos-delay="100">
+                <div class="step-num">02</div>
+                <div class="step-content">
+                    <h3>Open the Dashboard</h3>
+                    <p>All tools are accessible from your personal dashboard after login.</p>
+                </div>
+            </div>
+            <div class="step" data-aos="fade-up" data-aos-duration="500" data-aos-delay="200">
+                <div class="step-num">03</div>
+                <div class="step-content">
+                    <h3>Pick a Tool & Start</h3>
+                    <p>Each tool is self-explanatory. Enter your topic, upload your file, or search — and get results instantly.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="cta" data-aos="fade-up" data-aos-duration="700">
+            <h2>Ready to Get Started?</h2>
+            <p>Join Qerrastar and supercharge your learning today.</p>
+            <a href="/dashboard" class="cta-btn">Launch Dashboard →</a>
+        </div>
+
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>AOS.init({ once: true });</script>
 
 </body>
 </html>
