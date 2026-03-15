@@ -240,7 +240,7 @@ spline-viewer::part(canvas) {
         display: flex;
         flex-direction: column;
         padding: 0;
-        min-height: 100vh;
+        min-height: auto;
     }
 
     /* Header: logo left, sign up right */
@@ -283,6 +283,10 @@ spline-viewer::part(canvas) {
         --spline-viewer-background: transparent; /* ← ADD */
         overflow: hidden;                     /* ← ADD */
     }
+
+    .robot-3d::part(logo) {
+    display: none !important;
+}
 
     /* Main sits below the robot */
     main {
@@ -346,5 +350,12 @@ spline-viewer::part(canvas) {
     /* Kill the background blur glow on mobile — saves space */
     .layer-blur {
         display: none;
+    }
+    main {
+    flex: 1;
+    }
+
+    body {
+        overflow-y: auto;
     }
 }
