@@ -18,23 +18,14 @@
     "name": "Qerrastar",
     "url": "https://www.qerrastar.online/"
     }
-</script>
-<style>
-    @media (max-width: 768px) {
-        .container {
-            display: flex;
-            flex-direction: column;
-            padding: 0 1rem;
-        }
-    }
-</style>
+    </script>
 </head>
 <body>
     <div class="layer-blur"></div>
 
-     <div class="container">
+    <div class="container">
         <header>
-            <h1 data-aos="fade-down" data-aos-duration="1500"class="logo">QERRASTAR</h1>
+            <h1 data-aos="fade-down" data-aos-duration="1500" class="logo">QERRASTAR</h1>
 
             <nav>
                 <a data-aos="fade-down" data-aos-duration="1500" href="/search">Learn</a>
@@ -46,41 +37,54 @@
             <button data-aos="fade-down" data-aos-duration="3000" class="btn-signing" onclick="location.href='/login'">Sign up</button>
         </header>
 
+        <!-- Robot here so it sits between header and content on mobile -->
+        <spline-viewer
+            data-aos="fade-zoom-in"
+            data-aos-easing="ease-in-back"
+            data-aos-delay="300"
+            data-aos-offset="0"
+            data-aos-duration="3000"
+            class="robot-3d"
+            url="https://prod.spline.design/zIOWvaKm-VZgFVfc/scene.splinecode">
+        </spline-viewer>
+
         <main>
             <div class="content">
                 <div data-aos="fade-zoom-in"
-                data-aos-easing="ease-in-back"
-                data-aos-delay="300"
-                data-aos-offset="0" data-aos-duration="1500" class="tag-box">
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0"
+                    data-aos-duration="1500"
+                    class="tag-box">
                     <div class="tag">Introducing</div>
-                </div> 
+                </div>
 
                 <h1 data-aos="fade-zoom-in"
-                data-aos-easing="ease-in-back"
-                data-aos-delay="300"
-                data-aos-offset="0" data-aos-duration="2000" >ASSISTANT FOR<br>STUDENTS</h1>
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0"
+                    data-aos-duration="2000">ASSISTANT FOR<br>STUDENTS</h1>
 
                 <p data-aos="fade-zoom-in"
-                data-aos-easing="ease-in-back"
-                data-aos-delay="300"
-                data-aos-offset="0" data-aos-duration="2000" class="description">
-                  Qerrastar is a smart learning platform offering Quizzes, PYQs, File Converters, and Study tools for students.
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0"
+                    data-aos-duration="2000"
+                    class="description">
+                    Qerrastar is a smart learning platform offering Quizzes, PYQs, File Converters, and Study tools for students.
                 </p>
 
-            <div data-aos="fade-zoom-in"
-                data-aos-easing="ease-in-back"
-                data-aos-delay="300"
-                data-aos-offset="0" data-aos-duration="2000" class="button">
-                <a href="/docs" class="btn-get-started">Documentation</a>
-                <a href="/dashboard" class="btn-signing-main">Get Started</a>
-            </div>
+                <div data-aos="fade-zoom-in"
+                    data-aos-easing="ease-in-back"
+                    data-aos-delay="300"
+                    data-aos-offset="0"
+                    data-aos-duration="2000"
+                    class="button">
+                    <a href="/docs" class="btn-get-started">Documentation</a>
+                    <a href="/dashboard" class="btn-signing-main">Get Started</a>
+                </div>
             </div>
         </main>
-
-        <spline-viewer data-aos="fade-zoom-in"
-        data-aos-easing="ease-in-back"
-        data-aos-delay="300"
-        data-aos-offset="0" data-aos-duration="3000" class="robot-3d" url="https://prod.spline.design/zIOWvaKm-VZgFVfc/scene.splinecode"></spline-viewer>
 
     </div>
 

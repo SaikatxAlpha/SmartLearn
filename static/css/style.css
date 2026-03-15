@@ -212,86 +212,128 @@ main{
     right: -20%;
 }
 
-/* TABLET RESPONSIVE */
-@media (max-width: 1300px){
-    header{
-        padding: 1rem 0.5rem;
-    }
-
-    .content{
-        margin-top: 85%;
-    }
-
-    .robot-3d{
-        scale: 0.8;
-        top: -20%;
-        right: 2%;
-    }
+/* TABLET */
+@media (max-width: 1300px) {
+    header { padding: 1rem 0.5rem; }
+    .content { margin-top: 85%; }
+    .robot-3d { scale: 0.8; top: -20%; right: 2%; }
 }
 
-/* MOBILE RESPONSIVE */
+/* ========================= */
+/*     MOBILE — ONE BLOCK    */
+/* ========================= */
 @media (max-width: 768px) {
+
+    /* Body becomes a simple vertical column */
+    body { min-height: 100vh; }
+
+    /* Container stacks everything top-to-bottom */
+    .container {
+        display: flex;
+        flex-direction: column;
+        padding: 0;
+        min-height: 100vh;
+    }
+
+    /* Header: logo left, sign up right */
     header {
-        padding: 1rem 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1.2rem;
+        position: relative;
+        z-index: 10;
     }
 
     header h1 {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
+        letter-spacing: 0.15rem;
     }
 
-    nav {
-        display: none;
-    }
+    nav { display: none; }
 
     .btn-signing {
-        padding: 0.5rem 1.2rem;
-        font-size: 0.9rem;
+        padding: 0.5rem 1.1rem;
+        font-size: 0.85rem;
     }
 
+    /* Robot sits right below header, full width, fixed height */
     .robot-3d {
         position: relative !important;
         width: 100% !important;
-        height: 220px !important;
-        top: 0 !important;
-        right: 0 !important;
+        height: 260px !important;
+        top: auto !important;
+        right: auto !important;
+        left: auto !important;
+        bottom: auto !important;
         scale: 1 !important;
-        order: -1;
-        margin-bottom: -40px !important;
+        display: block !important;
+        margin: 0 !important;
+        order: 0;
+        flex-shrink: 0;
     }
 
+    /* Main sits below the robot */
+    main {
+        min-height: auto;
+        padding: 0;
+        display: block;
+    }
+
+    /* Content block: centered, padding only */
     .content {
-        margin-top: 0.5rem;
+        width: 100%;
         max-width: 100%;
-        padding: 0 1.2rem;
-    }
-
-    .content h1 {
-        font-size: 2.2rem;
-        line-height: 1.2;
+        margin: 0;
+        padding: 1.6rem 1.4rem 2.4rem;
+        text-align: left;
+        z-index: 1;
     }
 
     .tag-box {
-        width: 12rem;
+        width: 11rem;
+        height: 2.2rem;
+        margin-bottom: 0;
+    }
+
+    .content h1 {
+        font-size: 2.4rem;
+        line-height: 1.1;
+        margin: 1rem 0;
+        letter-spacing: 0.05rem;
     }
 
     .description {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        max-width: 100%;
     }
 
+    /* Buttons: side by side */
     .button {
+        display: flex;
         flex-direction: row;
         flex-wrap: wrap;
+        align-items: center;
         gap: 0.8rem;
-        margin-top: 1.8rem;
+        margin-top: 1.6rem;
     }
 
     .btn-get-started {
-        font-size: 0.9rem;
         padding: 0.7rem 1.4rem !important;
+        font-size: 0.88rem !important;
+        letter-spacing: 0.05rem;
+        white-space: nowrap;
     }
 
     .btn-signing-main {
-        font-size: 0.9rem;
         padding: 0.7rem 1.4rem;
+        font-size: 0.88rem;
+        white-space: nowrap;
+    }
+
+    /* Kill the background blur glow on mobile — saves space */
+    .layer-blur {
+        display: none;
     }
 }
