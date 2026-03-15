@@ -26,47 +26,109 @@
             overflow-x: hidden; /*Scollbar hidden*/
         }
 /* ========================= */
-/* MOBILE – SAME DESKTOP LOOK */
+/*        MOBILE FIXES        */
 /* ========================= */
 
 @media (max-width: 768px) {
     body {
-        flex-direction: column; /* Stack sidebar on top or hide it */
+        flex-direction: column;
     }
 
-    /* Hide sidebar by default on mobile */
+    /* Hide sidebar off-screen by default */
     .sidebar {
         position: fixed;
-        left: -100%; /* Move off-screen */
+        left: -100%;
         top: 0;
         height: 100vh;
         z-index: 1000;
-        transition: 0.3s ease;
-        width: 250px;
+        transition: left 0.3s ease;
+        width: 230px;
         background: #000;
     }
 
-    /* Class to show sidebar when clicking a menu button */
     .sidebar.active {
         left: 0;
     }
 
+    /* Dim overlay when sidebar is open */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        z-index: 999;
+    }
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Hamburger button - top left */
+    .menu-toggle {
+        display: flex !important;
+    }
+
     .main {
-        padding: 80px 20px 20px 20px; /* Space for a top header */
+        padding: 70px 16px 24px 16px;
+        overflow-y: auto;
     }
 
     .dashboard-title {
-        font-size: 32px;
+        font-size: 26px !important;
+        letter-spacing: 1px !important;
+    }
+
+    .dashboard-sub {
+        font-size: 13px;
     }
 
     .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 28px;
     }
 
+    .online-status {
+        font-size: 10px;
+        padding: 5px 10px;
+        white-space: nowrap;
+    }
+
+    /* 2-column grid on mobile — fits Realme GT Neo 3 perfectly */
     .tool-grid {
-        grid-template-columns: 1fr; /* Single column for cards */
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 14px !important;
+    }
+
+    .card-inner {
+        padding: 22px 16px !important;
+        min-height: 180px !important;
+    }
+
+    .tool-name {
+        font-size: 14px !important;
+        letter-spacing: 1px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .desc {
+        font-size: 11px !important;
+        margin-bottom: 16px !important;
+        line-height: 1.5 !important;
+    }
+
+    .launch-btn {
+        font-size: 10px !important;
+        padding: 10px 12px !important;
+        letter-spacing: 0.5px !important;
+    }
+}
+
+/* Extra small phones (< 380px) — single column fallback */
+@media (max-width: 380px) {
+    .tool-grid {
+        grid-template-columns: 1fr !important;
     }
 }
 
@@ -102,6 +164,26 @@
             font-size: 22px;
             cursor: pointer;
             margin-bottom: 24px;
+        }
+
+        /* Hamburger menu - only visible on mobile */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 1100;
+            background: rgba(138,43,226,0.25);
+            border: 1px solid rgba(138,43,226,0.4);
+            color: #fff;
+            font-size: 20px;
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
         }
 
         .logo {
@@ -389,7 +471,13 @@ h3 {
 </head>
 <body>
 
-<aside class="sidebar">
+<!-- Hamburger button (mobile only) -->
+<button class="menu-toggle" id="menuToggle">&#9776;</button>
+
+<!-- Overlay to close sidebar on mobile -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
 
     <div class="logo">QERRASTAR</div>
 
@@ -475,29 +563,36 @@ h3 {
 
 
 <script>
-const sidebar = document.querySelector('.sidebar');
+// ── Sidebar resize (desktop only) ──
+const sidebar = document.getElementById('sidebar');
 const resizer = document.querySelector('.sidebar-resizer');
-
 let isResizing = false;
 
 resizer.addEventListener('mousedown', () => {
     isResizing = true;
     document.body.style.cursor = 'ew-resize';
 });
-
 document.addEventListener('mousemove', (e) => {
     if (!isResizing) return;
-
     const newWidth = e.clientX;
-
-    if (newWidth >= 200 && newWidth <= 420) {
-        sidebar.style.width = newWidth + 'px';
-    }
+    if (newWidth >= 200 && newWidth <= 420) sidebar.style.width = newWidth + 'px';
 });
-
 document.addEventListener('mouseup', () => {
     isResizing = false;
     document.body.style.cursor = 'default';
+});
+
+// ── Hamburger toggle (mobile only) ──
+const menuToggle = document.getElementById('menuToggle');
+const overlay = document.getElementById('sidebarOverlay');
+
+menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+});
+overlay.addEventListener('click', () => {
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
 });
 </script>
 
