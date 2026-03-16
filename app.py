@@ -567,3 +567,80 @@ def logout():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+
+
+# ============================================================
+# Primium Plans
+# ============================================================
+import razorpay
+import hmac
+import hashlib
+from datetime import datetime, timedelta
+
+# 2. Add your Razorpay keys (replace with your real keys from razorpay.com dashboard):
+RAZORPAY_KEY_ID     = "rzp_test_XXXXXXXXXXXXXXXX"   # replace this
+RAZORPAY_KEY_SECRET = "XXXXXXXXXXXXXXXXXXXXXXXX"     # replace this
+
+rzp_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+
+
+# ── PRICING PAGE ──
+@app.route("/pricing")
+def pricing():
+    return render_template("pricing.html")
+
+
+# ── CREATE RAZORPAY ORDER ──
+@app.route("/create-order", methods=["POST"])
+def create_order():
+    if "user" not in session:
+        return jsonify({"error": "not logged in"}), 401
+
+    data   = request.get_json()
+    amount = data.get("amount", 4900)   # paise (₹49 = 4900 paise)
+    period = data.get("period", "monthly")
+
+    order = rzp_client.order.create({
+        "amount":   amount,
+        "currency": "INR",
+        "payment_capture": 1
+    })
+
+    return jsonify({
+        "key":      RAZORPAY_KEY_ID,
+        "amount":   order["amount"],
+        "order_id": order["id"]
+    })
+
+
+# ── VERIFY PAYMENT & UPGRADE USER ──
+@app.route("/verify-payment", methods=["POST"])
+def verify_payment():
+    if "user" not in session:
+        return jsonify({"success": False}), 401
+
+    data = request.get_json()
+
+    # Verify signature
+    body        = data["razorpay_order_id"] + "|" + data["razorpay_payment_id"]
+    expected    = hmac.new(RAZORPAY_KEY_SECRET.encode(), body.encode(), hashlib.sha256).hexdigest()
+    actual      = data["razorpay_signature"]
+
+    if expected != actual:
+        return jsonify({"success": False, "error": "Invalid signature"})
+
+    # Upgrade user to Pro in database
+    user = User.query.filter_by(email=session["user"]).first()
+    if user:
+        user.is_pro      = True
+        user.pro_since   = datetime.utcnow()
+        user.pro_expires = datetime.utcnow() + timedelta(days=30)
+        db.session.commit()
+
+    return jsonify({"success": True})
+
+
+# ── PAYMENT SUCCESS PAGE ──
+@app.route("/payment-success")
+def payment_success():
+    return render_template("payment_success.html")
