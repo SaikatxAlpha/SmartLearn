@@ -2,115 +2,120 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify Account | Qerrastar</title>
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Verify Email | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-    --accent: #8A2BE2;
-    --accent-soft: rgba(138,43,226,0.3);
-    --text-dim: #a1a1a1;
-}
-
-body {
-    margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-body::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(700px circle at 30% 20%, rgba(138,43,226,0.3), transparent 60%),
-        radial-gradient(900px circle at 70% 60%, rgba(138,43,226,0.2), transparent 70%);
-    z-index: -1;
-}
-
-.verify-card {
-    width: 400px;
-    padding: 50px 40px;
-    border-radius: 28px;
-    background: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.08),
-        rgba(255,255,255,0.02)
-    );
-    border: 1px solid rgba(255,255,255,0.12);
-    backdrop-filter: blur(18px);
-    box-shadow:
-        0 30px 60px rgba(0,0,0,0.6),
-        inset 0 1px 0 rgba(255,255,255,0.15);
-    text-align: center;
-}
-
-.verify-card h2 {
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    margin-bottom: 20px;
-}
-
-.verify-card p {
-    color: var(--text-dim);
-    margin-bottom: 25px;
-}
-
-input {
-    width: 100%;
-    padding: 14px;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.05);
-    color: #fff;
-    font-size: 16px;
-    text-align: center;
-    letter-spacing: 4px;
-}
-
-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 10px var(--accent-soft);
-}
-
-button {
-    width: 100%;
-    padding: 14px;
-    border-radius: 14px;
-    border: none;
-    background: linear-gradient(135deg, var(--accent), #5e17eb);
-    color: #fff;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: 0.3s ease;
-}
-
-button:hover {
-    box-shadow: 0 0 30px var(--accent);
-}
+:root{--accent:#8A2BE2;--accent2:#5e17eb;--border:rgba(255,255,255,0.07);--dim:#555;--text:#e8e8e8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(700px circle at 50% 40%,rgba(138,43,226,0.2),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(138,43,226,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,0.025) 1px,transparent 1px);background-size:60px 60px;}
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.p{position:absolute;border-radius:50%;background:var(--accent);opacity:0;animation:pfloat linear infinite;}
+.p:nth-child(1){width:3px;height:3px;left:15%;animation-duration:9s;}
+.p:nth-child(2){width:2px;height:2px;left:40%;animation-duration:11s;animation-delay:2s;}
+.p:nth-child(3){width:3px;height:3px;left:70%;animation-duration:8s;animation-delay:1s;background:#c084fc;}
+.p:nth-child(4){width:2px;height:2px;left:85%;animation-duration:13s;animation-delay:3s;}
+@keyframes pfloat{0%{transform:translateY(110vh);opacity:0;}10%{opacity:0.5;}90%{opacity:0.2;}100%{transform:translateY(-10vh);opacity:0;}}
+.panel{position:relative;z-index:10;width:92%;max-width:420px;border-radius:24px;overflow:hidden;padding:48px 40px;background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02),rgba(138,43,226,0.04));border:1px solid rgba(138,43,226,0.2);backdrop-filter:blur(28px);box-shadow:0 40px 80px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.1);animation:panelIn 0.7s cubic-bezier(0.23,1,0.32,1) both;}
+.panel::before{content:"";position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.07),transparent);border-radius:24px 24px 0 0;pointer-events:none;}
+.panel::after{content:"";position:absolute;inset:-1px;border-radius:24px;background:linear-gradient(90deg,transparent,rgba(138,43,226,0.5),transparent,rgba(192,132,252,0.3),transparent);background-size:300%;animation:borderGlow 4s linear infinite;z-index:-1;}
+@keyframes borderGlow{to{background-position:300%}}
+@keyframes panelIn{from{opacity:0;transform:translateY(40px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.logo{font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:900;letter-spacing:5px;text-transform:uppercase;text-align:center;margin-bottom:32px;background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{to{background-position:200%}}
+.mail-icon{width:56px;height:56px;border-radius:16px;background:rgba(138,43,226,0.12);border:1px solid rgba(138,43,226,0.25);display:flex;align-items:center;justify-content:center;margin:0 auto 24px;}
+.mail-icon svg{width:26px;height:26px;stroke:#c084fc;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round;}
+.title{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:900;letter-spacing:-1px;color:#fff;text-align:center;margin-bottom:8px;}
+.sub{font-size:0.82rem;color:var(--dim);text-align:center;margin-bottom:8px;line-height:1.6;}
+.email-shown{font-size:0.8rem;color:#c084fc;text-align:center;margin-bottom:28px;font-weight:600;}
+/* OTP INPUTS */
+.otp-wrap{display:flex;gap:10px;justify-content:center;margin-bottom:24px;}
+.otp-input{width:46px;height:54px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);color:#fff;font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;text-align:center;outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;}
+.otp-input:focus{border-color:rgba(138,43,226,0.5);box-shadow:0 0 0 3px rgba(138,43,226,0.1);background:rgba(138,43,226,0.06);}
+.hidden-input{display:none;}
+.error-msg{display:none;padding:12px 16px;border-radius:10px;margin-bottom:16px;background:rgba(255,60,60,0.08);border:1px solid rgba(255,60,60,0.2);color:#ff7070;font-size:0.8rem;text-align:center;}
+.error-msg.show{display:block;}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 24px rgba(138,43,226,0.4);transition:transform 0.25s,box-shadow 0.25s;position:relative;overflow:hidden;}
+.btn::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(138,43,226,0.55);}
+.btn:hover::before{left:100%;}
+.resend{text-align:center;margin-top:18px;font-size:0.78rem;color:var(--dim);}
+.resend a{color:var(--accent);text-decoration:none;}
+.resend a:hover{color:#c084fc;}
+@media(max-width:480px){.panel{padding:36px 24px;}.otp-input{width:40px;height:48px;font-size:1.1rem;}}
 </style>
 </head>
-
 <body>
 
-<div class="verify-card">
-    <h2>VERIFY EMAIL</h2>
-    <p>Enter the OTP sent to <strong>{{ email }}</strong></p>
-
-    <form method="POST">
-        <input type="text" name="otp" placeholder="Enter OTP" required>
-        <button type="submit">VERIFY</button>
-    </form>
+<div class="particles">
+    <div class="p"></div><div class="p"></div><div class="p"></div><div class="p"></div>
 </div>
 
+<div class="panel">
+    <div class="logo">Qerrastar</div>
+
+    <div class="mail-icon">
+        <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    </div>
+
+    <h1 class="title">Check Your Email</h1>
+    <p class="sub">We sent a 6-digit verification code to</p>
+    <p class="email-shown">{{ email }}</p>
+
+    {% if error %}
+    <div class="error-msg show">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/verify/{{ email }}" id="otpForm">
+        <!-- Visual OTP boxes -->
+        <div class="otp-wrap">
+            <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="o1">
+            <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="o2">
+            <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="o3">
+            <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="o4">
+            <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="o5">
+            <input class="otp-input" type="text" maxlength="1" inputmode="numeric" pattern="[0-9]" id="o6">
+        </div>
+        <!-- Hidden input that collects the full OTP -->
+        <input type="hidden" name="otp" id="otpHidden">
+        <button type="submit" class="btn">Verify Account &rarr;</button>
+    </form>
+
+    <p class="resend">Didn't receive it? <a href="/signup">Try again</a></p>
+</div>
+
+<script>
+    const inputs = document.querySelectorAll('.otp-input');
+    inputs.forEach((inp, i) => {
+        inp.addEventListener('input', () => {
+            inp.value = inp.value.replace(/[^0-9]/g,'');
+            if(inp.value && i < inputs.length - 1) inputs[i+1].focus();
+            collectOTP();
+        });
+        inp.addEventListener('keydown', e => {
+            if(e.key==='Backspace' && !inp.value && i > 0) inputs[i-1].focus();
+        });
+        inp.addEventListener('paste', e => {
+            e.preventDefault();
+            const paste = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g,'');
+            paste.split('').forEach((ch, j) => { if(inputs[i+j]) inputs[i+j].value = ch; });
+            collectOTP();
+            if(inputs[Math.min(i+paste.length, inputs.length-1)]) inputs[Math.min(i+paste.length, inputs.length-1)].focus();
+        });
+    });
+
+    function collectOTP() {
+        document.getElementById('otpHidden').value = Array.from(inputs).map(i=>i.value).join('');
+    }
+
+    document.getElementById('otpForm').addEventListener('submit', e => {
+        collectOTP();
+        const otp = document.getElementById('otpHidden').value;
+        if(otp.length < 6) { e.preventDefault(); alert('Please enter all 6 digits.'); }
+    });
+</script>
 </body>
 </html>

@@ -1,167 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Qerrastar</title>
-    <style>
-        /* --- VARIABLES --- */
-        :root {
-            --bg-color: #000000;
-            --text-main: #ffffff;
-            --text-muted: #a1a1a1;
-            --accent-purple: #6600c5;
-            --accent-glow: rgba(102, 0, 197, 0.5);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Sign In | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#8A2BE2;--accent2:#5e17eb;--border:rgba(255,255,255,0.07);--dim:#555;--text:#e8e8e8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
 
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+/* BG */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(700px circle at 30% 40%,rgba(138,43,226,0.2),transparent 60%),radial-gradient(500px circle at 70% 60%,rgba(94,23,235,0.14),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(138,43,226,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,0.025) 1px,transparent 1px);background-size:60px 60px;}
 
-        /* --- THE MAIN BOX (The Glowing Border) --- */
-        .login-box {
-            position: relative;
-            width: 100%;
-            max-width: 400px;
-            padding: 2px; /* Control the thickness of the border here */
-            background: linear-gradient(to right, #656565, #7f42a7, #6600c5, #5300a0, #757575, #656565);
-            background-size: 200%;
-            border-radius: 24px;
-            animation: animationgradient 2.5s linear infinite;
-            box-shadow: 0 0 20px rgba(102, 0, 197, 0.3);
-        }
+/* FLOATING PARTICLES */
+.particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.p{position:absolute;border-radius:50%;background:var(--accent);opacity:0;animation:pfloat linear infinite;}
+.p:nth-child(1){width:3px;height:3px;left:8%;animation-duration:9s;animation-delay:0s;}
+.p:nth-child(2){width:2px;height:2px;left:22%;animation-duration:12s;animation-delay:2s;}
+.p:nth-child(3){width:4px;height:4px;left:45%;animation-duration:8s;animation-delay:1s;}
+.p:nth-child(4){width:2px;height:2px;left:65%;animation-duration:11s;animation-delay:3s;}
+.p:nth-child(5){width:3px;height:3px;left:82%;animation-duration:10s;animation-delay:0.5s;background:#c084fc;}
+.p:nth-child(6){width:2px;height:2px;left:35%;animation-duration:13s;animation-delay:4s;background:#c084fc;}
+@keyframes pfloat{0%{transform:translateY(110vh);opacity:0;}10%{opacity:0.5;}90%{opacity:0.2;}100%{transform:translateY(-10vh);opacity:0;}}
 
-        /* --- THE SOLID INNER CONTENT --- */
-        .login-content {
-            background: #0a0a0a; 
-            padding: 45px 40px;
-            border-radius: 22px; 
-            text-align: center;
-        }
+/* PANEL */
+.panel{
+    position:relative;z-index:10;
+    width:92%;max-width:420px;
+    border-radius:24px;overflow:hidden;
+    padding:48px 40px;
+    background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02),rgba(138,43,226,0.04));
+    border:1px solid rgba(138,43,226,0.2);
+    backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
+    box-shadow:0 40px 80px rgba(0,0,0,0.7),inset 0 1px 0 rgba(255,255,255,0.1);
+    animation:panelIn 0.7s cubic-bezier(0.23,1,0.32,1) both;
+}
+.panel::before{content:"";position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.07),transparent);border-radius:24px 24px 0 0;pointer-events:none;}
+.panel::after{content:"";position:absolute;inset:-1px;border-radius:24px;background:linear-gradient(90deg,transparent,rgba(138,43,226,0.5),transparent,rgba(192,132,252,0.3),transparent);background-size:300%;animation:borderGlow 4s linear infinite;z-index:-1;}
+@keyframes borderGlow{to{background-position:300%}}
+@keyframes panelIn{from{opacity:0;transform:translateY(40px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-        .layer-blur{
-            height: 0;
-            width: 30rem;
-            position: absolute;
-            top: 20%;
-            right: 0;
-            box-shadow: 0 0 700px 15px white;
-            rotate: -30deg;
-            z-index: -1;
-        }
+/* LOGO */
+.logo{
+    font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:900;letter-spacing:5px;
+    text-transform:uppercase;text-align:center;margin-bottom:32px;
+    background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    animation:shimmer 4s linear infinite;
+}
+@keyframes shimmer{to{background-position:200%}}
 
-        /* Animation for the border */
-        @keyframes animationgradient {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
+.title{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:900;letter-spacing:-1px;color:#fff;text-align:center;margin-bottom:6px;}
+.sub{font-size:0.82rem;color:var(--dim);text-align:center;margin-bottom:32px;}
 
-        /* --- LOGO & TITLES --- */
-        .logo {
-            font-size: 18px;
-            letter-spacing: 4px;
-            margin-bottom: 25px;
-            text-transform: uppercase;
-            font-weight: 800;
-        }
+/* FORM */
+.field{margin-bottom:18px;position:relative;}
+.field label{display:block;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;}
+.field input{
+    width:100%;padding:14px 16px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.07);
+    border-radius:12px;color:#fff;
+    font-family:'DM Sans',sans-serif;font-size:0.9rem;
+    outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;
+}
+.field input::placeholder{color:var(--dim);}
+.field input:focus{border-color:rgba(138,43,226,0.5);box-shadow:0 0 0 3px rgba(138,43,226,0.1);background:rgba(138,43,226,0.04);}
 
-        h2 { font-size: 28px; margin-bottom: 8px; }
-        p.subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 35px; }
+/* ERROR */
+.error-msg{
+    display:none;padding:12px 16px;border-radius:10px;margin-bottom:18px;
+    background:rgba(255,60,60,0.08);border:1px solid rgba(255,60,60,0.2);
+    color:#ff7070;font-size:0.8rem;text-align:center;
+}
+.error-msg.show{display:block;}
 
-        /* --- INPUT FIELDS & FOCUS GLOW --- */
-        .form-group { margin-bottom: 22px; text-align: left; }
-        label { display: block; margin-bottom: 8px; font-size: 10px; color: var(--text-muted); letter-spacing: 1px; }
+/* BUTTON */
+.btn{
+    width:100%;padding:14px;border-radius:12px;border:none;margin-top:4px;
+    font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 24px rgba(138,43,226,0.4);
+    transition:transform 0.25s,box-shadow 0.25s;
+    position:relative;overflow:hidden;
+}
+.btn::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s;}
+.btn:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(138,43,226,0.55);}
+.btn:hover::before{left:100%;}
+.btn:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
 
-        input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: white;
-            font-size: 15px;
-            box-sizing: border-box;
-            outline: none;
-            transition: all 0.3s ease; /* Smooth transition for the glow */
-        }
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:24px 0;}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--border);}
+.divider span{font-size:0.7rem;color:var(--dim);letter-spacing:1px;}
 
-        /* This is the purple glow when you tap the bars */
-        input:focus {
-            border-color: var(--accent-purple);
-            background: rgba(102, 0, 197, 0.05);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
+/* LINKS */
+.links{display:flex;justify-content:space-between;align-items:center;margin-top:20px;}
+.links a{font-size:0.78rem;color:var(--dim);text-decoration:none;transition:color 0.2s;}
+.links a:hover{color:#fff;}
+.links a.highlight{color:var(--accent);}
+.links a.highlight:hover{color:#c084fc;}
 
-        /* --- BUTTON & LINKS --- */
-        .btn-login {
-            width: 100%;
-            padding: 16px;
-            background: #ffffff;
-            color: #000000;
-            border: none;
-            border-radius: 50px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.2s;
-        }
-
-        .btn-login:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        }
-
-        .links { margin-top: 30px; display: flex; justify-content: space-between; font-size: 13px; }
-        a { color: var(--text-muted); text-decoration: none; transition: 0.3s; }
-        a:hover { color: #fff; }
-    </style>
+@media(max-width:480px){
+    .panel{padding:36px 24px;}
+    .title{font-size:1.6rem;}
+}
+</style>
 </head>
 <body>
 
-    <div class="login-box">
-        <div class="login-content">
-            <div class="logo">SmartLearn</div>
-            
-            <h2>Sign In</h2>
-            <p class="subtitle">Access your intelligent assistant.</p>
+<div class="particles">
+    <div class="p"></div><div class="p"></div><div class="p"></div>
+    <div class="p"></div><div class="p"></div><div class="p"></div>
+</div>
 
-            <form id="loginForm">
-                <div class="form-group">
-                    <label>EMAIL ADDRESS</label>
-                    <input type="email" placeholder="student@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label>PASSWORD</label>
-                    <input type="password" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn-login">Get Started</button>
-            </form>
+<div class="panel">
+    <div class="logo">Qerrastar</div>
+    <h1 class="title">Welcome Back</h1>
+    <p class="sub">Sign in to your learning dashboard.</p>
 
-            <div class="links">
-                <a href="#">Forgot password?</a>
-                <a href="/signup" class="create-link">Create New Account</a>
+    {% if error %}
+    <div class="error-msg show">{{ error }}</div>
+    {% endif %}
 
-            </div>
+    <form method="POST" action="/login">
+        <div class="field">
+            <label>Email Address</label>
+            <input type="email" name="email" placeholder="student@example.com" required>
         </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn">Sign In &rarr;</button>
+    </form>
+
+    <div class="links">
+        <a href="#">Forgot password?</a>
+        <a href="/signup" class="highlight">Create account &rarr;</a>
     </div>
-
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            alert("Logging in...");
-
-            window.location.href = "dashboard.html"; 
-        });
-    </script>
+</div>
 
 </body>
 </html>

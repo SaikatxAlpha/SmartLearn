@@ -491,70 +491,93 @@ def download_pyq(filepath):
 
     return "File not found"
 
-# ======================= LOGIN =======================
+# ============================================================
+# L O G I N 
+# ============================================================
+
+# ── LOGIN ──
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    error = None
     if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
+        email    = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
 
-        user = User.query.filter_by(email=email, password=password).first()
+        user = User.query.filter_by(email=email).first()
 
         if not user:
-            return "Invalid credentials"
+            error = "No account found with that email."
+        elif not user.check_password(password):
+            error = "Incorrect password. Please try again."
+        elif not user.verified:
+            error = "Please verify your email first. Check your inbox."
+        else:
+            session["user"] = user.email
+            return redirect(url_for("dashboard"))
 
-        if not user.verified:
-            return "Please verify your email first."
+    return render_template("login.html", error=error)
 
-        session["user"] = user.email
-        return redirect(url_for("dashboard"))
 
-    return render_template("login.html")
-
-#++++++++++++++++++++ SIGNUP +++++++++++++++++++++++
+# ── SIGNUP ──
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+    error = None
     if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
+        email    = request.form.get("email", "").strip()
+        password = request.form.get("password", "")
+
+        if len(password) < 6:
+            error = "Password must be at least 6 characters."
+            return render_template("signup.html", error=error)
 
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
-            return "Email already registered!"
+            error = "This email is already registered. Try logging in."
+            return render_template("signup.html", error=error)
 
-        otp = str(random.randint(100000, 999999))
-
-        new_user = User(email=email, password=password, otp=otp)
+        otp      = str(random.randint(100000, 999999))
+        new_user = User(email=email, otp=otp)
+        new_user.set_password(password)   # <-- uses hash, NOT plain text
         db.session.add(new_user)
         db.session.commit()
 
-        msg = Message("Verify Your Qerrastar Account",
-                      sender=app.config['MAIL_USERNAME'],
-                      recipients=[email])
-        msg.body = f"Your OTP is: {otp}"
-        mail.send(msg)
+        try:
+            msg = Message(
+                "Verify Your Qerrastar Account",
+                sender=app.config['MAIL_USERNAME'],
+                recipients=[email]
+            )
+            msg.body = f"Your Qerrastar OTP is: {otp}\n\nThis code expires soon."
+            mail.send(msg)
+        except Exception as e:
+            error = f"Account created but email failed: {str(e)}"
+            return render_template("signup.html", error=error)
 
         return redirect(url_for("verify", email=email))
 
-    return render_template("signup.html")
+    return render_template("signup.html", error=error)
 
-#+++++++++++++ OTP +++++++++++++++
+
+# ── VERIFY OTP ──
 @app.route("/verify/<email>", methods=["GET", "POST"])
 def verify(email):
-    user = User.query.filter_by(email=email).first()
+    user  = User.query.filter_by(email=email).first()
+    error = None
 
     if request.method == "POST":
-        entered_otp = request.form.get("otp")
+        entered_otp = request.form.get("otp", "").strip()
 
-        if user and user.otp == entered_otp:
+        if not user:
+            error = "Account not found."
+        elif user.otp != entered_otp:
+            error = "Incorrect OTP. Please check your email and try again."
+        else:
             user.verified = True
-            user.otp = None
+            user.otp      = None
             db.session.commit()
             return redirect(url_for("login"))
 
-        return "Invalid OTP"
-
-    return render_template("verify.html", email=email)
+    return render_template("verify.html", email=email, error=error)
 
 
 #LOGOUT ROUTE
