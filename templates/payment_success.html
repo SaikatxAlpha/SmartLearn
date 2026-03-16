@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Welcome to Pro | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root { --accent:#8A2BE2; --accent2:#5e17eb; --border:rgba(255,255,255,0.07); --dim:#555; }
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+
+body {
+    background:#000; color:#fff;
+    font-family:'DM Sans',sans-serif;
+    min-height:100vh; overflow:hidden;
+    display:flex; align-items:center; justify-content:center;
+}
+
+/* ── BACKGROUND ── */
+.bg {
+    position:fixed; inset:0; z-index:0;
+    background:radial-gradient(800px circle at 50% 45%, rgba(138,43,226,0.22), transparent 60%);
+}
+.grid {
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+        linear-gradient(rgba(138,43,226,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(138,43,226,0.03) 1px, transparent 1px);
+    background-size:60px 60px;
+}
+
+/* ── FLOATING PARTICLES (CSS only) ── */
+.particles { position:fixed; inset:0; pointer-events:none; z-index:1; overflow:hidden; }
+.particle {
+    position:absolute; border-radius:50%;
+    background:var(--accent); opacity:0;
+    animation:float linear infinite;
+}
+.particle:nth-child(1)  { width:4px;height:4px;left:10%;animation-duration:8s;animation-delay:0s; }
+.particle:nth-child(2)  { width:3px;height:3px;left:20%;animation-duration:10s;animation-delay:1s; }
+.particle:nth-child(3)  { width:5px;height:5px;left:30%;animation-duration:7s;animation-delay:2s; }
+.particle:nth-child(4)  { width:2px;height:2px;left:40%;animation-duration:12s;animation-delay:0.5s; }
+.particle:nth-child(5)  { width:4px;height:4px;left:50%;animation-duration:9s;animation-delay:1.5s; }
+.particle:nth-child(6)  { width:3px;height:3px;left:60%;animation-duration:11s;animation-delay:3s; }
+.particle:nth-child(7)  { width:5px;height:5px;left:70%;animation-duration:8s;animation-delay:0.8s; }
+.particle:nth-child(8)  { width:2px;height:2px;left:80%;animation-duration:13s;animation-delay:2.5s; }
+.particle:nth-child(9)  { width:4px;height:4px;left:90%;animation-duration:9s;animation-delay:1.2s; }
+.particle:nth-child(10) { width:3px;height:3px;left:15%;animation-duration:10s;animation-delay:4s; }
+.particle:nth-child(11) { width:6px;height:6px;left:55%;animation-duration:7s;animation-delay:0.3s;background:#c084fc; }
+.particle:nth-child(12) { width:2px;height:2px;left:75%;animation-duration:14s;animation-delay:1.8s;background:#c084fc; }
+
+@keyframes float {
+    0%   { transform:translateY(110vh) scale(0); opacity:0; }
+    10%  { opacity:0.6; }
+    90%  { opacity:0.3; }
+    100% { transform:translateY(-10vh) scale(1); opacity:0; }
+}
+
+/* ── MAIN PANEL ── */
+.panel {
+    position:relative; z-index:10;
+    width:90%; max-width:480px;
+    border-radius:28px; overflow:hidden;
+    padding:56px 48px;
+    text-align:center;
+    background:linear-gradient(135deg,
+        rgba(255,255,255,0.06) 0%,
+        rgba(255,255,255,0.02) 50%,
+        rgba(138,43,226,0.05) 100%
+    );
+    border:1px solid rgba(138,43,226,0.2);
+    backdrop-filter:blur(30px);
+    box-shadow:0 40px 80px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
+    animation:panelIn 0.8s cubic-bezier(0.23,1,0.32,1) both;
+}
+
+/* Gloss */
+.panel::before {
+    content:""; position:absolute; top:0; left:0; right:0; height:45%;
+    background:linear-gradient(180deg, rgba(255,255,255,0.07), transparent);
+    border-radius:28px 28px 0 0; pointer-events:none;
+}
+
+/* Animated border */
+.panel::after {
+    content:""; position:absolute; inset:-1px; border-radius:28px;
+    background:linear-gradient(90deg,
+        transparent,
+        rgba(138,43,226,0.6),
+        transparent,
+        rgba(192,132,252,0.4),
+        transparent
+    );
+    background-size:300%;
+    animation:borderGlow 3s linear infinite; z-index:-1;
+}
+@keyframes borderGlow { to { background-position:300%; } }
+@keyframes panelIn {
+    from { opacity:0; transform:translateY(50px) scale(0.95); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+}
+
+/* ── CHECKMARK RING ── */
+.check-wrap {
+    width:80px; height:80px; margin:0 auto 28px;
+    position:relative;
+}
+
+/* Outer ring that draws itself */
+.check-ring {
+    position:absolute; inset:0; border-radius:50%;
+    border:2px solid transparent;
+    background:
+        linear-gradient(#000,#000) padding-box,
+        linear-gradient(135deg, #8A2BE2, #c084fc) border-box;
+    animation:ringIn 0.6s cubic-bezier(0.23,1,0.32,1) 0.2s both;
+}
+@keyframes ringIn {
+    from { transform:scale(0) rotate(-90deg); opacity:0; }
+    to   { transform:scale(1) rotate(0deg); opacity:1; }
+}
+
+/* Glow behind ring */
+.check-glow {
+    position:absolute; inset:-8px; border-radius:50%;
+    background:radial-gradient(circle, rgba(138,43,226,0.3), transparent 70%);
+    animation:glowPulse 2s ease infinite 0.8s;
+}
+@keyframes glowPulse {
+    0%,100% { transform:scale(1); opacity:0.6; }
+    50%     { transform:scale(1.15); opacity:1; }
+}
+
+/* SVG checkmark draws itself */
+.check-svg {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+}
+.check-svg svg {
+    width:36px; height:36px;
+    stroke:url(#checkGrad); stroke-width:2.5;
+    fill:none; stroke-linecap:round; stroke-linejoin:round;
+    stroke-dasharray:50; stroke-dashoffset:50;
+    animation:drawCheck 0.5s cubic-bezier(0.23,1,0.32,1) 0.7s forwards;
+}
+@keyframes drawCheck { to { stroke-dashoffset:0; } }
+
+/* ── CONTENT ── */
+.pro-badge {
+    display:inline-flex; align-items:center; gap:7px;
+    font-size:0.62rem; font-weight:800; letter-spacing:3px; text-transform:uppercase;
+    color:#c084fc;
+    background:rgba(138,43,226,0.12);
+    border:1px solid rgba(138,43,226,0.3);
+    padding:5px 14px; border-radius:50px; margin-bottom:20px;
+    animation:fadeUp 0.6s ease 1s both;
+}
+.pro-badge::before {
+    content:""; width:5px; height:5px; border-radius:50%;
+    background:#c084fc; animation:pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.6)} }
+
+.title {
+    font-family:'Syne',sans-serif;
+    font-size:clamp(1.8rem,5vw,2.6rem); font-weight:900; letter-spacing:-1.5px; line-height:1;
+    background:linear-gradient(135deg,#fff 30%,#c084fc);
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+    margin-bottom:12px;
+    animation:fadeUp 0.6s ease 1.1s both;
+}
+
+.sub {
+    font-size:0.88rem; color:var(--dim); line-height:1.7; margin-bottom:36px;
+    animation:fadeUp 0.6s ease 1.2s both;
+}
+
+/* ── PERKS ROW ── */
+.perks {
+    display:flex; flex-direction:column; gap:10px;
+    margin-bottom:36px; text-align:left;
+    animation:fadeUp 0.6s ease 1.3s both;
+}
+.perk {
+    display:flex; align-items:center; gap:12px;
+    padding:12px 16px; border-radius:12px;
+    background:rgba(255,255,255,0.025);
+    border:1px solid rgba(255,255,255,0.05);
+}
+.perk-icon {
+    width:28px; height:28px; border-radius:8px; flex-shrink:0;
+    background:rgba(138,43,226,0.15);
+    border:1px solid rgba(138,43,226,0.25);
+    display:flex; align-items:center; justify-content:center;
+}
+.perk-icon svg { width:14px;height:14px;stroke:#c084fc;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round; }
+.perk-text { font-size:0.82rem; color:#bbb; }
+.perk-text strong { color:#fff; font-weight:600; }
+
+/* ── BUTTON ── */
+.btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    width:100%; padding:15px; border-radius:13px; border:none;
+    font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:800;
+    letter-spacing:2px; text-transform:uppercase; color:#fff;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 28px rgba(138,43,226,0.45);
+    text-decoration:none; cursor:pointer;
+    transition:transform 0.25s,box-shadow 0.25s;
+    position:relative; overflow:hidden;
+    animation:fadeUp 0.6s ease 1.4s both;
+}
+.btn::before {
+    content:""; position:absolute; top:0; left:-100%; width:100%; height:100%;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);
+    transition:left 0.5s;
+}
+.btn:hover { transform:translateY(-3px); box-shadow:0 16px 40px rgba(138,43,226,0.6); }
+.btn:hover::before { left:100%; }
+
+@keyframes fadeUp {
+    from { opacity:0; transform:translateY(20px); }
+    to   { opacity:1; transform:translateY(0); }
+}
+
+@media(max-width:480px) {
+    .panel { padding:40px 24px; }
+    .title { font-size:1.8rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="grid"></div>
+
+<!-- Floating particles -->
+<div class="particles">
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+    <div class="particle"></div><div class="particle"></div>
+</div>
+
+<!-- SVG gradient for checkmark -->
+<svg width="0" height="0" style="position:absolute">
+    <defs>
+        <linearGradient id="checkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#c084fc"/>
+        </linearGradient>
+    </defs>
+</svg>
+
+<div class="panel">
+
+    <!-- Animated checkmark -->
+    <div class="check-wrap">
+        <div class="check-glow"></div>
+        <div class="check-ring"></div>
+        <div class="check-svg">
+            <svg viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"/>
+            </svg>
+        </div>
+    </div>
+
+    <div class="pro-badge">Pro Active</div>
+    <h1 class="title">You're Pro<br>Now.</h1>
+    <p class="sub">Payment confirmed. Your account has been upgraded — enjoy the full Qerrastar experience.</p>
+
+    <!-- What you unlocked -->
+    <div class="perks">
+        <div class="perk">
+            <div class="perk-icon">
+                <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+            <div class="perk-text"><strong>Zero ads</strong> — clean, distraction-free experience</div>
+        </div>
+        <div class="perk">
+            <div class="perk-icon">
+                <svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            </div>
+            <div class="perk-text"><strong>Priority access</strong> — faster results, always</div>
+        </div>
+        <div class="perk">
+            <div class="perk-icon">
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <div class="perk-text"><strong>Pro badge</strong> — on your profile forever</div>
+        </div>
+    </div>
+
+    <a href="/dashboard" class="btn">Go to Dashboard &rarr;</a>
+
+</div>
+
+</body>
+</html>
