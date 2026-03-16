@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Disclaimer | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#8A2BE2;--border:rgba(255,255,255,0.07);--dim:#555;--text:#e8e8e8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(600px circle at 40% 30%,rgba(138,43,226,0.15),transparent 60%);}
+.tool-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1rem;font-weight:900;letter-spacing:4px;text-decoration:none;background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{to{background-position:200%}}
+.nav-back{font-size:0.75rem;color:var(--dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;transition:color 0.2s;}
+.nav-back:hover{color:#fff;}
+.wrapper{position:relative;z-index:1;max-width:760px;margin:0 auto;padding:70px 2rem 120px;}
+.page-tag{font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
+.page-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,#fff 35%,#8A2BE2);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px;line-height:1;}
+.page-date{font-size:0.75rem;color:var(--dim);margin-bottom:48px;letter-spacing:1px;}
+.section{margin-bottom:40px;}
+.section h2{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#c084fc;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+.section h2::before{content:"";width:20px;height:1px;background:var(--accent);}
+.section p,.section li{font-size:0.88rem;color:#777;line-height:1.8;margin-bottom:10px;}
+.section ul{padding-left:0;list-style:none;}
+.section li::before{content:"→ ";color:var(--accent);font-size:0.75rem;}
+@media(max-width:768px){.tool-nav{padding:0.9rem 1.2rem;}.wrapper{padding:50px 1.2rem 80px;}}
+</style>
+</head>
+<body>
+<nav class="tool-nav">
+    <a href="/" class="nav-logo">QERRASTAR</a>
+    <a href="/" class="nav-back">← Back</a>
+</nav>
+<div class="wrapper">
+    <div class="page-tag">Legal</div>
+    <h1 class="page-title">Disclaimer</h1>
+    <div class="page-date">Last updated: March 2025</div>
+    <div class="section"><h2>General Disclaimer</h2><p>The information provided on Qerrastar is for general educational and informational purposes only. While we strive to keep the content accurate and up to date, we make no representations or warranties of any kind about the completeness, accuracy, or reliability of the information.</p></div>
+    <div class="section"><h2>Educational Content</h2><p>Search results, summaries, and quiz questions are generated using third-party AI and search APIs. The accuracy of this content is not guaranteed. Always cross-reference important information with official sources before relying on it for academic or professional purposes.</p></div>
+    <div class="section"><h2>PYQ Papers</h2><p>Previous Year Question papers uploaded by users are contributed voluntarily. Qerrastar does not verify the accuracy, completeness, or authenticity of user-uploaded content. We are not responsible for any errors in uploaded papers.</p></div>
+    <div class="section"><h2>File Conversion</h2><p>File conversion tools are provided for convenience. We are not responsible for any loss of data, formatting issues, or errors that may occur during conversion. Always keep a backup of original files.</p></div>
+    <div class="section"><h2>External Links</h2><p>Our search results may contain links to external websites. We have no control over the content of those sites and accept no responsibility for them or for any loss or damage that may arise from your use of them.</p></div>
+    <div class="section"><h2>Contact</h2><p>For any concerns, reach us at <strong style="color:#c084fc;">saikatmahara7895@gmail.com</strong></p></div>
+</div>
+</body>
+</html>

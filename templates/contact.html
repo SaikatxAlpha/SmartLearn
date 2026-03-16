@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Contact Us | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#8A2BE2;--accent2:#5e17eb;--border:rgba(255,255,255,0.07);--dim:#555;--text:#e8e8e8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(700px circle at 30% 30%,rgba(138,43,226,0.18),transparent 60%),radial-gradient(500px circle at 70% 70%,rgba(94,23,235,0.12),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(138,43,226,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,0.025) 1px,transparent 1px);background-size:60px 60px;}
+.tool-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1rem;font-weight:900;letter-spacing:4px;text-decoration:none;background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{to{background-position:200%}}
+.nav-back{font-size:0.75rem;color:var(--dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back:hover{color:#fff;}
+.wrapper{position:relative;z-index:1;max-width:700px;margin:0 auto;padding:80px 2rem 120px;}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.23,1,0.32,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(138,43,226,0.3);padding:5px 14px;border-radius:50px;margin-bottom:20px;background:rgba(138,43,226,0.07);}
+.hero-tag::before{content:"";width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+.hero-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,#fff 35%,#8A2BE2 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+.hero-sub{font-size:0.9rem;color:var(--dim);line-height:1.7;margin-bottom:48px;}
+.form-card{position:relative;border-radius:22px;overflow:hidden;padding:40px 36px;background:linear-gradient(135deg,rgba(255,255,255,0.055),rgba(255,255,255,0.015));border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);box-shadow:0 4px 30px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.09);}
+.form-card::before{content:"";position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent);border-radius:22px 22px 0 0;pointer-events:none;}
+.field{margin-bottom:18px;position:relative;}
+.field label{display:block;font-size:0.6rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;}
+.field input,.field textarea{width:100%;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:12px;color:#fff;font-family:'DM Sans',sans-serif;font-size:0.9rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s,background 0.2s;}
+.field input::placeholder,.field textarea::placeholder{color:var(--dim);}
+.field input:focus,.field textarea:focus{border-color:rgba(138,43,226,0.5);box-shadow:0 0 0 3px rgba(138,43,226,0.1);background:rgba(138,43,226,0.04);}
+.field textarea{min-height:130px;resize:vertical;line-height:1.6;}
+.btn{width:100%;padding:14px;border-radius:12px;border:none;font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 8px 24px rgba(138,43,226,0.4);transition:transform 0.25s,box-shadow 0.25s;position:relative;overflow:hidden;margin-top:8px;}
+.btn::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s;}
+.btn:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(138,43,226,0.55);}
+.btn:hover::before{left:100%;}
+.info-row{display:flex;gap:14px;margin-top:32px;flex-wrap:wrap;}
+.info-chip{flex:1;min-width:140px;padding:16px;border-radius:14px;background:rgba(255,255,255,0.025);border:1px solid var(--border);text-align:center;}
+.info-chip .ic-label{font-size:0.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:6px;}
+.info-chip .ic-val{font-size:0.82rem;color:#ccc;word-break:break-all;}
+@media(max-width:768px){.tool-nav{padding:0.9rem 1.2rem;}.wrapper{padding:50px 1.2rem 80px;}.form-card{padding:28px 20px;}}
+</style>
+</head>
+<body>
+<nav class="tool-nav">
+    <a href="/" class="nav-logo">QERRASTAR</a>
+    <a href="/" class="nav-back"><span>←</span> Back</a>
+</nav>
+<div class="wrapper">
+    <div class="reveal">
+        <span class="hero-tag">Contact Us</span>
+        <h1 class="hero-title">Get In<br>Touch.</h1>
+        <p class="hero-sub">Have a question, feedback, or just want to say hi? We'd love to hear from you.</p>
+    </div>
+    <div class="form-card reveal" style="transition-delay:0.1s">
+        <form action="mailto:saikatmahara7895@gmail.com" method="GET">
+            <div class="field"><label>Your Name</label><input type="text" name="name" placeholder="Your full name" required></div>
+            <div class="field"><label>Email Address</label><input type="email" name="email" placeholder="your@email.com" required></div>
+            <div class="field"><label>Subject</label><input type="text" name="subject" placeholder="What's this about?" required></div>
+            <div class="field"><label>Message</label><textarea name="body" placeholder="Write your message here..." required></textarea></div>
+            <button type="submit" class="btn">Send Message →</button>
+        </form>
+        <div class="info-row">
+            <div class="info-chip"><div class="ic-label">Email</div><div class="ic-val">saikatmahara7895@gmail.com</div></div>
+            <div class="info-chip"><div class="ic-label">Response Time</div><div class="ic-val">Within 24–48 hours</div></div>
+        </div>
+    </div>
+</div>
+<script>
+    const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.1});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
