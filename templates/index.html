@@ -93,114 +93,157 @@
     </script>
     <script>
     const canvas = document.getElementById('particleCanvas');
-    const ctx = canvas.getContext('2d');
-    let mouse = { x: null, y: null };
-    let particles = [];
-    const SPHERE_RADIUS = 100;
-    const PARTICLE_COUNT = 500;
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let mouse = { x: null, y: null };
+        let particles = [];
+        let globalRotY = 0, globalRotX = 0;
+        let targetRotY = 0, targetRotX = 0;
+        let time = 0;
 
-    function resize() {
-        canvas.width  = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
+        const SPHERE_RADIUS = 110;
+        const PARTICLE_COUNT = 650;
 
-    class Particle {
-        constructor() { this.reset(); }
-        reset() {
-            // Distribute evenly on sphere surface using spherical coords
-            const u = Math.random(), v = Math.random();
-            const theta = 2 * Math.PI * u;
-            const phi   = Math.acos(2 * v - 1);
-            this.sx = Math.sin(phi) * Math.cos(theta); // unit sphere x
-            this.sy = Math.sin(phi) * Math.sin(theta); // unit sphere y
-            this.sz = Math.cos(phi);                   // unit sphere z
-            this.rotX = Math.random() * Math.PI * 2;
-            this.rotY = Math.random() * Math.PI * 2;
-            this.speedX = (Math.random() - 0.5) * 0.003;
-            this.speedY = (Math.random() - 0.5) * 0.003;
-            this.size = Math.random() * 1.4 + 0.3;
+        function resize() {
+            canvas.width  = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
         }
-        update(mx, my) {
-            // Slow auto-rotation
-            this.rotY += this.speedY + 0.004;
-            this.rotX += this.speedX;
 
-            // Mouse/touch tilt
-            if (mx !== null) {
-                const cx = canvas.width / 2, cy = canvas.height / 2;
-                const tiltY = (mx - cx) / cx * 0.015;
-                const tiltX = (my - cy) / cy * 0.010;
-                this.rotY += tiltY;
-                this.rotX += tiltX;
+        // Shared rotation state for all particles
+        let sharedRotY = 0, sharedRotX = 0.3;
+
+        class Particle {
+            constructor() { this.init(); }
+            init() {
+                const u = Math.random(), v = Math.random();
+                const theta = 2 * Math.PI * u;
+                const phi   = Math.acos(2 * v - 1);
+                this.ox = Math.sin(phi) * Math.cos(theta);
+                this.oy = Math.sin(phi) * Math.sin(theta);
+                this.oz = Math.cos(phi);
+                this.size   = Math.random() * 1.6 + 0.2;
+                this.twinkle = Math.random() * Math.PI * 2; // phase for twinkling
+                this.twinkleSpeed = Math.random() * 0.04 + 0.01;
+                // Some particles are "bright stars"
+                this.isStar = Math.random() < 0.08;
             }
 
-            // Rotate around Y axis
-            const cosY = Math.cos(this.rotY), sinY = Math.sin(this.rotY);
-            const x1 =  this.sx * cosY + this.sz * sinY;
-            const z1 = -this.sx * sinY + this.sz * cosY;
-            // Rotate around X axis
-            const cosX = Math.cos(this.rotX), sinX = Math.sin(this.rotX);
-            const y2 =  this.sy * cosX - z1 * sinX;
-            const z2 =  this.sy * sinX + z1 * cosX;
+            project() {
+                // Rotate around Y
+                const cy = Math.cos(sharedRotY), sy = Math.sin(sharedRotY);
+                const x1 =  this.ox * cy + this.oz * sy;
+                const z1 = -this.ox * sy + this.oz * cy;
+                // Rotate around X
+                const cx = Math.cos(sharedRotX), sx = Math.sin(sharedRotX);
+                const y2 =  this.oy * cx - z1 * sx;
+                const z2 =  this.oy * sx + z1 * cx;
 
-            this.projX = x1;
-            this.projY = y2;
-            this.projZ = z2; // -1 = back, 1 = front
+                this.px = x1;
+                this.py = y2;
+                this.pz = z2; // -1 back, +1 front
+            }
+
+            draw() {
+                const cx = canvas.width / 2, cy = canvas.height / 2;
+                const depth = (this.pz + 1) / 2; // 0..1
+                const x = cx + this.px * SPHERE_RADIUS;
+                const y = cy + this.py * SPHERE_RADIUS;
+
+                // Twinkling opacity
+                this.twinkle += this.twinkleSpeed;
+                const twinkFactor = 0.5 + 0.5 * Math.sin(this.twinkle);
+                const opacity = (0.15 + depth * 0.7) * (this.isStar ? (0.6 + 0.4 * twinkFactor) : 1);
+                const size = this.size * (0.3 + depth * 0.9);
+
+                if (this.isStar && depth > 0.5) {
+                    // Draw a glowing cross/star shape for bright particles
+                    const glow = ctx.createRadialGradient(x, y, 0, x, y, size * 4);
+                    glow.addColorStop(0, `rgba(220,180,255,${opacity})`);
+                    glow.addColorStop(1, `rgba(138,43,226,0)`);
+                    ctx.beginPath();
+                    ctx.arc(x, y, size * 4, 0, Math.PI * 2);
+                    ctx.fillStyle = glow;
+                    ctx.fill();
+                }
+
+                // Core dot — color: white-purple gradient by depth
+                const r = Math.floor(160 + 80 * depth);
+                const g = Math.floor(100 + 80 * depth);
+                const b = 255;
+                ctx.beginPath();
+                ctx.arc(x, y, Math.max(0.15, size), 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
+                ctx.fill();
+            }
         }
-        draw() {
+
+        function drawGlowCore() {
+            // Soft purple glow at the center of the sphere
             const cx = canvas.width / 2, cy = canvas.height / 2;
-            const scale = (this.projZ + 1.5) / 2.5; // depth scale
-            const x = cx + this.projX * SPHERE_RADIUS;
-            const y = cy + this.projY * SPHERE_RADIUS;
-            const opacity = scale * 0.75;
-            const size = this.size * scale;
-
-            // Purple-white color based on depth
-            const r = Math.floor(180 + 60 * scale);
-            const g = Math.floor(140 + 40 * scale);
-            const b = 255;
-
+            const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, SPHERE_RADIUS * 0.8);
+            glow.addColorStop(0,   'rgba(138,43,226,0.07)');
+            glow.addColorStop(0.5, 'rgba(94,23,235,0.04)');
+            glow.addColorStop(1,   'rgba(0,0,0,0)');
             ctx.beginPath();
-            ctx.arc(x, y, Math.max(0.2, size), 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
+            ctx.arc(cx, cy, SPHERE_RADIUS * 0.8, 0, Math.PI * 2);
+            ctx.fillStyle = glow;
             ctx.fill();
         }
+
+        function init() {
+            resize();
+            particles = [];
+            for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
+        }
+
+        function animate() {
+            time += 0.01;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Smooth rotation towards target
+            if (mouse.x !== null) {
+                const cx = canvas.width / 2, cy = canvas.height / 2;
+                targetRotY = (mouse.x - cx) / cx * 0.6;
+                targetRotX = (mouse.y - cy) / cy * 0.4;
+            } else {
+                targetRotY = 0;
+                targetRotX = 0;
+            }
+            globalRotY += 0.006; // continuous auto-spin
+            sharedRotY = globalRotY + targetRotY * 0.3;
+            sharedRotX = 0.3 + targetRotX * 0.2;
+
+            // Project all first, then sort by Z
+            particles.forEach(p => p.project());
+            particles.sort((a, b) => a.pz - b.pz);
+
+            drawGlowCore();
+            particles.forEach(p => p.draw());
+
+            requestAnimationFrame(animate);
+        }
+
+        // Mouse
+        canvas.addEventListener('mousemove', e => {
+            const r = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - r.left;
+            mouse.y = e.clientY - r.top;
+        });
+        canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+
+        // Touch — tilt sphere with finger
+        canvas.addEventListener('touchmove', e => {
+            e.preventDefault();
+            const r = canvas.getBoundingClientRect();
+            mouse.x = e.touches[0].clientX - r.left;
+            mouse.y = e.touches[0].clientY - r.top;
+        }, { passive: false });
+        canvas.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
+
+        window.addEventListener('resize', init);
+        init();
+        animate();
     }
-
-    function init() {
-        resize();
-        particles = [];
-        for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
-    }
-
-    function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        // Sort by Z so front particles draw on top
-        particles.sort((a, b) => a.projZ - b.projZ);
-        particles.forEach(p => { p.update(mouse.x, mouse.y); p.draw(); });
-        requestAnimationFrame(animate);
-    }
-
-    // Mouse
-    canvas.addEventListener('mousemove', e => {
-        const r = canvas.getBoundingClientRect();
-        mouse.x = e.clientX - r.left;
-        mouse.y = e.clientY - r.top;
-    });
-    canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
-
-    // Touch
-    canvas.addEventListener('touchmove', e => {
-        e.preventDefault();
-        const r = canvas.getBoundingClientRect();
-        mouse.x = e.touches[0].clientX - r.left;
-        mouse.y = e.touches[0].clientY - r.top;
-    }, { passive: false });
-    canvas.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
-
-    window.addEventListener('resize', init);
-    init();
-    animate();
     </script>
 
 </body>

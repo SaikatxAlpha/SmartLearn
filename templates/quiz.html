@@ -1,130 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Qerrastar</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body {
-            background: radial-gradient(circle at center, #2a004f, #000000);
-            font-family: 'Segoe UI', sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Quiz | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#8A2BE2;--accent2:#5e17eb;--border:rgba(255,255,255,0.07);--dim:#555;--text:#e8e8e8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(700px circle at 20% 20%,rgba(138,43,226,0.18),transparent 60%),radial-gradient(600px circle at 80% 75%,rgba(94,23,235,0.13),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(138,43,226,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,0.025) 1px,transparent 1px);background-size:60px 60px;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--accent),#c084fc);z-index:200;box-shadow:0 0 8px var(--accent);}
+.tool-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1rem;font-weight:900;letter-spacing:4px;text-decoration:none;background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{to{background-position:200%}}
+.nav-back{font-size:0.75rem;color:var(--dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back span{display:inline-block;transition:transform 0.2s;}
+.nav-back:hover{color:#fff;}
+.nav-back:hover span{transform:translateX(-4px);}
+.tool-wrapper{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:70px 2rem 120px;}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.23,1,0.32,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
 
-        .container {
-            width: 70%;
-            margin: 60px auto;
-        }
+.hero{margin-bottom:50px;}
+.tool-tag{display:inline-flex;align-items:center;gap:8px;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(138,43,226,0.3);padding:5px 14px;border-radius:50px;margin-bottom:20px;background:rgba(138,43,226,0.07);}
+.tool-tag::before{content:"";width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+.tool-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,#fff 35%,#8A2BE2 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+.tool-sub{font-size:0.9rem;color:var(--dim);line-height:1.7;}
 
-        h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
+/* GENERATE FORM */
+.gen-card{
+    position:relative;border-radius:22px;overflow:hidden;padding:36px;
+    background:linear-gradient(135deg,rgba(255,255,255,0.055),rgba(255,255,255,0.015));
+    border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);
+    box-shadow:0 4px 30px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.09);
+    margin-bottom:40px;
+}
+.gen-card::before{content:"";position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent);border-radius:22px 22px 0 0;pointer-events:none;}
+.gen-row{display:flex;gap:12px;align-items:stretch;position:relative;z-index:1;}
+.gen-input{
+    flex:1;padding:14px 18px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;color:#fff;
+    font-family:'DM Sans',sans-serif;font-size:0.92rem;outline:none;
+    transition:border-color 0.2s,box-shadow 0.2s;
+}
+.gen-input::placeholder{color:var(--dim);}
+.gen-input:focus{border-color:rgba(138,43,226,0.5);box-shadow:0 0 0 3px rgba(138,43,226,0.1);}
+.gen-btn{
+    padding:14px 28px;border-radius:12px;border:none;
+    font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 6px 20px rgba(138,43,226,0.4);
+    transition:transform 0.2s,box-shadow 0.2s;
+    white-space:nowrap;
+    position:relative;overflow:hidden;
+}
+.gen-btn::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s;}
+.gen-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(138,43,226,0.55);}
+.gen-btn:hover::before{left:100%;}
 
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 40px;
-        }
+/* QUESTION CARDS */
+.question-card{
+    position:relative;border-radius:20px;overflow:hidden;padding:28px 30px;
+    background:linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015));
+    border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(15px);
+    margin-bottom:16px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.3),inset 0 1px 0 rgba(255,255,255,0.07);
+    transition:border-color 0.3s;
+}
+.question-card::before{content:"";position:absolute;top:0;left:0;right:0;height:35%;background:linear-gradient(180deg,rgba(255,255,255,0.05),transparent);border-radius:20px 20px 0 0;pointer-events:none;}
+.question-card:focus-within{border-color:rgba(138,43,226,0.25);}
+.q-num{font-family:'Syne',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:2px;color:var(--accent);margin-bottom:10px;text-transform:uppercase;}
+.q-text{font-size:0.92rem;font-weight:500;line-height:1.6;color:#ddd;margin-bottom:20px;position:relative;z-index:1;}
 
-        .search-box input {
-            flex: 1;
-            padding: 15px;
-            border-radius: 12px;
-            border: none;
-            background: #111;
-            color: white;
-            font-size: 16px;
-        }
+/* OPTIONS */
+.options{display:flex;flex-direction:column;gap:8px;position:relative;z-index:1;}
+.option-label{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 16px;border-radius:10px;cursor:pointer;
+    border:1px solid rgba(255,255,255,0.06);
+    background:rgba(255,255,255,0.025);
+    transition:background 0.2s,border-color 0.2s;
+    font-size:0.88rem;color:#aaa;
+}
+.option-label:hover{background:rgba(138,43,226,0.1);border-color:rgba(138,43,226,0.25);color:#fff;}
+.option-radio{accent-color:var(--accent);width:16px;height:16px;flex-shrink:0;}
+.option-label:has(input:checked){background:rgba(138,43,226,0.15);border-color:rgba(138,43,226,0.4);color:#fff;}
 
-        .btn {
-            background: linear-gradient(90deg, #8e2de2, #4a00e0);
-            border: none;
-            padding: 15px 25px;
-            border-radius: 12px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
+/* SUBMIT */
+.submit-wrap{margin-top:32px;}
+.btn-primary{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:16px 24px;border-radius:12px;border:none;
+    font-family:'Syne',sans-serif;font-size:0.78rem;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 24px rgba(138,43,226,0.4);
+    transition:transform 0.25s,box-shadow 0.25s;
+    position:relative;overflow:hidden;
+}
+.btn-primary::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(138,43,226,0.55);}
+.btn-primary:hover::before{left:100%;}
 
-        .btn:hover {
-            box-shadow: 0 0 20px #8e2de2;
-        }
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(138,43,226,0.4),transparent);margin:40px 0;position:relative;}
+.divider::after{content:"✦";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);color:var(--accent);font-size:0.65rem;background:#000;padding:0 12px;}
 
-        .card {
-            background: #0d0d0d;
-            padding: 25px;
-            border-radius: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 0 20px rgba(142, 45, 226, 0.2);
-        }
+.section-label{font-size:0.62rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--dim);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.section-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
 
-        .options label {
-            display: block;
-            padding: 10px;
-            margin-bottom: 8px;
-            background: #141414;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s ease;
-        }
-
-        .options label:hover {
-            background: #1f1f1f;
-        }
-
-        input[type="radio"] {
-            margin-right: 8px;
-        }
-
-        .submit-btn {
-            margin-top: 20px;
-            width: 100%;
-        }
-
-    </style>
+@media(max-width:768px){
+    .tool-nav{padding:0.9rem 1.2rem;}
+    .tool-wrapper{padding:50px 1.2rem 80px;}
+    .gen-card{padding:24px 20px;}
+    .gen-row{flex-direction:column;}
+    .question-card{padding:22px 18px;}
+}
+</style>
 </head>
 <body>
 
-<div class="container">
+<div class="progress-bar" id="progressBar"></div>
 
-    <h2>Quiz Generator</h2>
+<nav class="tool-nav">
+    <a href="/" class="nav-logo">QERRASTAR</a>
+    <a href="/dashboard" class="nav-back"><span>←</span> Dashboard</a>
+</nav>
 
-    <form method="POST">
-        <div class="search-box">
-            <input type="text" name="topic" placeholder="Type your topic..." required>
-            <button class="btn">Generate</button>
-        </div>
-    </form>
+<div class="tool-wrapper">
+
+    <div class="hero reveal">
+        <span class="tool-tag">Quiz</span>
+        <h1 class="tool-title">Test Your<br>Knowledge.</h1>
+        <p class="tool-sub">Generate a custom quiz on any topic and put your understanding to the test.</p>
+    </div>
+
+    <div class="gen-card reveal" style="transition-delay:0.1s">
+        <form method="POST">
+            <div class="gen-row">
+                <input class="gen-input" type="text" name="topic" placeholder="Enter a topic — e.g. Photosynthesis, World War II..." required>
+                <button type="submit" class="gen-btn">Generate →</button>
+            </div>
+        </form>
+    </div>
 
     {% if questions %}
+    <div class="divider reveal"></div>
+    <p class="section-label reveal">{{ questions|length }} Questions Generated</p>
+
     <form method="POST" action="/submit_quiz">
-
         {% for q in questions %}
-        <div class="card">
-            <h3>{{ loop.index }}. {{ q.question }}</h3>
-
+        <div class="question-card reveal" style="transition-delay:{{ loop.index0 * 0.06 }}s">
+            <div class="q-num">Question {{ loop.index }} / {{ questions|length }}</div>
+            <div class="q-text">{{ q.question }}</div>
             <div class="options">
                 {% for option in q.options %}
-                <label>
-                    <input type="radio" name="q{{ loop.index0 }}" value="{{ option }}" required>
+                <label class="option-label">
+                    <input class="option-radio" type="radio" name="q{{ loop.index0 }}" value="{{ option }}" required>
                     {{ option }}
                 </label>
                 {% endfor %}
             </div>
-
             <input type="hidden" name="correct{{ loop.index0 }}" value="{{ q.answer }}">
         </div>
         {% endfor %}
 
         <input type="hidden" name="total" value="{{ questions|length }}">
-        <button class="btn submit-btn">Submit Quiz</button>
+        <div class="submit-wrap reveal">
+            <button type="submit" class="btn-primary">Submit Quiz →</button>
+        </div>
     </form>
     {% endif %}
 
 </div>
 
+<script>
+    const obs = new IntersectionObserver(entries => entries.forEach(e => {if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    window.addEventListener('scroll',()=>{ const p=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100; document.getElementById('progressBar').style.width=p+'%'; });
+</script>
 </body>
 </html>

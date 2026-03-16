@@ -1,128 +1,166 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Qerrastar</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Learner | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+:root { --accent:#8A2BE2; --accent2:#5e17eb; --border:rgba(255,255,255,0.07); --dim:#555; --text:#e8e8e8; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(700px circle at 20% 20%,rgba(138,43,226,0.18),transparent 60%),radial-gradient(600px circle at 80% 75%,rgba(94,23,235,0.13),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(138,43,226,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,0.025) 1px,transparent 1px);background-size:60px 60px;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--accent),#c084fc);z-index:200;box-shadow:0 0 8px var(--accent);transition:width 0.08s linear;}
+.tool-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1rem;font-weight:900;letter-spacing:4px;text-decoration:none;background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{to{background-position:200%}}
+.nav-back{font-size:0.75rem;color:var(--dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back span{display:inline-block;transition:transform 0.2s;}
+.nav-back:hover{color:#fff;}
+.nav-back:hover span{transform:translateX(-4px);}
+.tool-wrapper{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:70px 2rem 120px;}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.23,1,0.32,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
 
-body {
-    font-family: 'Inter', sans-serif;
-    background: #000;
-    color: #fff;
-    padding: 60px;
-}
+/* HERO */
+.hero{margin-bottom:50px;}
+.tool-tag{display:inline-flex;align-items:center;gap:8px;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(138,43,226,0.3);padding:5px 14px;border-radius:50px;margin-bottom:20px;background:rgba(138,43,226,0.07);}
+.tool-tag::before{content:"";width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+.tool-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,#fff 35%,#8A2BE2 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+.tool-sub{font-size:0.9rem;color:var(--dim);line-height:1.7;}
 
-body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background:
-        radial-gradient(600px circle at 60% 30%, rgba(138,43,226,0.35), transparent 60%),
-        radial-gradient(800px circle at 80% 80%, rgba(138,43,226,0.2), transparent 65%);
-    z-index: -1;
+/* SEARCH BAR */
+.search-wrap{position:relative;margin-bottom:40px;}
+.search-input{
+    width:100%;padding:18px 130px 18px 22px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.09);
+    border-radius:16px;color:#fff;
+    font-family:'DM Sans',sans-serif;font-size:1rem;
+    outline:none;transition:border-color 0.2s,box-shadow 0.2s;
 }
+.search-input::placeholder{color:var(--dim);}
+.search-input:focus{border-color:rgba(138,43,226,0.5);box-shadow:0 0 0 3px rgba(138,43,226,0.1),0 0 30px rgba(138,43,226,0.08);}
+.search-btn{
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    padding:10px 22px;border-radius:12px;border:none;
+    font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 4px 16px rgba(138,43,226,0.4);
+    transition:transform 0.2s,box-shadow 0.2s;
+}
+.search-btn:hover{transform:translateY(calc(-50% - 2px));box-shadow:0 8px 24px rgba(138,43,226,0.55);}
 
-h1 {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 36px;
-    margin-bottom: 30px;
-}
+/* STATUS */
+.status{font-size:0.75rem;color:var(--dim);letter-spacing:1px;margin-bottom:24px;min-height:20px;}
 
-.search-box {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 40px;
+/* RESULTS */
+.results{display:flex;flex-direction:column;gap:14px;}
+.result-card{
+    position:relative;border-radius:16px;padding:22px 24px;
+    background:linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015));
+    border:1px solid rgba(255,255,255,0.07);
+    backdrop-filter:blur(10px);
+    transition:transform 0.3s cubic-bezier(0.23,1,0.32,1),border-color 0.3s,box-shadow 0.3s;
+    overflow:hidden;
 }
+.result-card::before{content:"";position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.05),transparent);border-radius:16px 16px 0 0;pointer-events:none;}
+.result-card:hover{transform:translateY(-4px);border-color:rgba(138,43,226,0.25);box-shadow:0 16px 40px rgba(0,0,0,0.4),0 0 20px rgba(138,43,226,0.1);}
+.result-num{font-family:'Syne',sans-serif;font-size:0.6rem;font-weight:800;letter-spacing:2px;color:var(--accent);margin-bottom:8px;text-transform:uppercase;}
+.result-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:700;color:#fff;margin-bottom:8px;line-height:1.3;}
+.result-snippet{font-size:0.82rem;color:#666;line-height:1.65;margin-bottom:14px;}
+.result-link{display:inline-flex;align-items:center;gap:5px;font-size:0.7rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);text-decoration:none;transition:gap 0.2s;}
+.result-link:hover{gap:10px;}
 
-.search-box input {
-    flex: 1;
-    padding: 14px 18px;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,0.1);
-    background: rgba(255,255,255,0.05);
-    color: #fff;
-    font-size: 14px;
-}
+.empty-state{text-align:center;padding:60px 20px;color:var(--dim);}
+.empty-icon{font-size:2.5rem;margin-bottom:16px;opacity:0.4;}
+.empty-state p{font-size:0.85rem;letter-spacing:0.5px;}
 
-.search-box button {
-    padding: 14px 24px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 700;
-    letter-spacing: 1px;
-    background: linear-gradient(135deg, #8A2BE2, #5e17eb);
-    color: #fff;
-    cursor: pointer;
-}
-
-.results {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.result-card {
-    padding: 20px;
-    border-radius: 18px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-.result-card h3 {
-    margin-bottom: 8px;
-}
-.result-card a {
-    color: #8A2BE2;
-    text-decoration: none;
+@media(max-width:768px){
+    .tool-nav{padding:0.9rem 1.2rem;}
+    .tool-wrapper{padding:50px 1.2rem 80px;}
+    .search-input{font-size:0.9rem;padding:16px 110px 16px 18px;}
+    .search-btn{font-size:0.65rem;padding:9px 16px;}
 }
 </style>
 </head>
-
 <body>
 
-<h1>Search Your Topic Here</h1>
+<div class="progress-bar" id="progressBar"></div>
 
-<div class="search-box">
-    <input type="text" id="query" placeholder="Search any topic..." />
-    <button onclick="searchTopic()">SEARCH</button>
+<nav class="tool-nav">
+    <a href="/" class="nav-logo">QERRASTAR</a>
+    <a href="/dashboard" class="nav-back"><span>←</span> Dashboard</a>
+</nav>
+
+<div class="tool-wrapper">
+
+    <div class="hero reveal">
+        <span class="tool-tag">Learner</span>
+        <h1 class="tool-title">Search &<br>Discover.</h1>
+        <p class="tool-sub">Type any topic and get curated knowledge from across the internet.</p>
+    </div>
+
+    <div class="search-wrap reveal" style="transition-delay:0.1s">
+        <input type="text" class="search-input" id="query" placeholder="What do you want to learn today?" />
+        <button class="search-btn" onclick="searchTopic()">Search</button>
+    </div>
+
+    <div class="status" id="status"></div>
+    <div class="results" id="results">
+        <div class="empty-state">
+            <div class="empty-icon">🔎</div>
+            <p>Your results will appear here</p>
+        </div>
+    </div>
+
 </div>
 
-<div class="results" id="results"></div>
-
 <script>
-async function searchTopic() {
-    const query = document.getElementById("query").value;
-    const res = await fetch(`/api/search?q=${query}`);
-    const data = await res.json();  
+    // Reveal
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);} }), {threshold:0.1});
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
-    const resultsDiv = document.getElementById("results");
-    resultsDiv.innerHTML = "";
-
-    if (!data.items) {
-    resultsDiv.innerHTML = "<p>No results found.</p>";
-    return;
-    }
-
-    data.items.forEach(item => {
-        resultsDiv.innerHTML += `
-            <div class="result-card">
-                <h3>${item.title}</h3>
-                <p>${item.snippet}</p>
-                <a href="${item.link}" target="_blank">Read More</a>
-            </div>
-        `;
+    // Progress
+    window.addEventListener('scroll', () => {
+        const p = (window.scrollY/(document.body.scrollHeight-window.innerHeight))*100;
+        document.getElementById('progressBar').style.width = p+'%';
     });
-}
 
+    // Enter key
+    document.getElementById('query').addEventListener('keydown', e => { if(e.key==='Enter') searchTopic(); });
+
+    async function searchTopic() {
+        const query = document.getElementById('query').value.trim();
+        if(!query) return;
+        const status = document.getElementById('status');
+        const results = document.getElementById('results');
+        status.textContent = 'SEARCHING...';
+        results.innerHTML = '';
+        try {
+            const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+            const data = await res.json();
+            status.textContent = data.items ? `${data.items.length} RESULTS FOUND` : 'NO RESULTS';
+            if(!data.items || data.items.length===0) {
+                results.innerHTML = '<div class="empty-state"><div class="empty-icon">😶</div><p>No results found — try a different topic</p></div>';
+                return;
+            }
+            results.innerHTML = data.items.map((item,i) => `
+                <div class="result-card" style="animation-delay:${i*0.05}s">
+                    <div class="result-num">Result ${String(i+1).padStart(2,'0')}</div>
+                    <div class="result-title">${item.title}</div>
+                    <div class="result-snippet">${item.snippet}</div>
+                    <a href="${item.link}" target="_blank" class="result-link">Read More →</a>
+                </div>
+            `).join('');
+        } catch(e) {
+            status.textContent = 'ERROR — please try again';
+        }
+    }
 </script>
-
 </body>
 </html>

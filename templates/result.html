@@ -1,46 +1,144 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Quiz Result</title>
-    <style>
-        body {
-            background: radial-gradient(circle at center, #2a004f, #000000);
-            color: white;
-            font-family: 'Segoe UI', sans-serif;
-            text-align: center;
-            padding-top: 100px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Result | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#8A2BE2;--accent2:#5e17eb;--border:rgba(255,255,255,0.07);--dim:#555;--text:#e8e8e8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;display:flex;flex-direction:column;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(700px circle at 50% 40%,rgba(138,43,226,0.2),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(138,43,226,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,0.025) 1px,transparent 1px);background-size:60px 60px;}
+.tool-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1rem;font-weight:900;letter-spacing:4px;text-decoration:none;background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{to{background-position:200%}}
+.nav-back{font-size:0.75rem;color:var(--dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back span{display:inline-block;transition:transform 0.2s;}
+.nav-back:hover{color:#fff;}
+.nav-back:hover span{transform:translateX(-4px);}
 
-        .result-box {
-            background: #111;
-            padding: 40px;
-            border-radius: 20px;
-            display: inline-block;
-            box-shadow: 0 0 20px rgba(142, 45, 226, 0.4);
-        }
+/* CENTER LAYOUT */
+.center{flex:1;display:flex;align-items:center;justify-content:center;padding:40px 2rem;position:relative;z-index:1;}
 
-        .btn {
-            display: inline-block;
-            margin-top: 20px;
-            background: linear-gradient(90deg, #8e2de2, #4a00e0);
-            padding: 12px 25px;
-            border-radius: 12px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-        }
+.result-panel{
+    position:relative;border-radius:28px;overflow:hidden;
+    padding:60px 56px;text-align:center;
+    max-width:480px;width:100%;
+    background:linear-gradient(135deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02),rgba(138,43,226,0.04));
+    border:1px solid rgba(255,255,255,0.09);
+    backdrop-filter:blur(24px);
+    box-shadow:0 30px 80px rgba(0,0,0,0.6),inset 0 1px 0 rgba(255,255,255,0.1);
+    animation:panelIn 0.7s cubic-bezier(0.23,1,0.32,1) both;
+}
+@keyframes panelIn{from{opacity:0;transform:translateY(40px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-        .btn:hover {
-            box-shadow: 0 0 20px #8e2de2;
-        }
-    </style>
+/* Gloss */
+.result-panel::before{content:"";position:absolute;top:0;left:0;right:0;height:45%;background:linear-gradient(180deg,rgba(255,255,255,0.07),transparent);border-radius:28px 28px 0 0;pointer-events:none;}
+
+/* Animated border glow */
+.result-panel::after{content:"";position:absolute;inset:-1px;border-radius:28px;background:linear-gradient(90deg,transparent,rgba(138,43,226,0.5),transparent,rgba(138,43,226,0.5),transparent);background-size:300%;animation:borderGlow 4s linear infinite;z-index:-1;}
+@keyframes borderGlow{to{background-position:300%}}
+
+.result-emoji{font-size:3.5rem;margin-bottom:20px;display:block;animation:bounce 1s cubic-bezier(0.23,1,0.32,1) 0.3s both;}
+@keyframes bounce{from{opacity:0;transform:scale(0.5)}to{opacity:1;transform:scale(1)}}
+
+.result-label{font-family:'Syne',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;}
+
+.score-display{
+    font-family:'Syne',sans-serif;
+    font-size:clamp(3.5rem,12vw,6rem);
+    font-weight:900;letter-spacing:-3px;line-height:1;
+    background:linear-gradient(135deg,#fff 30%,#8A2BE2);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+    margin-bottom:8px;
+    animation:countIn 0.8s cubic-bezier(0.23,1,0.32,1) 0.4s both;
+}
+@keyframes countIn{from{opacity:0;transform:scale(0.7)}to{opacity:1;transform:scale(1)}}
+
+.score-sub{font-size:0.85rem;color:var(--dim);margin-bottom:36px;}
+
+.grade-bar-wrap{margin-bottom:36px;text-align:left;}
+.grade-bar-label{font-size:0.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--dim);margin-bottom:8px;display:flex;justify-content:space-between;}
+.grade-bar-bg{height:6px;background:rgba(255,255,255,0.06);border-radius:50px;overflow:hidden;}
+.grade-bar-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--accent),#c084fc);animation:fillBar 1s cubic-bezier(0.23,1,0.32,1) 0.6s both;transform-origin:left;}
+@keyframes fillBar{from{width:0}to{width:var(--pct)}}
+
+.btn-row{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-primary{
+    flex:1;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    padding:13px 20px;border-radius:12px;border:none;
+    font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 24px rgba(138,43,226,0.4);
+    transition:transform 0.25s,box-shadow 0.25s;
+    text-decoration:none;position:relative;overflow:hidden;
+}
+.btn-primary::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(138,43,226,0.55);}
+.btn-primary:hover::before{left:100%;}
+.btn-outline{
+    flex:1;display:inline-flex;align-items:center;justify-content:center;
+    padding:13px 20px;border-radius:12px;
+    border:1px solid rgba(255,255,255,0.1);
+    font-family:'Syne',sans-serif;font-size:0.72rem;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:#aaa;
+    background:transparent;cursor:pointer;transition:all 0.2s;text-decoration:none;
+}
+.btn-outline:hover{border-color:rgba(138,43,226,0.4);color:#fff;background:rgba(138,43,226,0.08);}
+
+@media(max-width:768px){
+    .tool-nav{padding:0.9rem 1.2rem;}
+    .result-panel{padding:40px 28px;}
+    .btn-row{flex-direction:column;}
+}
+</style>
 </head>
 <body>
 
-<div class="result-box">
-    <h2>Your Score</h2>
-    <h1>{{ score }} / {{ total }}</h1>
-    <a href="/quiz" class="btn">Try Again</a>
+<nav class="tool-nav">
+    <a href="/" class="nav-logo">QERRASTAR</a>
+    <a href="/dashboard" class="nav-back"><span>←</span> Dashboard</a>
+</nav>
+
+<div class="center">
+    <div class="result-panel">
+
+        {% set pct = (score / total * 100)|int %}
+        {% if pct >= 80 %}
+            <span class="result-emoji">🏆</span>
+        {% elif pct >= 50 %}
+            <span class="result-emoji">🎯</span>
+        {% else %}
+            <span class="result-emoji">📚</span>
+        {% endif %}
+
+        <div class="result-label">Quiz Complete</div>
+        <div class="score-display">{{ score }}/{{ total }}</div>
+        <div class="score-sub">
+            {% if pct >= 80 %}Excellent work — outstanding score!
+            {% elif pct >= 50 %}Good effort — keep practicing!
+            {% else %}Keep studying — you'll get there!{% endif %}
+        </div>
+
+        <div class="grade-bar-wrap">
+            <div class="grade-bar-label">
+                <span>Score</span>
+                <span>{{ pct }}%</span>
+            </div>
+            <div class="grade-bar-bg">
+                <div class="grade-bar-fill" style="--pct:{{ pct }}%"></div>
+            </div>
+        </div>
+
+        <div class="btn-row">
+            <a href="/quiz" class="btn-primary">Try Again →</a>
+            <a href="/dashboard" class="btn-outline">Dashboard</a>
+        </div>
+
+    </div>
 </div>
 
 </body>

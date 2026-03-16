@@ -2,171 +2,223 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Converter | Qerrastar</title>
-
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root {
-    --accent: #8A2BE2;
-    --accent-soft: rgba(138,43,226,0.25);
-    --text-dim: #a1a1a1;
-}
+:root{--accent:#8A2BE2;--accent2:#5e17eb;--border:rgba(255,255,255,0.07);--dim:#555;--text:#e8e8e8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(700px circle at 20% 20%,rgba(138,43,226,0.18),transparent 60%),radial-gradient(600px circle at 80% 75%,rgba(94,23,235,0.13),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(138,43,226,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,0.025) 1px,transparent 1px);background-size:60px 60px;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--accent),#c084fc);z-index:200;box-shadow:0 0 8px var(--accent);}
+.tool-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1rem;font-weight:900;letter-spacing:4px;text-decoration:none;background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{to{background-position:200%}}
+.nav-back{font-size:0.75rem;color:var(--dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back span{display:inline-block;transition:transform 0.2s;}
+.nav-back:hover{color:#fff;}
+.nav-back:hover span{transform:translateX(-4px);}
+.tool-wrapper{position:relative;z-index:1;max-width:960px;margin:0 auto;padding:70px 2rem 120px;}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.23,1,0.32,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
 
-/* ===== BASE ===== */
-body {
-    margin: 0;
-    background: #000;
-    color: #fff;
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    padding: 60px;
-    position: relative;
-}
+.hero{margin-bottom:56px;}
+.tool-tag{display:inline-flex;align-items:center;gap:8px;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(138,43,226,0.3);padding:5px 14px;border-radius:50px;margin-bottom:20px;background:rgba(138,43,226,0.07);}
+.tool-tag::before{content:"";width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+.tool-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,#fff 35%,#8A2BE2 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+.tool-sub{font-size:0.9rem;color:var(--dim);line-height:1.7;}
 
-/* Purple glow background */
-body::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(700px circle at 30% 20%, rgba(138,43,226,0.3), transparent 60%),
-        radial-gradient(900px circle at 70% 60%, rgba(138,43,226,0.2), transparent 70%);
-    z-index: -1;
-}
+.section-label{font-size:0.62rem;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:var(--dim);margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.section-label::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent);}
 
-/* ===== HEADER ===== */
-.header {
-    margin-bottom: 60px;
-}
+/* GRID */
+.converter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
 
-.header h1 {
-    font-size: 48px;
-    font-weight: 900;
-    letter-spacing: 3px;
+/* CONVERTER CARD */
+.conv-card{
+    position:relative;border-radius:20px;overflow:hidden;padding:30px 26px;
+    background:linear-gradient(135deg,rgba(255,255,255,0.055),rgba(255,255,255,0.015),rgba(138,43,226,0.03));
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    box-shadow:0 4px 20px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.09);
+    transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s,border-color 0.4s;
 }
+.conv-card::before{content:"";position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.065),transparent);border-radius:20px 20px 0 0;pointer-events:none;}
+/* Mouse glow */
+.card-glow{position:absolute;width:200px;height:200px;background:radial-gradient(circle,rgba(138,43,226,0.45),transparent 70%);border-radius:50%;pointer-events:none;transform:translate(-50%,-50%);opacity:0;transition:opacity 0.3s;z-index:0;}
+.conv-card:hover .card-glow{opacity:1;}
+.conv-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 24px 50px rgba(0,0,0,0.5),0 0 30px rgba(138,43,226,0.15),inset 0 1px 0 rgba(255,255,255,0.14);border-color:rgba(138,43,226,0.28);}
 
-.header p {
-    margin-top: 10px;
-    color: var(--text-dim);
+.conv-icon{font-size:1.8rem;margin-bottom:14px;display:block;filter:drop-shadow(0 0 8px rgba(138,43,226,0.5));transition:transform 0.3s;position:relative;z-index:1;}
+.conv-card:hover .conv-icon{transform:scale(1.15) rotate(-5deg);}
+
+.conv-title{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;letter-spacing:2px;color:#fff;margin-bottom:6px;position:relative;z-index:1;}
+.conv-sub{font-size:0.75rem;color:var(--dim);margin-bottom:20px;position:relative;z-index:1;}
+
+/* Drop zone */
+.drop-zone{
+    border:1px dashed rgba(138,43,226,0.3);
+    border-radius:12px;padding:16px;text-align:center;
+    background:rgba(138,43,226,0.04);
+    transition:border-color 0.2s,background 0.2s;
+    cursor:pointer;margin-bottom:14px;
+    position:relative;z-index:1;
 }
+.drop-zone:hover{border-color:rgba(138,43,226,0.5);background:rgba(138,43,226,0.08);}
+.drop-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.drop-text{font-size:0.72rem;color:var(--dim);pointer-events:none;}
+.drop-text span{display:block;font-size:1.2rem;margin-bottom:4px;}
+.file-name{font-size:0.7rem;color:var(--accent);margin-top:4px;min-height:14px;}
 
-/* ===== GRID ===== */
-.converter-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 40px;
+.btn-convert{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:12px;border-radius:10px;border:none;
+    font-family:'Syne',sans-serif;font-size:0.7rem;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 6px 20px rgba(138,43,226,0.35);
+    transition:transform 0.25s,box-shadow 0.25s;
+    position:relative;z-index:1;overflow:hidden;
 }
+.btn-convert::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s;}
+.btn-convert:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(138,43,226,0.5);}
+.btn-convert:hover::before{left:100%;}
 
-/* ===== CARD ===== */
-.converter-card {
-    background: linear-gradient(
-        135deg,
-        rgba(255,255,255,0.08),
-        rgba(255,255,255,0.02)
-    );
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 28px;
-    padding: 50px 40px;
-    text-align: center;
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    box-shadow:
-        0 30px 60px rgba(0,0,0,0.6),
-        inset 0 1px 0 rgba(255,255,255,0.15);
-    transition: all 0.35s ease;
+@media(max-width:768px){
+    .tool-nav{padding:0.9rem 1.2rem;}
+    .tool-wrapper{padding:50px 1.2rem 80px;}
+    .converter-grid{grid-template-columns:repeat(2,1fr);gap:12px;}
+    .conv-card{padding:22px 16px;}
 }
-
-.converter-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 0 60px var(--accent-soft);
+@media(max-width:400px){
+    .converter-grid{grid-template-columns:1fr;}
 }
-
-/* ===== TITLE ===== */
-.converter-title {
-    font-size: 22px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    margin-bottom: 30px;
-}
-
-/* ===== BUTTON ===== */
-.convert-btn {
-    display: inline-block;
-    padding: 14px 35px;
-    border-radius: 14px;
-    background: linear-gradient(135deg, var(--accent), #5e17eb);
-    color: #fff;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-decoration: none;
-    transition: 0.3s ease;
-}
-
-.convert-btn:hover {
-    box-shadow: 0 0 30px var(--accent);
-}
-
-input[type="file"] {
-    margin-bottom: 20px;
-    color: var(--text-dim);
-}
-
 </style>
 </head>
-
 <body>
 
-<div class="header">
-    <h1>FILE CONVERTER</h1>
-    <p>Convert your files instantly with precision and speed.</p>
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="tool-nav">
+    <a href="/" class="nav-logo">QERRASTAR</a>
+    <a href="/dashboard" class="nav-back"><span>←</span> Dashboard</a>
+</nav>
+
+<div class="tool-wrapper">
+
+    <div class="hero reveal">
+        <span class="tool-tag">Converter</span>
+        <h1 class="tool-title">Convert<br>Any File.</h1>
+        <p class="tool-sub">Fast, accurate file conversion between popular formats — no quality loss.</p>
+    </div>
+
+    <p class="section-label reveal">Choose a Conversion</p>
+
+    <div class="converter-grid">
+
+        <div class="conv-card reveal" style="transition-delay:0.05s">
+            <div class="card-glow"></div>
+            <span class="conv-icon">🖼️</span>
+            <div class="conv-title">JPG → PDF</div>
+            <div class="conv-sub">Convert image to PDF document</div>
+            <form action="/convert/jpg-to-pdf" method="POST" enctype="multipart/form-data">
+                <div class="drop-zone">
+                    <input type="file" name="file" accept=".jpg,.jpeg" required onchange="showName(this)">
+                    <div class="drop-text"><span>📁</span>Tap to select JPG</div>
+                    <div class="file-name" id="fn0"></div>
+                </div>
+                <button type="submit" class="btn-convert">Convert →</button>
+            </form>
+        </div>
+
+        <div class="conv-card reveal" style="transition-delay:0.1s">
+            <div class="card-glow"></div>
+            <span class="conv-icon">📄</span>
+            <div class="conv-title">PDF → JPG</div>
+            <div class="conv-sub">Extract page as image</div>
+            <form action="/convert/pdf-to-jpg" method="POST" enctype="multipart/form-data">
+                <div class="drop-zone">
+                    <input type="file" name="file" accept=".pdf" required onchange="showName(this)">
+                    <div class="drop-text"><span>📁</span>Tap to select PDF</div>
+                    <div class="file-name" id="fn1"></div>
+                </div>
+                <button type="submit" class="btn-convert">Convert →</button>
+            </form>
+        </div>
+
+        <div class="conv-card reveal" style="transition-delay:0.15s">
+            <div class="card-glow"></div>
+            <span class="conv-icon">📝</span>
+            <div class="conv-title">WORD → PDF</div>
+            <div class="conv-sub">Convert .docx to PDF</div>
+            <form action="/convert/word-to-pdf" method="POST" enctype="multipart/form-data">
+                <div class="drop-zone">
+                    <input type="file" name="file" accept=".doc,.docx" required onchange="showName(this)">
+                    <div class="drop-text"><span>📁</span>Tap to select Word file</div>
+                    <div class="file-name" id="fn2"></div>
+                </div>
+                <button type="submit" class="btn-convert">Convert →</button>
+            </form>
+        </div>
+
+        <div class="conv-card reveal" style="transition-delay:0.2s">
+            <div class="card-glow"></div>
+            <span class="conv-icon">🔄</span>
+            <div class="conv-title">PDF → WORD</div>
+            <div class="conv-sub">Extract text to .docx</div>
+            <form action="/convert/pdf-to-word" method="POST" enctype="multipart/form-data">
+                <div class="drop-zone">
+                    <input type="file" name="file" accept=".pdf" required onchange="showName(this)">
+                    <div class="drop-text"><span>📁</span>Tap to select PDF</div>
+                    <div class="file-name" id="fn3"></div>
+                </div>
+                <button type="submit" class="btn-convert">Convert →</button>
+            </form>
+        </div>
+
+        <div class="conv-card reveal" style="transition-delay:0.25s">
+            <div class="card-glow"></div>
+            <span class="conv-icon">📃</span>
+            <div class="conv-title">TEXT → PDF</div>
+            <div class="conv-sub">Convert plain text to PDF</div>
+            <form action="/convert/text-to-pdf" method="POST" enctype="multipart/form-data">
+                <div class="drop-zone">
+                    <input type="file" name="file" accept=".txt" required onchange="showName(this)">
+                    <div class="drop-text"><span>📁</span>Tap to select .txt file</div>
+                    <div class="file-name" id="fn4"></div>
+                </div>
+                <button type="submit" class="btn-convert">Convert →</button>
+            </form>
+        </div>
+
+    </div>
 </div>
 
-<div class="converter-grid">
+<script>
+    const obs = new IntersectionObserver(entries => entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.08});
+    document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+    window.addEventListener('scroll',()=>{ const p=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100; document.getElementById('progressBar').style.width=p+'%'; });
 
-    <!-- JPG → PDF -->
-    <div class="converter-card">
-        <div class="converter-title">JPG → PDF</div>
-        <form action="/convert/jpg-to-pdf" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button class="convert-btn">CONVERT</button>
-        </form>
-    </div>
+    // Card glow
+    document.querySelectorAll('.conv-card').forEach(card=>{
+        const glow=card.querySelector('.card-glow');
+        card.addEventListener('mousemove',e=>{const r=card.getBoundingClientRect();glow.style.left=(e.clientX-r.left)+'px';glow.style.top=(e.clientY-r.top)+'px';});
+    });
 
-    <!-- PDF → JPG -->
-    <div class="converter-card">
-        <div class="converter-title">PDF → JPG</div>
-        <form action="/convert/pdf-to-jpg" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button class="convert-btn">CONVERT</button>
-        </form>
-    </div>
-
-    <!-- WORD → PDF -->
-    <div class="converter-card">
-        <div class="converter-title">WORD → PDF</div>
-        <form action="/convert/word-to-pdf" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button class="convert-btn">CONVERT</button>
-        </form>
-    </div>
-
-    <!-- PDF → WORD -->
-    <div class="converter-card">
-        <div class="converter-title">PDF → WORD</div>
-        <form action="/convert/pdf-to-word" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button class="convert-btn">CONVERT</button>
-        </form>
-    </div>
-        <!-- TEXT → PDF -->
-    <div class="converter-card">
-        <div class="converter-title">TEXT → PDF</div>
-        <form action="/convert/text-to-pdf" method="POST" enctype="multipart/form-data">
-            <input type="file" name="file" required>
-            <button class="convert-btn">CONVERT</button>
-        </form>
-    </div>
-
-</div>
+    // Show filename
+    let fnIdx = 0;
+    function showName(input) {
+        const names = ['fn0','fn1','fn2','fn3','fn4'];
+        const allInputs = document.querySelectorAll('input[type="file"]');
+        allInputs.forEach((inp, i) => {
+            if(inp === input) {
+                const el = document.getElementById(names[i]);
+                if(el) el.textContent = input.files[0]?.name || '';
+            }
+        });
+    }
+</script>
 </body>
 </html>

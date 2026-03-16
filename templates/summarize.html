@@ -1,107 +1,142 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Qerrastar</title>
-    <style>
-        body {
-            background: radial-gradient(circle at center, #2a004f, #000000);
-            font-family: 'Segoe UI', sans-serif;
-            color: white;
-            margin: 0;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Summarise | Qerrastar</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--accent:#8A2BE2;--accent2:#5e17eb;--border:rgba(255,255,255,0.07);--dim:#555;--text:#e8e8e8;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(700px circle at 25% 25%,rgba(138,43,226,0.18),transparent 60%),radial-gradient(600px circle at 75% 70%,rgba(94,23,235,0.13),transparent 60%);}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(138,43,226,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(138,43,226,0.025) 1px,transparent 1px);background-size:60px 60px;}
+.progress-bar{position:fixed;top:0;left:0;height:2px;width:0%;background:linear-gradient(90deg,var(--accent),#c084fc);z-index:200;box-shadow:0 0 8px var(--accent);}
+.tool-nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:1rem 3rem;background:rgba(0,0,0,0.7);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1rem;font-weight:900;letter-spacing:4px;text-decoration:none;background:linear-gradient(90deg,#fff,#8A2BE2,#fff);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shimmer 4s linear infinite;}
+@keyframes shimmer{to{background-position:200%}}
+.nav-back{font-size:0.75rem;color:var(--dim);text-decoration:none;letter-spacing:2px;text-transform:uppercase;display:flex;align-items:center;gap:6px;transition:color 0.2s;}
+.nav-back span{display:inline-block;transition:transform 0.2s;}
+.nav-back:hover{color:#fff;}
+.nav-back:hover span{transform:translateX(-4px);}
+.tool-wrapper{position:relative;z-index:1;max-width:800px;margin:0 auto;padding:70px 2rem 120px;}
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s cubic-bezier(0.23,1,0.32,1);}
+.reveal.visible{opacity:1;transform:translateY(0);}
 
-        .container {
-            width: 70%;
-            margin: 60px auto;
-        }
+.hero{margin-bottom:50px;}
+.tool-tag{display:inline-flex;align-items:center;gap:8px;font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);border:1px solid rgba(138,43,226,0.3);padding:5px 14px;border-radius:50px;margin-bottom:20px;background:rgba(138,43,226,0.07);}
+.tool-tag::before{content:"";width:5px;height:5px;background:var(--accent);border-radius:50%;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.6)}}
+.tool-title{font-family:'Syne',sans-serif;font-size:clamp(2rem,5vw,3.8rem);font-weight:900;letter-spacing:-2px;line-height:1;background:linear-gradient(135deg,#fff 35%,#8A2BE2 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:14px;}
+.tool-sub{font-size:0.9rem;color:var(--dim);line-height:1.7;}
 
-        h2 {
-            font-size: 36px;
-            margin-bottom: 20px;
-        }
+/* FORM CARD */
+.form-card{
+    position:relative;border-radius:22px;overflow:hidden;
+    background:linear-gradient(135deg,rgba(255,255,255,0.055),rgba(255,255,255,0.015),rgba(138,43,226,0.03));
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    box-shadow:0 4px 30px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.09);
+    padding:40px 36px; margin-bottom:28px;
+    transition:border-color 0.3s,box-shadow 0.3s;
+}
+.form-card::before{content:"";position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(255,255,255,0.06),transparent);border-radius:22px 22px 0 0;pointer-events:none;}
+.form-card:focus-within{border-color:rgba(138,43,226,0.3);box-shadow:0 0 40px rgba(138,43,226,0.1),inset 0 1px 0 rgba(255,255,255,0.12);}
 
-        .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 40px;
-        }
+.input-label{font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:12px;display:block;}
 
-        input {
-            flex: 1;
-            padding: 15px;
-            border-radius: 12px;
-            border: none;
-            background: #111;
-            color: white;
-            font-size: 16px;
-        }
+textarea{
+    width:100%;padding:16px 18px;min-height:180px;
+    background:rgba(255,255,255,0.03);
+    border:1px solid rgba(255,255,255,0.07);
+    border-radius:14px;color:#fff;
+    font-family:'DM Sans',sans-serif;font-size:0.92rem;
+    line-height:1.7;resize:vertical;outline:none;
+    transition:border-color 0.2s,box-shadow 0.2s;
+    margin-bottom:20px;
+}
+textarea::placeholder{color:var(--dim);}
+textarea:focus{border-color:rgba(138,43,226,0.45);box-shadow:0 0 0 3px rgba(138,43,226,0.1);}
 
-        .btn {
-            background: linear-gradient(90deg, #8e2de2, #4a00e0);
-            border: none;
-            padding: 15px 25px;
-            border-radius: 12px;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s ease;
-        }
+.char-count{font-size:0.7rem;color:var(--dim);text-align:right;margin-top:-14px;margin-bottom:20px;letter-spacing:1px;}
 
-        .btn:hover {
-            box-shadow: 0 0 20px #8e2de2;
-        }
+.btn-primary{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    width:100%;padding:14px 24px;border-radius:12px;border:none;
+    font-family:'Syne',sans-serif;font-size:0.75rem;font-weight:800;
+    letter-spacing:2px;text-transform:uppercase;color:#fff;cursor:pointer;
+    background:linear-gradient(135deg,var(--accent),var(--accent2));
+    box-shadow:0 8px 24px rgba(138,43,226,0.4);
+    transition:transform 0.25s,box-shadow 0.25s;
+    position:relative;overflow:hidden;
+}
+.btn-primary::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left 0.5s;}
+.btn-primary:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(138,43,226,0.55);}
+.btn-primary:hover::before{left:100%;}
 
-        .card {
-            background: #0d0d0d;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 25px rgba(142, 45, 226, 0.3);
-            line-height: 1.6;
-        }
+/* RESULT */
+.result-card{
+    position:relative;border-radius:20px;padding:32px 36px;
+    background:rgba(138,43,226,0.06);
+    border:1px solid rgba(138,43,226,0.18);
+    backdrop-filter:blur(10px);
+    overflow:hidden;
+}
+.result-card::before{content:"";position:absolute;top:0;left:0;right:0;height:40%;background:linear-gradient(180deg,rgba(138,43,226,0.05),transparent);border-radius:20px 20px 0 0;pointer-events:none;}
+.result-label{font-family:'Syne',sans-serif;font-size:0.65rem;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.result-label::before{content:"💎";font-size:1rem;}
+.result-text{font-size:0.95rem;line-height:1.85;color:#ccc;position:relative;z-index:1;}
 
-    </style>
+@media(max-width:768px){
+    .tool-nav{padding:0.9rem 1.2rem;}
+    .tool-wrapper{padding:50px 1.2rem 80px;}
+    .form-card{padding:28px 20px;}
+    .result-card{padding:24px 20px;}
+}
+</style>
 </head>
 <body>
 
-<div class="container">
+<div class="progress-bar" id="progressBar"></div>
 
-    <h2>Summarize Topic</h2>
+<nav class="tool-nav">
+    <a href="/" class="nav-logo">QERRASTAR</a>
+    <a href="/dashboard" class="nav-back"><span>←</span> Dashboard</a>
+</nav>
 
-<form method="POST">
-    <div class="search-box" style="flex-direction: column; gap: 15px;">
-        
-        <textarea 
-            name="topic" 
-            placeholder="Paste your text here to summarize..."
-            rows="8"
-            style="
-                width: 100%;
-                padding: 15px;
-                border-radius: 12px;
-                border: none;
-                background: #111;
-                color: white;
-                font-size: 16px;
-                resize: vertical;
-            "
-            required
-        ></textarea>
+<div class="tool-wrapper">
 
-        <button type="submit" class="btn">Summarize</button>
-
+    <div class="hero reveal">
+        <span class="tool-tag">Summariser</span>
+        <h1 class="tool-title">Simplify<br>Anything.</h1>
+        <p class="tool-sub">Paste long text or enter a topic — get a clean, concise summary instantly.</p>
     </div>
-</form>
 
+    <div class="form-card reveal" style="transition-delay:0.1s">
+        <form method="POST">
+            <label class="input-label">Your Text or Topic</label>
+            <textarea name="topic" id="textInput" placeholder="Paste your text here, or type a topic to search and summarize..." required></textarea>
+            <div class="char-count" id="charCount">0 characters</div>
+            <button type="submit" class="btn-primary">Summarize →</button>
+        </form>
+    </div>
 
     {% if summary %}
-    <div class="card">
-        <h3>Summary</h3>
-        <p>{{ summary }}</p>
+    <div class="result-card reveal">
+        <div class="result-label">Summary</div>
+        <p class="result-text">{{ summary }}</p>
     </div>
     {% endif %}
 
 </div>
 
+<script>
+    const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting){e.target.classList.add('visible');obs.unobserve(e.target);}}),{threshold:0.1});
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+    window.addEventListener('scroll',()=>{ const p=(window.scrollY/(document.body.scrollHeight-window.innerHeight))*100; document.getElementById('progressBar').style.width=p+'%'; });
+    const ta = document.getElementById('textInput');
+    const cc = document.getElementById('charCount');
+    if(ta) ta.addEventListener('input',()=>{ cc.textContent = ta.value.length+' characters'; });
+</script>
 </body>
 </html>
