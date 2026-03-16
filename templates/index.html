@@ -37,8 +37,14 @@
             <button data-aos="fade-down" data-aos-duration="3000" class="btn-signing" onclick="location.href='/login'">Sign up</button>
         </header>
 
-        <!-- Robot here so it sits between header and content on mobile -->
-        <canvas id="particleCanvas" class="robot-3d"></canvas>
+        <!-- Desktop: Spline robot -->
+        <spline-viewer
+            class="robot-3d desktop-only"
+            url="https://prod.spline.design/zIOWvaKm-VZgFVfc/scene.splinecode">
+        </spline-viewer>
+
+        <!-- Mobile: Canvas particle sphere -->
+        <canvas id="particleCanvas" class="robot-3d mobile-only"></canvas>
 
         <main>
             <div class="content">
@@ -86,91 +92,116 @@
       AOS.init();
     </script>
     <script>
-const canvas = document.getElementById('particleCanvas');
-const ctx = canvas.getContext('2d');
-let mouse = { x: null, y: null };
-let particles = [];
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let mouse = { x: null, y: null };
+    let particles = [];
+    const SPHERE_RADIUS = 100;
+    const PARTICLE_COUNT = 500;
 
-function resize() {
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
-}
-
-class Particle {
-    constructor() { this.reset(); }
-    reset() {
-        const angle = Math.random() * Math.PI * 2;
-        const radius = Math.random() * 100 + 20;
-        const cx = canvas.width / 2, cy = canvas.height / 2;
-        this.x = cx + Math.cos(angle) * radius;
-        this.y = cy + Math.sin(angle) * radius;
-        this.baseX = this.x;
-        this.baseY = this.y;
-        this.size = Math.random() * 1.5 + 0.3;
-        this.speed = Math.random() * 0.4 + 0.1;
-        this.angle = angle;
-        this.radius = radius;
-        this.opacity = Math.random() * 0.6 + 0.2;
+    function resize() {
+        canvas.width  = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
     }
-    update() {
-        this.angle += this.speed * 0.008;
-        const cx = canvas.width / 2, cy = canvas.height / 2;
-        this.baseX = cx + Math.cos(this.angle) * this.radius;
-        this.baseY = cy + Math.sin(this.angle) * this.radius;
 
-        if (mouse.x !== null) {
-            const dx = mouse.x - this.baseX;
-            const dy = mouse.y - this.baseY;
-            const dist = Math.sqrt(dx*dx + dy*dy);
-            const force = Math.max(0, 80 - dist) / 80;
-            this.x = this.baseX - dx * force * 0.4;
-            this.y = this.baseY - dy * force * 0.4;
-        } else {
-            this.x += (this.baseX - this.x) * 0.05;
-            this.y += (this.baseY - this.y) * 0.05;
+    class Particle {
+        constructor() { this.reset(); }
+        reset() {
+            // Distribute evenly on sphere surface using spherical coords
+            const u = Math.random(), v = Math.random();
+            const theta = 2 * Math.PI * u;
+            const phi   = Math.acos(2 * v - 1);
+            this.sx = Math.sin(phi) * Math.cos(theta); // unit sphere x
+            this.sy = Math.sin(phi) * Math.sin(theta); // unit sphere y
+            this.sz = Math.cos(phi);                   // unit sphere z
+            this.rotX = Math.random() * Math.PI * 2;
+            this.rotY = Math.random() * Math.PI * 2;
+            this.speedX = (Math.random() - 0.5) * 0.003;
+            this.speedY = (Math.random() - 0.5) * 0.003;
+            this.size = Math.random() * 1.4 + 0.3;
+        }
+        update(mx, my) {
+            // Slow auto-rotation
+            this.rotY += this.speedY + 0.004;
+            this.rotX += this.speedX;
+
+            // Mouse/touch tilt
+            if (mx !== null) {
+                const cx = canvas.width / 2, cy = canvas.height / 2;
+                const tiltY = (mx - cx) / cx * 0.015;
+                const tiltX = (my - cy) / cy * 0.010;
+                this.rotY += tiltY;
+                this.rotX += tiltX;
+            }
+
+            // Rotate around Y axis
+            const cosY = Math.cos(this.rotY), sinY = Math.sin(this.rotY);
+            const x1 =  this.sx * cosY + this.sz * sinY;
+            const z1 = -this.sx * sinY + this.sz * cosY;
+            // Rotate around X axis
+            const cosX = Math.cos(this.rotX), sinX = Math.sin(this.rotX);
+            const y2 =  this.sy * cosX - z1 * sinX;
+            const z2 =  this.sy * sinX + z1 * cosX;
+
+            this.projX = x1;
+            this.projY = y2;
+            this.projZ = z2; // -1 = back, 1 = front
+        }
+        draw() {
+            const cx = canvas.width / 2, cy = canvas.height / 2;
+            const scale = (this.projZ + 1.5) / 2.5; // depth scale
+            const x = cx + this.projX * SPHERE_RADIUS;
+            const y = cy + this.projY * SPHERE_RADIUS;
+            const opacity = scale * 0.75;
+            const size = this.size * scale;
+
+            // Purple-white color based on depth
+            const r = Math.floor(180 + 60 * scale);
+            const g = Math.floor(140 + 40 * scale);
+            const b = 255;
+
+            ctx.beginPath();
+            ctx.arc(x, y, Math.max(0.2, size), 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
+            ctx.fill();
         }
     }
-    draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(220, 200, 255, ${this.opacity})`;
-        ctx.fill();
+
+    function init() {
+        resize();
+        particles = [];
+        for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
     }
-}
 
-function init() {
-    resize();
-    particles = [];
-    for (let i = 0; i < 320; i++) particles.push(new Particle());
-}
+    function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        // Sort by Z so front particles draw on top
+        particles.sort((a, b) => a.projZ - b.projZ);
+        particles.forEach(p => { p.update(mouse.x, mouse.y); p.draw(); });
+        requestAnimationFrame(animate);
+    }
 
-function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => { p.update(); p.draw(); });
-    requestAnimationFrame(animate);
-}
+    // Mouse
+    canvas.addEventListener('mousemove', e => {
+        const r = canvas.getBoundingClientRect();
+        mouse.x = e.clientX - r.left;
+        mouse.y = e.clientY - r.top;
+    });
+    canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
 
-// Mouse
-canvas.addEventListener('mousemove', e => {
-    const r = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - r.left;
-    mouse.y = e.clientY - r.top;
-});
-canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
+    // Touch
+    canvas.addEventListener('touchmove', e => {
+        e.preventDefault();
+        const r = canvas.getBoundingClientRect();
+        mouse.x = e.touches[0].clientX - r.left;
+        mouse.y = e.touches[0].clientY - r.top;
+    }, { passive: false });
+    canvas.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
 
-// Touch
-canvas.addEventListener('touchmove', e => {
-    e.preventDefault();
-    const r = canvas.getBoundingClientRect();
-    mouse.x = e.touches[0].clientX - r.left;
-    mouse.y = e.touches[0].clientY - r.top;
-}, { passive: false });
-canvas.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
-
-window.addEventListener('resize', init);
-init();
-animate();
-</script>
+    window.addEventListener('resize', init);
+    init();
+    animate();
+    </script>
 
 </body>
 </html>

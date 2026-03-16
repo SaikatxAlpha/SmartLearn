@@ -211,6 +211,11 @@ main{
     top: 0;
     right: -20%;
 }
+
+/* Desktop shows Spline, hides canvas */
+.mobile-only { display: none; }
+.desktop-only { display: block; }
+
 spline-viewer {
     background: transparent !important;
     --background-color: transparent;
@@ -266,21 +271,21 @@ spline-viewer::part(canvas) {
     }
 
     /* Robot sits right below header, full width, fixed height */
-.robot-3d {
-    position: relative !important;
-    width: 100% !important;
-    height: 260px !important;
-    top: auto !important;
-    right: auto !important;
-    display: block !important;
-    margin: 0 !important;
-    background: transparent !important;
-    border: none !important;
-}
+    .mobile-only {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        height: 280px !important;
+        top: auto !important;
+        right: auto !important;
+        margin: 0 !important;
+        background: transparent !important;
+        border: none !important;
+    }
 
-    .robot-3d::part(logo) {
-    display: none !important;
-}
+    .desktop-only {
+        display: none !important;
+    }
 
     /* Main sits below the robot */
     main {
