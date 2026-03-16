@@ -41,17 +41,22 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
-    # Add new columns if they don't exist yet
     try:
-        db.engine.execute('ALTER TABLE "user" ADD COLUMN is_pro BOOLEAN DEFAULT 0')
+        with db.engine.connect() as conn:
+            conn.execute(db.text('ALTER TABLE "user" ADD COLUMN is_pro BOOLEAN DEFAULT 0'))
+            conn.commit()
     except: pass
     try:
-        db.engine.execute('ALTER TABLE "user" ADD COLUMN pro_since DATETIME')
+        with db.engine.connect() as conn:
+            conn.execute(db.text('ALTER TABLE "user" ADD COLUMN pro_since DATETIME'))
+            conn.commit()
     except: pass
     try:
-        db.engine.execute('ALTER TABLE "user" ADD COLUMN pro_expires DATETIME')
+        with db.engine.connect() as conn:
+            conn.execute(db.text('ALTER TABLE "user" ADD COLUMN pro_expires DATETIME'))
+            conn.commit()
     except: pass
-RESET_DB=true
+
 
 with app.app_context():
     import os
