@@ -266,21 +266,17 @@ spline-viewer::part(canvas) {
     }
 
     /* Robot sits right below header, full width, fixed height */
-    .robot-3d {
-        position: relative !important;
-        width: 70% !important;
-        height: 200px !important;
-        top: auto !important;
-        right: auto !important;
-        left: auto !important;
-        bottom: auto !important;
-        scale: 0.6 !important;
-        display: block !important;
-        margin: -30px auto !important;
-        order: 0;
-        flex-shrink: 0;
-        overflow: hidden !important;
-    }
+.robot-3d {
+    position: relative !important;
+    width: 100% !important;
+    height: 260px !important;
+    top: auto !important;
+    right: auto !important;
+    display: block !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
 
     .robot-3d::part(logo) {
     display: none !important;
