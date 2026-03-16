@@ -1,21 +1,23 @@
-from flask import Flask, render_template, request, jsonify , send_file
-from flask import session, redirect, url_for
+from flask import Flask, render_template, request, jsonify, send_file
+from flask import session, redirect, url_for, send_from_directory
 from functools import wraps
 import requests
 import os
-from tavily import TavilyClient
 import random
+import hmac
+import hashlib
+from datetime import datetime, timedelta
+from tavily import TavilyClient
 from werkzeug.utils import secure_filename
 from PIL import Image
 from reportlab.platypus import SimpleDocTemplate, Paragraph
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.pdfgen import canvas
 from docx import Document
-import fitz  
+import fitz
+import razorpay
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
-import random
-from flask import send_from_directory
 
 
 app = Flask(__name__)
@@ -31,7 +33,6 @@ app.config['MAIL_USERNAME'] = 'saikatmahara7895@gmail.com'
 app.config['MAIL_PASSWORD'] = 'tvesmzoqwzfsotzp'
 
 mail = Mail(app)
-from flask import Flask
 from models import db, User
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
@@ -41,6 +42,7 @@ db.init_app(app)
 
 with app.app_context():
     db.create_all()
+    # Safely add new columns if they don't exist yet
     try:
         with db.engine.connect() as conn:
             conn.execute(db.text('ALTER TABLE "user" ADD COLUMN is_pro BOOLEAN DEFAULT 0'))
@@ -56,13 +58,6 @@ with app.app_context():
             conn.execute(db.text('ALTER TABLE "user" ADD COLUMN pro_expires DATETIME'))
             conn.commit()
     except: pass
-
-
-with app.app_context():
-    import os
-    if os.environ.get('RESET_DB') == 'true':
-        db.drop_all()
-    db.create_all()
 #----------------------------------------------------------------
 # FOR SITEMAP
 @app.route('/sitemap.xml')
@@ -559,7 +554,7 @@ def signup():
 
         otp      = str(random.randint(100000, 999999))
         new_user = User(email=email, otp=otp)
-        new_user.set_password(password)   # <-- uses hash, NOT plain text
+        new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
 
@@ -571,9 +566,8 @@ def signup():
             )
             msg.body = f"Your Qerrastar OTP is: {otp}\n\nThis code expires soon."
             mail.send(msg)
-        except Exception as e:
-            error = f"Account created but email failed: {str(e)}"
-            return render_template("signup.html", error=error)
+        except Exception:
+            pass  # Account saved — redirect anyway, OTP shown on verify page
 
         return redirect(url_for("verify", email=email))
 
@@ -609,40 +603,28 @@ def logout():
     return redirect(url_for("index"))
 
 
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
-
-
 # ============================================================
-# Primium Plans
+# PREMIUM PLANS — RAZORPAY
 # ============================================================
-import razorpay
-import hmac
-import hashlib
-from datetime import datetime, timedelta
 
-# 2. Add your Razorpay keys (replace with your real keys from razorpay.com dashboard):
-RAZORPAY_KEY_ID     = "rzp_test_XXXXXXXXXXXXXXXX"   # replace this
-RAZORPAY_KEY_SECRET = "XXXXXXXXXXXXXXXXXXXXXXXX"     # replace this
+RAZORPAY_KEY_ID     = os.environ.get("RAZORPAY_KEY_ID", "rzp_test_XXXXXXXXXXXXXXXX")
+RAZORPAY_KEY_SECRET = os.environ.get("RAZORPAY_KEY_SECRET", "XXXXXXXXXXXXXXXXXXXXXXXX")
 
 rzp_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 
 
-# ── PRICING PAGE ──
 @app.route("/pricing")
 def pricing():
     return render_template("pricing.html")
 
 
-# ── CREATE RAZORPAY ORDER ──
 @app.route("/create-order", methods=["POST"])
 def create_order():
     if "user" not in session:
         return jsonify({"error": "not logged in"}), 401
 
     data   = request.get_json()
-    amount = data.get("amount", 4900)   # paise (₹49 = 4900 paise)
+    amount = data.get("amount", 4900)
     period = data.get("period", "monthly")
 
     order = rzp_client.order.create({
@@ -658,7 +640,6 @@ def create_order():
     })
 
 
-# ── VERIFY PAYMENT & UPGRADE USER ──
 @app.route("/verify-payment", methods=["POST"])
 def verify_payment():
     if "user" not in session:
@@ -666,15 +647,17 @@ def verify_payment():
 
     data = request.get_json()
 
-    # Verify signature
-    body        = data["razorpay_order_id"] + "|" + data["razorpay_payment_id"]
-    expected    = hmac.new(RAZORPAY_KEY_SECRET.encode(), body.encode(), hashlib.sha256).hexdigest()
-    actual      = data["razorpay_signature"]
+    body     = data["razorpay_order_id"] + "|" + data["razorpay_payment_id"]
+    expected = hmac.new(
+        key=RAZORPAY_KEY_SECRET.encode(),
+        msg=body.encode(),
+        digestmod=hashlib.sha256
+    ).hexdigest()
+    actual   = data["razorpay_signature"]
 
     if expected != actual:
         return jsonify({"success": False, "error": "Invalid signature"})
 
-    # Upgrade user to Pro in database
     user = User.query.filter_by(email=session["user"]).first()
     if user:
         user.is_pro      = True
@@ -685,7 +668,11 @@ def verify_payment():
     return jsonify({"success": True})
 
 
-# ── PAYMENT SUCCESS PAGE ──
 @app.route("/payment-success")
 def payment_success():
     return render_template("payment_success.html")
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
