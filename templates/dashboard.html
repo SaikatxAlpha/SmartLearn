@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Qerrastar — Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
     <style>
         :root {
             --accent: #8A2BE2;
@@ -65,7 +66,8 @@
             color:#555; text-decoration:none; border-radius:10px;
             transition:all 0.25s ease;
         }
-        .nav-icon { font-size:15px;opacity:0.6;transition:opacity 0.2s,transform 0.2s; }
+        .nav-icon { display:inline-flex;align-items:center;justify-content:center;opacity:0.5;transition:opacity 0.2s,transform 0.2s;flex-shrink:0; }
+        .nav-icon svg { width:16px;height:16px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round; }
         .nav-link:hover { background:rgba(138,43,226,0.1);color:#ccc; }
         .nav-link:hover .nav-icon { opacity:1;transform:scale(1.1); }
         .nav-link.active { background:linear-gradient(90deg,rgba(138,43,226,0.2),rgba(138,43,226,0.04));color:#fff;border-left:2px solid var(--accent); }
@@ -187,11 +189,23 @@
         }
 
         .tool-icon {
-            font-size:28px;margin-bottom:18px;display:inline-block;
-            filter:drop-shadow(0 0 10px rgba(138,43,226,0.6));
-            transition:transform 0.3s cubic-bezier(0.23,1,0.32,1);
+            width:42px;height:42px;margin-bottom:18px;display:inline-flex;
+            align-items:center;justify-content:center;
+            background:rgba(138,43,226,0.1);border:1px solid rgba(138,43,226,0.2);
+            border-radius:12px;
+            filter:drop-shadow(0 0 10px rgba(138,43,226,0.4));
+            transition:transform 0.3s cubic-bezier(0.23,1,0.32,1),box-shadow 0.3s;
         }
-        .card-outer:hover .tool-icon { transform:scale(1.2) rotate(-8deg); }
+        .tool-icon svg {
+            width:20px;height:20px;
+            stroke:url(#iconGrad);stroke-width:1.8;
+            fill:none;stroke-linecap:round;stroke-linejoin:round;
+        }
+        .card-outer:hover .tool-icon {
+            transform:scale(1.15) rotate(-6deg);
+            box-shadow:0 0 20px rgba(138,43,226,0.4);
+            background:rgba(138,43,226,0.18);
+        }
 
         .tool-tag {
             display:inline-flex;align-items:center;font-size:0.6rem;font-weight:700;
@@ -250,7 +264,8 @@
             .tool-name { font-size:1rem !important; }
             .desc { font-size:10px !important;padding-bottom:16px !important; }
             .launch-btn { font-size:9px !important;padding:10px 12px !important;letter-spacing:1px !important; }
-            .tool-icon { font-size:22px !important;margin-bottom:12px !important; }
+            .tool-icon { width:36px !important;height:36px !important;margin-bottom:12px !important; }
+            .tool-icon svg { width:16px !important;height:16px !important; }
             .tool-tag { display:none; }
             .card-outer { cursor:auto; }
         }
@@ -258,6 +273,16 @@
     </style>
 </head>
 <body>
+
+<!-- Icon gradient definition -->
+<svg width="0" height="0" style="position:absolute;overflow:hidden">
+    <defs>
+        <linearGradient id="iconGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#8A2BE2"/>
+        </linearGradient>
+    </defs>
+</svg>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -271,11 +296,11 @@
     <div class="logo">QERRASTAR</div>
     <nav class="nav-group">
         <span class="nav-label">Main</span>
-        <a href="/" class="nav-link active"><span class="nav-icon">⚡</span> Dashboard</a>
-        <a href="#" class="nav-link"><span class="nav-icon">📈</span> My Progress</a>
-        <a href="#" class="nav-link"><span class="nav-icon">📚</span> Library</a>
+        <a href="/" class="nav-link active"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> Dashboard</a>
+        <a href="#" class="nav-link"><span class="nav-icon"><i data-lucide="trending-up"></i></span> My Progress</a>
+        <a href="#" class="nav-link"><span class="nav-icon"><i data-lucide="book-open"></i></span> Library</a>
         <span class="nav-label">Account</span>
-        <a href="#" class="nav-link"><span class="nav-icon">⚙️</span> Settings</a>
+        <a href="#" class="nav-link"><span class="nav-icon"><i data-lucide="settings"></i></span> Settings</a>
     </nav>
     <div class="sidebar-bottom">
         <div class="user-badge">
@@ -314,7 +339,7 @@
             <div class="card-glow"></div>
             <div class="card-inner">
                 <span class="card-num">01</span>
-                <span class="tool-icon">🔎</span>
+                <span class="tool-icon"><i data-lucide="search"></i></span>
                 <span class="tool-tag">Research</span>
                 <h3 class="tool-name">LEARNER</h3>
                 <p class="desc">Deep dive into any topic with AI-guided explanations and research from across the web.</p>
@@ -326,7 +351,7 @@
             <div class="card-glow"></div>
             <div class="card-inner">
                 <span class="card-num">02</span>
-                <span class="tool-icon">🎯</span>
+                <span class="tool-icon"><i data-lucide="target"></i></span>
                 <span class="tool-tag">Practice</span>
                 <h3 class="tool-name">QUIZ</h3>
                 <p class="desc">Test your knowledge with custom-generated quizzes tailored to your study material.</p>
@@ -338,7 +363,7 @@
             <div class="card-glow"></div>
             <div class="card-inner">
                 <span class="card-num">03</span>
-                <span class="tool-icon">💎</span>
+                <span class="tool-icon"><i data-lucide="file-text"></i></span>
                 <span class="tool-tag">Summary</span>
                 <h3 class="tool-name">SUMMARIZE</h3>
                 <p class="desc">Instantly turn long documents or topics into concise, readable summaries.</p>
@@ -350,7 +375,7 @@
             <div class="card-glow"></div>
             <div class="card-inner">
                 <span class="card-num">04</span>
-                <span class="tool-icon">🧬</span>
+                <span class="tool-icon"><i data-lucide="refresh-cw"></i></span>
                 <span class="tool-tag">Convert</span>
                 <h3 class="tool-name">CONVERTER</h3>
                 <p class="desc">Convert files between formats — PDF, Word, JPG and more with high accuracy.</p>
@@ -362,7 +387,7 @@
             <div class="card-glow"></div>
             <div class="card-inner">
                 <span class="card-num">05</span>
-                <span class="tool-icon">📄</span>
+                <span class="tool-icon"><i data-lucide="archive"></i></span>
                 <span class="tool-tag">Archive</span>
                 <h3 class="tool-name">PYQ</h3>
                 <p class="desc">Find Previous Year Questions from your own university or school. Upload and share.</p>
@@ -416,6 +441,9 @@
         c.style.transition=`opacity 0.6s ease ${i*0.08}s,transform 0.6s cubic-bezier(0.23,1,0.32,1) ${i*0.08}s,box-shadow 0.45s ease,border-color 0.45s ease`;
         setTimeout(()=>{ c.style.opacity='1';c.style.transform='translateY(0)'; },100+i*80);
     });
+
+    // Activate Lucide icons
+    lucide.createIcons();
 </script>
 </body>
 </html>
