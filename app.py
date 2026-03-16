@@ -678,9 +678,29 @@ def payment_success():
 def about():
     return render_template("about.html")
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    success = None
+    error = None
+    if request.method == "POST":
+        name    = request.form.get("name", "").strip()
+        email   = request.form.get("email", "").strip()
+        subject = request.form.get("subject", "").strip()
+        body    = request.form.get("body", "").strip()
+
+        try:
+            msg = Message(
+                subject=f"Qerrastar Contact: {subject}",
+                sender=app.config['MAIL_USERNAME'],
+                recipients=['saikatmahara7895@gmail.com']
+            )
+            msg.body = f"From: {name} <{email}>\n\n{body}"
+            mail.send(msg)
+            success = "Message sent! I'll get back to you within 24–48 hours."
+        except Exception as e:
+            error = "Failed to send. Please email me directly at saikatmahara7895@gmail.com"
+
+    return render_template("contact.html", success=success, error=error)
 
 @app.route("/privacy")
 def privacy():
