@@ -28,7 +28,7 @@ def send_otp_email(to_email, otp):
     }
 
     data = {
-        "from": "Qerrastar <no-reply@yourapp.com>",
+        "from": "Qerrastar <no-reply@qerrastar.online>",
         "to": [to_email],
         "subject": "Verify Your Qerrastar Account",
         "html": f"<h2>Your OTP is: {otp}</h2><p>This code expires soon.</p>"
@@ -56,7 +56,7 @@ def send_contact_email(name, email, subject, body):
     """
 
     data = {
-        "from": "Qerrastar <no-reply@yourapp.com>",
+        "from": "Qerrastar <no-reply@qerrastar.online>",
         "to": ["saikatmahara7895@gmail.com"],
         "subject": f"Qerrastar Contact: {subject}",
         "html": html_content
