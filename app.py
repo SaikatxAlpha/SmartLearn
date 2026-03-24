@@ -26,12 +26,61 @@ def send_otp_email(to_email, otp):
         "Authorization": "Bearer re_ieNDTuCP_8ewyF3N8n9zzUwr4JzDB231j",
         "Content-Type": "application/json"
     }
+    html = f"""
+    <div style="background:linear-gradient(135deg,#0b0b14,#1a0f2e);
+                padding:40px 0;
+                font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+
+    <div style="max-width:480px;
+                margin:auto;
+                background:#12121c;
+                padding:32px;
+                border-radius:12px;
+                border:1px solid rgba(255,255,255,0.08);">
+
+        <h2 style="margin:0 0 20px 0;
+                font-size:18px;
+                color:#ffffff;
+                letter-spacing:1px;">
+        Qerrastar
+        </h2>
+
+        <p style="font-size:16px;color:#e5e7eb;margin-bottom:20px;">
+        Verify your email address
+        </p>
+
+        <p style="font-size:14px;color:#a1a1aa;margin-bottom:25px;">
+        Enter the verification code below to continue:
+        </p>
+
+        <div style="font-size:30px;
+                    font-weight:600;
+                    letter-spacing:6px;
+                    color:#a855f7;
+                    margin-bottom:20px;">
+        {otp}
+        </div>
+
+        <p style="font-size:13px;color:#71717a;margin-bottom:30px;">
+        This code will expire in 5 minutes.
+        </p>
+
+        <hr style="border:none;border-top:1px solid rgba(255,255,255,0.08);margin:20px 0;">
+
+        <p style="font-size:12px;color:#6b7280;">
+        If you didn’t request this, you can safely ignore this email.
+        </p>
+
+    </div>
+
+    </div>
+    """
 
     data = {
         "from": "Qerrastar <no-reply@qerrastar.online>",
         "to": [to_email],
         "subject": "Verify Your Qerrastar Account",
-        "html": f"<h2>Your OTP is: {otp}</h2><p>This code expires soon.</p>"
+        "html": html
     }
 
     response = requests.post(url, json=data, headers=headers)
@@ -552,7 +601,7 @@ def download_pyq(filepath):
     return "File not found"
 
 # ============================================================
-# L O G I N 
+# L O G I N  &  S I G N  U P
 # ============================================================
 
 # ── LOGIN ──
