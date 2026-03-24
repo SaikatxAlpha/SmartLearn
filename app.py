@@ -38,6 +38,11 @@ def send_otp_email(to_email, otp):
                 border-radius:12px;
                 border:1px solid rgba(255,255,255,0.08);">
 
+                 <img src="https://www.qerrastar.online/static/images/logo.png"
+         alt="Qerrastar"
+         style="width:120px;margin-bottom:20px;">
+
+
         <h2 style="margin:0 0 20px 0;
                 font-size:18px;
                 color:#ffffff;
