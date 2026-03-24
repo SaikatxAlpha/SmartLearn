@@ -17,7 +17,27 @@ from docx import Document
 import fitz
 import razorpay
 from flask_sqlalchemy import SQLAlchemy
-from flask_mail import Mail, Message
+import requests
+
+def send_otp_email(to_email, otp):
+    url = "https://api.resend.com/emails"
+
+    headers = {
+        "Authorization": "re_ieNDTuCP_8ewyF3N8n9zzUwr4JzDB231j",
+        "Content-Type": "application/json"
+    }
+
+    data = {
+        "from": "Qerrastar <no-reply@yourapp.com>",
+        "to": [to_email],
+        "subject": "Verify Your Qerrastar Account",
+        "html": f"<h2>Your OTP is: {otp}</h2><p>This code expires soon.</p>"
+    }
+
+    response = requests.post(url, json=data, headers=headers)
+
+    print("STATUS:", response.status_code)
+    print("RESPONSE:", response.text)
 
 
 app = Flask(__name__)
@@ -25,14 +45,7 @@ app.secret_key = "change-this-later"
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Email config 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'saikatmahara7895@gmail.com'
-app.config['MAIL_PASSWORD'] = 'tvesmzoqwzfsotzp'
 
-mail = Mail(app)
 from models import db, User
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
@@ -559,16 +572,10 @@ def signup():
         db.session.commit()
 
         try:
-            msg = Message(
-                "Verify Your Qerrastar Account",
-                sender=app.config['MAIL_USERNAME'],
-                recipients=[email]
-            )
-            msg.body = f"Your Qerrastar OTP is: {otp}\n\nThis code expires soon."
-            mail.send(msg)
-        except Exception:
-            pass  # Account saved — redirect anyway, OTP shown on verify page
-
+            send_otp_email(email, otp)
+        except Exception as e:
+            print("EMAIL ERROR:", e)
+            return "Failed to send OTP"
         return redirect(url_for("verify", email=email))
 
     return render_template("signup.html", error=error)
