@@ -23,7 +23,7 @@ def send_otp_email(to_email, otp):
     url = "https://api.resend.com/emails"
 
     headers = {
-        "Authorization": "re_ieNDTuCP_8ewyF3N8n9zzUwr4JzDB231j",
+        "Authorization": "Bearer re_ieNDTuCP_8ewyF3N8n9zzUwr4JzDB231j",
         "Content-Type": "application/json"
     }
 
@@ -38,6 +38,36 @@ def send_otp_email(to_email, otp):
 
     print("STATUS:", response.status_code)
     print("RESPONSE:", response.text)
+
+#For Gmail Contact
+def send_contact_email(name, email, subject, body):
+    url = "https://api.resend.com/emails"
+
+    headers = {
+        "Authorization": "Bearer re_ieNDTuCP_8ewyF3N8n9zzUwr4JzDB231j",
+        "Content-Type": "application/json"
+    }
+
+    html_content = f"""
+    <h3>New Contact Message</h3>
+    <p><b>Name:</b> {name}</p>
+    <p><b>Email:</b> {email}</p>
+    <p><b>Message:</b><br>{body}</p>
+    """
+
+    data = {
+        "from": "Qerrastar <no-reply@yourapp.com>",
+        "to": ["saikatmahara7895@gmail.com"],
+        "subject": f"Qerrastar Contact: {subject}",
+        "html": html_content
+    }
+
+    response = requests.post(url, json=data, headers=headers)
+
+    print("CONTACT STATUS:", response.status_code)
+    print("CONTACT RESPONSE:", response.text)
+
+
 
 
 app = Flask(__name__)
@@ -695,17 +725,12 @@ def contact():
         subject = request.form.get("subject", "").strip()
         body    = request.form.get("body", "").strip()
 
-        try:
-            msg = Message(
-                subject=f"Qerrastar Contact: {subject}",
-                sender=app.config['MAIL_USERNAME'],
-                recipients=['saikatmahara7895@gmail.com']
-            )
-            msg.body = f"From: {name} <{email}>\n\n{body}"
-            mail.send(msg)
-            success = "Message sent! I'll get back to you within 24–48 hours."
-        except Exception as e:
-            error = "Failed to send. Please email me directly at saikatmahara7895@gmail.com"
+    try:
+        send_contact_email(name, email, subject, body)
+        success = "Message sent! I'll get back to you within 24–48 hours."
+    except Exception as e:
+         print("CONTACT ERROR:", e)
+         error = "Failed to send. Please try again later."
 
     return render_template("contact.html", success=success, error=error)
 
