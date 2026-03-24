@@ -186,25 +186,60 @@ main{
     background-color: #1a1a1a;
 }
 
-.btn-signing-main{
+.btn-signing-main {
+    position: relative;
     text-decoration: none;
-    background-color: lightgray;
+    background-color: #e5e5e5;
     color: black;
     padding: 0.6rem 2.5rem;
     border-radius: 50px;
     font-size: 1.2rem;
     font-weight: 600;
     letter-spacing: 0.1rem;
-    transition: background-color 0.2s ease;
-    white-space: nowrap;
+    cursor: pointer;
+    overflow: hidden;
     display: inline-flex;
     align-items: center;
-
+    transition: all 0.3s ease;
 }
 
-.btn-signing-main:hover{
-    background-color: gray;
+/* 🔥 OUTER GLOW */
+.btn-signing-main::before {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #ff7a18, #ff3d00, #ff7a18);
+    filter: blur(12px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
 }
+
+/* ✨ INNER LIGHT */
+.btn-signing-main::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at 80% 50%, rgba(255,120,0,0.4), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* 🚀 HOVER EFFECT */
+.btn-signing-main:hover::before {
+    opacity: 1;
+}
+
+.btn-signing-main:hover::after {
+    opacity: 1;
+}
+
+.btn-signing-main:hover {
+    transform: translateY(-2px);
+}
+
 
 .robot-3d{
     position: absolute;

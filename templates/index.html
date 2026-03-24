@@ -1,269 +1,780 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no">
-    <title>Qerrastar</title>
-    <meta name="description" content="Qerrastar is a smart learning platform offering quizzes, PYQs, converters, and study tools for students.">
-    <meta name="keywords" content="Qerrastar, Quizzes, PYQ, Study Tools, Smart learning, Pdf to Jpg, Jpg to Pdf, Converter, Summarize, Text shorter">
-    <meta name="author" content="Qerrastar">
-    <link rel="icon" type="image/png" sizes="512x512" href="{{ url_for('static', filename='images/logo.png') }}">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='images/logo.png') }}">
-    <link rel="stylesheet" href="/static/css/style.css">
-    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-    <script type="application/ld+json">
-    {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Qerrastar",
-    "url": "https://www.qerrastar.online/"
-    }
-    </script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Qerrastar — Assistant for Students</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#06060a;
+  --card:#0f0f18;
+  --card-hi:#14141f;
+  --border:rgba(255,255,255,0.07);
+  --border-p:rgba(148,92,255,0.25);
+  --white:#ffffff;
+  --off-white:#e8e4f0;
+  --muted:rgba(255,255,255,0.45);
+  --dimmer:rgba(255,255,255,0.22);
+  --purple:#9333ea;
+  --purple-b:#a855f7;
+  --purple-l:#c084fc;
+  --purple-dim:rgba(147,51,234,0.14);
+  --purple-glow:rgba(147,51,234,0.45);
+  --purple-glow2:rgba(192,132,252,0.3);
+}
+
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--white);font-family:'DM Sans',sans-serif;font-weight:400;overflow-x:hidden;cursor:none}
+
+/* ── GRID BG ── */
+#bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(148,92,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(148,92,255,0.04) 1px,transparent 1px);
+  background-size:64px 64px}
+#bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-orb{position:absolute;border-radius:50%;filter:blur(140px)}
+.bg-orb-1{width:680px;height:680px;background:radial-gradient(circle,rgba(120,58,237,0.2) 0%,transparent 70%);top:-12%;left:-10%;animation:dO1 26s ease-in-out infinite alternate}
+.bg-orb-2{width:480px;height:480px;background:radial-gradient(circle,rgba(147,51,234,0.12) 0%,transparent 70%);top:45%;right:-8%;animation:dO2 32s ease-in-out infinite alternate}
+.bg-orb-3{width:360px;height:360px;background:radial-gradient(circle,rgba(192,132,252,0.09) 0%,transparent 70%);bottom:8%;left:28%;animation:dO3 20s ease-in-out infinite alternate}
+@keyframes dO1{to{transform:translate(110px,80px)}}
+@keyframes dO2{to{transform:translate(-90px,110px)}}
+@keyframes dO3{to{transform:translate(55px,-90px)}}
+
+/* ── NOISE ── */
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity:0.025}
+
+/* ── CURSOR GLOW ── */
+#cursor-glow{position:fixed;z-index:1;pointer-events:none;width:380px;height:380px;border-radius:50%;
+  background:radial-gradient(circle,rgba(147,51,234,0.07) 0%,transparent 65%);transform:translate(-50%,-50%);transition:opacity .3s}
+.cursor{position:fixed;top:0;left:0;z-index:9999;pointer-events:none}
+.cursor-dot{width:5px;height:5px;background:var(--purple-l);border-radius:50%;transform:translate(-50%,-50%);position:absolute}
+.cursor-ring{width:30px;height:30px;border:1px solid rgba(192,132,252,0.5);border-radius:50%;transform:translate(-50%,-50%);position:absolute;transition:width .28s,height .28s,border-color .28s}
+body:has(a:hover) .cursor-ring,body:has(button:hover) .cursor-ring{width:46px;height:46px;border-color:var(--purple-l)}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;
+  padding:20px 60px;backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid transparent;transition:border-color .4s,background .4s}
+nav.scrolled{border-color:var(--border);background:rgba(6,6,10,0.92)}
+.nav-logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem;letter-spacing:.16em;color:#fff;text-decoration:none}
+
+/* Nav links — Syne bold, matching Introducing font */
+.nav-links{display:flex;gap:36px;list-style:none}
+.nav-links a{
+  text-decoration:none;color:var(--muted);
+  font-family:'Syne',sans-serif;font-weight:600;font-size:.82rem;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:color .25s;position:relative
+}
+.nav-links a::after{content:'';position:absolute;left:0;bottom:-3px;width:0;height:1px;background:var(--purple-l);transition:width .3s}
+.nav-links a:hover{color:#fff}
+.nav-links a:hover::after{width:100%}
+
+/* Sign Up — Huly-style magnetic button */
+.btn-signup{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;
+  background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;
+  padding:10px 26px;border-radius:100px;cursor:none;position:relative;overflow:hidden;
+  transition:border-color .35s,box-shadow .4s
+}
+.btn-signup .btn-glow{
+  position:absolute;border-radius:50%;width:100px;height:100px;
+  background:radial-gradient(circle,rgba(192,132,252,0.5) 0%,transparent 70%);
+  transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .3s;
+}
+.btn-signup:hover{border-color:rgba(192,132,252,0.6);box-shadow:0 0 24px rgba(147,51,234,0.3)}
+.btn-signup:hover .btn-glow{opacity:1}
+
+/* ── HERO ── */
+.hero{position:relative;min-height:100vh;display:flex;align-items:center;padding:0 60px;overflow:hidden}
+.hero-bg-orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(90px);opacity:0;animation:orbFade 2s ease forwards}
+.orb1{width:580px;height:580px;background:radial-gradient(circle,rgba(120,58,237,0.24) 0%,transparent 70%);top:-80px;right:-80px;animation-delay:.4s}
+.orb2{width:380px;height:380px;background:radial-gradient(circle,rgba(147,51,234,0.12) 0%,transparent 70%);bottom:0;right:220px;animation-delay:.7s}
+@keyframes orbFade{to{opacity:1}}
+#particle-canvas{position:absolute;top:0;right:0;width:55%;height:100%;pointer-events:none}
+.hero-content{position:relative;z-index:2;max-width:580px}
+
+/* Introducing badge — EXACT original style.css */
+.tag-box{position:relative;width:18rem;height:2.5rem;border-radius:50px;
+  background:linear-gradient(to right,#656565,#7f42a7,#6600c5,#5300a0,#757575,#656565);
+  background-size:200%;animation:gradAnim 2.5s linear infinite,badgeIn .7s .2s ease forwards;
+  box-shadow:0 0 15px rgba(255,255,255,0.3);opacity:0;transform:translateY(16px);margin-bottom:32px}
+@keyframes gradAnim{to{background-position:200%}}
+@keyframes badgeIn{to{opacity:1;transform:none}}
+.tag-box .tag{font-family:'Syne',sans-serif;font-weight:700;letter-spacing:.1rem;font-size:.9rem;text-transform:uppercase;
+  position:absolute;inset:3px;background:#000;border-radius:50px;display:flex;align-items:center;justify-content:center;transition:color .5s;cursor:none}
+.tag-box .tag:hover{color:#5300a0}
+
+.hero-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(3rem,6vw,5.6rem);line-height:1.0;letter-spacing:-.025em;margin-bottom:24px;
+  opacity:0;transform:translateY(20px);animation:slideUp .8s .45s ease forwards}
+.hero-title .pur{color:var(--purple-l)}
+.hero-sub{color:var(--muted);font-size:1.05rem;line-height:1.7;margin-bottom:44px;
+  opacity:0;transform:translateY(20px);animation:slideUp .8s .65s ease forwards}
+.hero-cta{display:flex;gap:14px;opacity:0;transform:translateY(20px);animation:slideUp .8s .85s ease forwards}
+@keyframes slideUp{to{opacity:1;transform:none}}
+
+/* ── HULY-STYLE MAGNETIC BUTTON ── */
+/* Filled white btn — inner radial glow that chases cursor */
+.btn-mag{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;
+  background:#fff;color:#06060a;border:none;padding:15px 36px;border-radius:100px;
+  cursor:none;position:relative;overflow:hidden;
+  transition:transform .3s cubic-bezier(.22,.68,0,1.2),box-shadow .35s;
+  display:inline-flex;align-items:center;gap:8px
+}
+.btn-mag .mag-glow{
+  position:absolute;width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(147,51,234,0.7) 0%,transparent 65%);
+  transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .25s
+}
+.btn-mag:hover{box-shadow:0 6px 40px rgba(147,51,234,0.4)}
+.btn-mag:hover .mag-glow{opacity:1}
+.btn-mag svg{transition:transform .3s}
+.btn-mag:hover svg{transform:translateX(4px)}
+
+/* Ghost magnetic */
+.btn-mag-ghost{
+  font-family:'Syne',sans-serif;font-weight:600;font-size:.85rem;letter-spacing:.06em;text-transform:uppercase;
+  background:transparent;border:1px solid rgba(255,255,255,0.18);color:var(--muted);
+  padding:15px 36px;border-radius:100px;
+  cursor:none;position:relative;overflow:hidden;
+  transition:border-color .3s,color .3s,transform .3s cubic-bezier(.22,.68,0,1.2);
+  display:inline-flex;align-items:center;gap:8px
+}
+.btn-mag-ghost .mag-glow{
+  position:absolute;width:160px;height:160px;border-radius:50%;
+  background:radial-gradient(circle,rgba(192,132,252,0.35) 0%,transparent 65%);
+  transform:translate(-50%,-50%);pointer-events:none;opacity:0;transition:opacity .25s
+}
+.btn-mag-ghost:hover{border-color:rgba(192,132,252,0.5);color:#fff}
+.btn-mag-ghost:hover .mag-glow{opacity:1}
+
+/* ── MARQUEE ── */
+.marquee-wrap{position:relative;z-index:2;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:16px 0;overflow:hidden;background:rgba(12,12,20,0.7)}
+.marquee-track{display:flex;gap:56px;animation:marquee 30s linear infinite;width:max-content}
+.marquee-item{display:flex;align-items:center;gap:12px;font-family:'Syne',sans-serif;font-weight:600;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dimmer);white-space:nowrap}
+.marquee-dot{width:3px;height:3px;border-radius:50%;background:var(--purple-l)}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ── LEFT SCROLL SPINE ── */
+#scroll-spine{position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:200;display:flex;flex-direction:column;align-items:center;gap:0}
+.spine-label{font-family:'Syne',sans-serif;font-size:.55rem;letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(192,132,252,0.35);writing-mode:vertical-rl;transform:rotate(180deg);margin-bottom:12px}
+.spine-track{width:1px;height:160px;background:rgba(148,92,255,0.12);position:relative;border-radius:1px}
+.spine-fill{position:absolute;top:0;left:0;width:1px;background:linear-gradient(to bottom,var(--purple-l),var(--purple-b));border-radius:1px;transition:height .08s linear}
+.spine-dots{display:flex;flex-direction:column;gap:7px;margin-top:12px}
+.spine-dot{width:4px;height:4px;border-radius:50%;border:1px solid rgba(192,132,252,0.28);background:transparent;transition:background .3s,border-color .3s,transform .3s}
+.spine-dot.active{background:var(--purple-l);border-color:var(--purple-l);transform:scale(1.4)}
+
+/* ── SHARED ── */
+section{position:relative;z-index:2}
+.sec-chip{display:inline-flex;align-items:center;gap:7px;font-family:'Syne',sans-serif;font-weight:600;
+  font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;padding:5px 14px;border-radius:100px;
+  border:1px solid rgba(192,132,252,0.28);background:rgba(147,51,234,0.08);color:var(--purple-l);margin-bottom:20px}
+.sec-chip-dot{width:4px;height:4px;border-radius:50%;background:var(--purple-l);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* Section headings — Syne everywhere */
+h2.sec-h{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.2rem,4vw,3.4rem);line-height:1.05;letter-spacing:-.025em}
+h2.sec-h .pur{color:var(--purple-l)}
+h2.sec-h .wht{color:#fff}
+
+/* ── STATS ── */
+#stats{padding:70px 0 90px;overflow:hidden}
+.stats-row{display:flex;gap:18px;padding:0 60px;overflow-x:auto;scrollbar-width:none}
+.stats-row::-webkit-scrollbar{display:none}
+
+.stat-card{
+  flex:0 0 200px;background:var(--card);border:1px solid var(--border-p);border-radius:20px;padding:32px 26px;
+  position:relative;overflow:hidden;transition:border-color .3s,transform .3s
+}
+.stat-card::before{
+  content:'';position:absolute;inset:0;border-radius:20px;pointer-events:none;
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(147,51,234,0.18) 0%,transparent 55%);
+  opacity:0;transition:opacity .35s
+}
+.stat-card:hover{border-color:rgba(192,132,252,0.5);transform:translateY(-4px)}
+.stat-card:hover::before{opacity:1}
+.sc-icon{width:38px;height:38px;border-radius:10px;background:rgba(147,51,234,0.16);border:1px solid rgba(192,132,252,0.2);
+  display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.sc-icon svg{width:18px;height:18px;stroke:var(--purple-l);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sc-num{font-family:'Syne',sans-serif;font-weight:800;font-size:2.5rem;line-height:1;color:#fff;margin-bottom:6px}
+.sc-label{color:var(--dimmer);font-family:'Syne',sans-serif;font-weight:500;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+
+/* ── FEATURES — BENTO ── */
+#features{padding:70px 60px 90px}
+.feat-header{margin-bottom:52px}
+.feat-header p{color:var(--muted);font-size:.95rem;line-height:1.7;max-width:460px;margin-top:14px}
+
+.bento{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.bento-card{
+  background:var(--card);border:1px solid var(--border-p);border-radius:22px;padding:34px;
+  position:relative;overflow:hidden;transition:border-color .35s,transform .28s;
+  --mx:50%;--my:50%
+}
+.bento-card::before{
+  content:'';position:absolute;inset:0;border-radius:22px;pointer-events:none;
+  background:radial-gradient(circle at var(--mx) var(--my),rgba(147,51,234,0.16) 0%,transparent 50%);
+  opacity:0;transition:opacity .35s
+}
+.bento-card:hover{border-color:rgba(192,132,252,0.45);transform:translateY(-3px)}
+.bento-card:hover::before{opacity:1}
+.bento-card.wide{grid-column:span 2;display:flex;gap:36px;align-items:flex-start}
+.bento-card.tall{grid-row:span 2}
+.b-icon{width:46px;height:46px;border-radius:13px;background:rgba(147,51,234,0.16);border:1px solid rgba(192,132,252,0.28);
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px;flex-shrink:0;
+  box-shadow:0 0 16px rgba(147,51,234,0.18)}
+.b-icon svg{width:21px;height:21px;stroke:var(--purple-l);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.b-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;margin-bottom:10px;color:#fff}
+.b-desc{color:var(--muted);font-size:.87rem;line-height:1.65}
+
+/* code block */
+.b-code{background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;
+  font-size:.77rem;font-family:'Courier New',monospace;line-height:1.75;margin-top:16px;flex-shrink:0;min-width:180px}
+.tk-k{color:var(--purple-l)}.tk-s{color:rgba(255,255,255,0.75)}.tk-v{color:#fff;font-weight:600}.tk-c{color:var(--dimmer)}
+
+/* progress widget */
+.b-progress{margin-top:18px;display:flex;flex-direction:column;gap:11px}
+.pr-row{display:flex;flex-direction:column;gap:5px}
+.pr-lbl{display:flex;justify-content:space-between;font-family:'Syne',sans-serif;font-size:.7rem;font-weight:500;letter-spacing:.04em;text-transform:uppercase}
+.pr-lbl span:first-child{color:var(--muted)}
+.pr-lbl span:last-child{color:var(--purple-l)}
+.pr-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;overflow:hidden}
+.pr-fill{height:100%;border-radius:2px;background:linear-gradient(to right,var(--purple),var(--purple-l))}
+
+/* ── HOW IT WORKS ── */
+#how{padding:70px 60px 90px}
+.how-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:56px;flex-wrap:wrap;gap:20px}
+.how-head p{color:var(--muted);font-size:.9rem;max-width:300px;line-height:1.65;text-align:right}
+
+.timeline{display:grid;grid-template-columns:repeat(4,1fr);position:relative}
+.timeline::before{content:'';position:absolute;top:35px;left:36px;right:36px;height:1px;
+  background:linear-gradient(to right,transparent,rgba(148,92,255,0.25) 10%,rgba(148,92,255,0.25) 90%,transparent)}
+.tl-step{padding:0 20px 0 0;position:relative}
+.tl-num{
+  width:70px;height:70px;border-radius:50%;border:1px solid rgba(148,92,255,0.25);background:var(--card);
+  display:flex;align-items:center;justify-content:center;margin-bottom:26px;position:relative;z-index:1;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.1em;color:var(--purple-l);
+  transition:border-color .3s,box-shadow .3s
+}
+.tl-step:hover .tl-num{border-color:var(--purple-l);box-shadow:0 0 20px rgba(147,51,234,0.35)}
+.tl-t{font-family:'Syne',sans-serif;font-weight:700;font-size:.98rem;color:#fff;margin-bottom:8px}
+.tl-d{color:var(--muted);font-size:.84rem;line-height:1.6}
+
+/* ── TOOLS SHOWCASE ── */
+#tools{padding:70px 60px 90px}
+.tools-head{margin-bottom:52px}
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.tool-card{
+  background:var(--card);border:1px solid var(--border-p);border-radius:22px;padding:38px;
+  display:flex;gap:26px;align-items:flex-start;
+  position:relative;overflow:hidden;transition:border-color .35s,transform .28s;
+  --mx:50%;--my:50%
+}
+.tool-card::before{content:'';position:absolute;inset:0;border-radius:22px;pointer-events:none;
+  background:radial-gradient(circle at var(--mx) var(--my),rgba(147,51,234,0.15) 0%,transparent 50%);
+  opacity:0;transition:opacity .35s}
+.tool-card:hover{border-color:rgba(192,132,252,0.45);transform:translateY(-3px)}
+.tool-card:hover::before{opacity:1}
+.tc-icon{width:50px;height:50px;border-radius:15px;background:rgba(147,51,234,0.16);border:1px solid rgba(192,132,252,0.28);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 0 18px rgba(147,51,234,0.2)}
+.tc-icon svg{width:23px;height:23px;stroke:var(--purple-l);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tc-tag{font-family:'Syne',sans-serif;font-weight:600;font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--purple-l);margin-bottom:7px}
+.tc-title{font-family:'Syne',sans-serif;font-weight:700;font-size:1.3rem;color:#fff;margin-bottom:10px}
+.tc-desc{color:var(--muted);font-size:.87rem;line-height:1.65}
+.tc-pill{display:inline-flex;align-items:center;gap:6px;margin-top:14px;
+  background:rgba(147,51,234,0.1);border:1px solid rgba(192,132,252,0.2);
+  border-radius:100px;padding:4px 13px;
+  font-family:'Syne',sans-serif;font-size:.68rem;font-weight:500;letter-spacing:.04em;color:var(--dimmer)}
+.tc-pill svg{stroke:var(--purple-l)}
+
+/* ── CTA ── */
+.cta-section{padding:110px 60px;text-align:center;position:relative;overflow:hidden}
+.cta-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 55% at 50% 50%,rgba(120,58,237,0.15) 0%,transparent 70%)}
+.cta-ring{position:absolute;border-radius:50%;border:1px solid rgba(148,92,255,0.1);pointer-events:none;animation:rPulse 4s ease-in-out infinite}
+.cta-ring:nth-child(1){width:280px;height:280px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.cta-ring:nth-child(2){width:500px;height:500px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:.9s}
+.cta-ring:nth-child(3){width:720px;height:720px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:1.8s}
+@keyframes rPulse{0%,100%{border-color:rgba(148,92,255,0.08)}50%{border-color:rgba(192,132,252,0.25)}}
+.cta-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2.6rem,5vw,4.8rem);line-height:1.0;
+  letter-spacing:-.03em;margin-bottom:22px;position:relative;z-index:1;color:#fff}
+.cta-title .pur{color:var(--purple-l)}
+.cta-sub{color:var(--muted);font-size:1rem;margin-bottom:48px;position:relative;z-index:1}
+.cta-btns{display:flex;gap:14px;justify-content:center;position:relative;z-index:1}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid rgba(148,92,255,0.15);padding:56px 60px 36px;position:relative;z-index:2;
+  background:linear-gradient(to bottom,transparent,rgba(6,6,10,0.98));overflow:hidden}
+footer::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:linear-gradient(rgba(148,92,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(148,92,255,0.03) 1px,transparent 1px);
+  background-size:64px 64px}
+footer::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:500px;height:260px;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse at 50% 100%,rgba(120,58,237,0.22) 0%,transparent 70%);filter:blur(40px)}
+footer > *{position:relative;z-index:1}
+.foot-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:52px}
+.foot-brand{font-family:'Syne',sans-serif;font-weight:800;font-size:1rem;letter-spacing:.15em;margin-bottom:10px;color:#fff}
+.foot-tag{color:rgba(255,255,255,0.38);font-size:.84rem}
+.foot-links{display:flex;gap:56px}
+.foot-col-title{font-family:'Syne',sans-serif;font-weight:700;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px;color:var(--purple-l)}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+.foot-col a{text-decoration:none;color:rgba(255,255,255,0.38);font-family:'Syne',sans-serif;font-size:.82rem;font-weight:500;letter-spacing:.02em;transition:color .25s}
+.foot-col a:hover{color:#fff}
+.foot-bottom{border-top:1px solid rgba(148,92,255,0.1);padding-top:26px;display:flex;justify-content:space-between;align-items:center}
+.foot-copy{color:rgba(255,255,255,0.28);font-family:'Syne',sans-serif;font-size:.76rem;letter-spacing:.03em}
+.foot-copy a{color:var(--purple-l);text-decoration:none}
+
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal-l{opacity:0;transform:translateX(-26px);transition:opacity .7s ease,transform .7s ease}
+.reveal-l.visible{opacity:1;transform:none}
+.reveal-r{opacity:0;transform:translateX(26px);transition:opacity .7s ease,transform .7s ease}
+.reveal-r.visible{opacity:1;transform:none}
+.stagger > *{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
+.stagger.visible > *:nth-child(1){opacity:1;transform:none;transition-delay:0s}
+.stagger.visible > *:nth-child(2){opacity:1;transform:none;transition-delay:.08s}
+.stagger.visible > *:nth-child(3){opacity:1;transform:none;transition-delay:.16s}
+.stagger.visible > *:nth-child(4){opacity:1;transform:none;transition-delay:.24s}
+.stagger.visible > *:nth-child(5){opacity:1;transform:none;transition-delay:.32s}
+.stagger.visible > *:nth-child(6){opacity:1;transform:none;transition-delay:.40s}
+
+/* scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:rgba(147,51,234,0.45);border-radius:2px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1000px){
+  .bento{grid-template-columns:1fr 1fr}
+  .bento-card.wide{grid-column:span 2;flex-direction:column}
+  .bento-card.tall{grid-row:span 1}
+  .timeline{grid-template-columns:1fr 1fr;gap:36px}
+  .timeline::before{display:none}
+  .tools-grid{grid-template-columns:1fr}
+  #scroll-spine{display:none}
+}
+@media(max-width:680px){
+  nav{padding:16px 20px}
+  .nav-links{display:none}
+  .hero,#features,#how,#tools,.cta-section{padding-left:20px;padding-right:20px}
+  .stats-row{padding:0 20px}
+  .bento{grid-template-columns:1fr}
+  .bento-card.wide{grid-column:span 1}
+  .timeline{grid-template-columns:1fr}
+  footer{padding:36px 20px}
+  .foot-top{flex-direction:column;gap:36px}
+  .foot-links{flex-wrap:wrap;gap:28px}
+  #particle-canvas{width:100%}
+}
+</style>
 </head>
 <body>
-    <div class="layer-blur"></div>
 
-    <div class="container">
-        <header>
-            <h1 data-aos="fade-down" data-aos-duration="1500" class="logo">QERRASTAR</h1>
+<div id="bg-grid"></div>
+<div id="bg-orbs"><div class="bg-orb bg-orb-1"></div><div class="bg-orb bg-orb-2"></div><div class="bg-orb bg-orb-3"></div></div>
+<div id="cursor-glow"></div>
+<div class="cursor" id="cursor"><div class="cursor-dot"></div><div class="cursor-ring"></div></div>
 
-            <nav>
-                <a data-aos="fade-down" data-aos-duration="1500" href="/search">Learn</a>
-                <a data-aos="fade-down" data-aos-duration="2000" href="/quiz">Quiz</a>
-                <a data-aos="fade-down" data-aos-duration="2500" href="/summary">Summarize</a>
-                <a data-aos="fade-down" data-aos-duration="3000" href="/converter">Converter</a>
-            </nav>
+<!-- LEFT SCROLL SPINE -->
+<div id="scroll-spine">
+  <span class="spine-label">Scroll</span>
+  <div class="spine-track"><div class="spine-fill" id="spine-fill"></div></div>
+  <div class="spine-dots" id="spine-dots">
+    <div class="spine-dot active" data-s="hero"></div>
+    <div class="spine-dot" data-s="stats"></div>
+    <div class="spine-dot" data-s="features"></div>
+    <div class="spine-dot" data-s="how"></div>
+    <div class="spine-dot" data-s="tools"></div>
+  </div>
+</div>
 
-            <button data-aos="fade-down" data-aos-duration="3000" class="btn-signing" onclick="location.href='/login'">Sign up</button>
-        </header>
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">QERRASTAR</a>
+  <ul class="nav-links">
+    <li><a href="#features">Learn</a></li>
+    <li><a href="#tools">Quiz</a></li>
+    <li><a href="#how">Summarise</a></li>
+    <li><a href="#tools">Converter</a></li>
+  </ul>
+  <button class="btn-signup" id="btn-signup">
+    <span class="btn-glow" id="signup-glow"></span>
+    Sign Up
+  </button>
+</nav>
 
-        <!-- Desktop: Spline robot -->
-        <spline-viewer
-            class="robot-3d desktop-only"
-            url="https://prod.spline.design/zIOWvaKm-VZgFVfc/scene.splinecode">
-        </spline-viewer>
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg-orb orb1"></div>
+  <div class="hero-bg-orb orb2"></div>
+  <canvas id="particle-canvas"></canvas>
+  <div class="hero-content">
+    <div class="tag-box"><div class="tag">Introducing</div></div>
+    <h1 class="hero-title">Assistant<br>for <span class="pur">Students</span></h1>
+    <p class="hero-sub">Qerrastar is a smart learning platform offering Quizzes, PYQs, File Converters, and Study tools — built to make every student unstoppable.</p>
+    <div class="hero-cta">
+      <button class="btn-mag" id="btn-gs">
+        <span class="mag-glow" id="gs-glow"></span>
+        Get Started
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+      </button>
+      <button class="btn-mag-ghost" id="btn-doc">
+        <span class="mag-glow" id="doc-glow"></span>
+        Documentation
+      </button>
+    </div>
+  </div>
+</section>
 
-        <!-- Mobile: Canvas particle sphere -->
-        <canvas id="particleCanvas" class="robot-3d mobile-only"></canvas>
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="marquee-dot"></span>Smart Quizzes</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>PYQ Practice</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>AI Summarizer</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>File Converter</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Study Tools</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Instant Answers</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Smart Quizzes</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>PYQ Practice</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>AI Summarizer</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>File Converter</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Study Tools</span>
+    <span class="marquee-item"><span class="marquee-dot"></span>Instant Answers</span>
+  </div>
+</div>
 
-        <main>
-            <div class="content">
-                <div data-aos="fade-zoom-in"
-                    data-aos-easing="ease-in-back"
-                    data-aos-delay="300"
-                    data-aos-offset="0"
-                    data-aos-duration="1500"
-                    class="tag-box">
-                    <div class="tag">Introducing</div>
-                </div>
+<!-- STATS -->
+<section id="stats">
+  <div class="stats-row stagger">
+    <div class="stat-card">
+      <div class="sc-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="sc-num" data-target="50000">0</div>
+      <div class="sc-label">Active Students</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="sc-num" data-target="10000">0</div>
+      <div class="sc-label">PYQs Available</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+      <div class="sc-num" data-target="500">0</div>
+      <div class="sc-label">Quiz Topics</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-icon"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+      <div class="sc-num" data-target="99">0</div>
+      <div class="sc-label">% Satisfaction</div>
+    </div>
+    <div class="stat-card">
+      <div class="sc-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <div class="sc-num" data-target="120">0</div>
+      <div class="sc-label">Sec. to Summarise</div>
+    </div>
+  </div>
+</section>
 
-                <h1 data-aos="fade-zoom-in"
-                    data-aos-easing="ease-in-back"
-                    data-aos-delay="300"
-                    data-aos-offset="0"
-                    data-aos-duration="2000">ASSISTANT FOR<br>STUDENTS</h1>
-
-                <p data-aos="fade-zoom-in"
-                    data-aos-easing="ease-in-back"
-                    data-aos-delay="300"
-                    data-aos-offset="0"
-                    data-aos-duration="2000"
-                    class="description">
-                    Qerrastar is a smart learning platform offering Quizzes, PYQs, File Converters, and Study tools for students.
-                </p>
-
-                <div data-aos="fade-zoom-in"
-                    data-aos-easing="ease-in-back"
-                    data-aos-delay="300"
-                    data-aos-offset="0"
-                    data-aos-duration="2000"
-                    class="button">
-                    <a href="/docs" class="btn-get-started">Documentation</a>
-                    <a href="/dashboard" class="btn-signing-main">Get Started</a>
-                </div>
-            </div>
-        </main>
-
+<!-- FEATURES BENTO -->
+<section id="features">
+  <div class="feat-header reveal">
+    <div class="sec-chip"><span class="sec-chip-dot"></span>What We Offer</div>
+    <h2 class="sec-h">Everything a student<br><span class="pur">could ever need</span></h2>
+    <p>A unified platform built from the ground up — making learning effortless, efficient, and genuinely enjoyable.</p>
+  </div>
+  <div class="bento stagger">
+    <div class="bento-card wide">
+      <div style="flex:1">
+        <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.5-1.3 4.7-3.3 6L15 17H9l-.7-2C6.3 13.7 5 11.5 5 9a7 7 0 0 1 7-7z"/><line x1="9" y1="21" x2="15" y2="21"/><line x1="9" y1="17" x2="15" y2="17"/></svg></div>
+        <div class="b-title">AI-Powered Learning</div>
+        <div class="b-desc">Intelligent explanations, concept breakdowns, and personalized study paths tailored to your exact pace and style.</div>
+      </div>
+      <div class="b-code" style="flex:0 0 190px">
+        <span class="tk-k">ask</span>(<span class="tk-s">"Photosynthesis"</span>)<br>
+        <span class="tk-c">→</span> <span class="tk-v">Concept map</span> <span class="tk-c">ready</span><br>
+        <span class="tk-c">→</span> <span class="tk-v">Quiz</span> <span class="tk-s">generated</span><br>
+        <span class="tk-c">→</span> <span class="tk-k">Summary</span> <span class="tk-c">saved ✓</span>
+      </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer style="
-        position:relative;z-index:10;
-        border-top:1px solid rgba(255,255,255,0.06);
-        padding:2.5rem 2rem;
-        display:flex;flex-direction:column;align-items:center;gap:1.2rem;
-        background:rgba(0,0,0,0.4);backdrop-filter:blur(10px);
-    ">
-        <div style="font-family:system-ui,sans-serif;font-size:0.7rem;font-weight:800;letter-spacing:4px;color:rgba(255,255,255,0.2);text-transform:uppercase;">QERRASTAR</div>
-        <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.4rem 1.8rem;">
-            <a href="/about" style="font-size:0.78rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;letter-spacing:0.5px;" onmouseover="this.style.color='#c084fc'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">About Us</a>
-            <a href="/contact" style="font-size:0.78rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;letter-spacing:0.5px;" onmouseover="this.style.color='#c084fc'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Contact Us</a>
-            <a href="/privacy" style="font-size:0.78rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;letter-spacing:0.5px;" onmouseover="this.style.color='#c084fc'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Privacy Policy</a>
-            <a href="/terms" style="font-size:0.78rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;letter-spacing:0.5px;" onmouseover="this.style.color='#c084fc'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Terms &amp; Conditions</a>
-            <a href="/disclaimer" style="font-size:0.78rem;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.2s;letter-spacing:0.5px;" onmouseover="this.style.color='#c084fc'" onmouseout="this.style.color='rgba(255,255,255,0.4)'">Disclaimer</a>
-        </div>
-        <div style="font-size:0.7rem;color:rgba(255,255,255,0.18);letter-spacing:1px;">&copy; 2025 Qerrastar. All rights reserved.</div>
-    </footer>
+    <div class="bento-card tall">
+      <div class="b-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg></div>
+      <div class="b-title">Progress Tracking</div>
+      <div class="b-desc">Real-time analytics so you always know exactly where you stand and what to tackle next.</div>
+      <div class="b-progress">
+        <div class="pr-row"><div class="pr-lbl"><span>Physics</span><span>82%</span></div><div class="pr-bar"><div class="pr-fill" style="width:82%"></div></div></div>
+        <div class="pr-row"><div class="pr-lbl"><span>Chemistry</span><span>68%</span></div><div class="pr-bar"><div class="pr-fill" style="width:68%"></div></div></div>
+        <div class="pr-row"><div class="pr-lbl"><span>Maths</span><span>91%</span></div><div class="pr-bar"><div class="pr-fill" style="width:91%"></div></div></div>
+        <div class="pr-row"><div class="pr-lbl"><span>Biology</span><span>55%</span></div><div class="pr-bar"><div class="pr-fill" style="width:55%"></div></div></div>
+      </div>
+    </div>
 
-    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.12.48/build/spline-viewer.js"></script>
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-      AOS.init();
-    </script>
-    <script>
-    const canvas = document.getElementById('particleCanvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        let mouse = { x: null, y: null };
-        let particles = [];
-        let globalRotY = 0, globalRotX = 0;
-        let targetRotY = 0, targetRotX = 0;
-        let time = 0;
+    <div class="bento-card">
+      <div class="b-icon"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M9 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-3"/><polyline points="9 12 11 14 15 10"/></svg></div>
+      <div class="b-title">Adaptive Quizzes</div>
+      <div class="b-desc">Quizzes that adapt in real time to your weak spots — every minute counts double.</div>
+    </div>
 
-        const SPHERE_RADIUS = 110;
-        const PARTICLE_COUNT = 650;
+    <div class="bento-card">
+      <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
+      <div class="b-title">PYQ Bank</div>
+      <div class="b-desc">10,000+ previous year questions with step-by-step solutions for every major competitive exam.</div>
+    </div>
 
-        function resize() {
-            canvas.width  = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-        }
+    <div class="bento-card">
+      <div class="b-icon"><svg viewBox="0 0 24 24"><path d="M15 4V2"/><path d="M15 16v-2"/><path d="M8 9h2"/><path d="M20 9h2"/><path d="M17.8 11.8 19 13"/><path d="M15 9h.01"/><path d="M17.8 6.2 19 5"/><path d="M3 21l9-9"/><path d="M12.2 6.2 11 5"/></svg></div>
+      <div class="b-title">AI Summarizer</div>
+      <div class="b-desc">Paste any chapter — get an exam-ready summary in under 120 seconds.</div>
+    </div>
 
-        // Shared rotation state for all particles
-        let sharedRotY = 0, sharedRotX = 0.3;
+    <div class="bento-card">
+      <div class="b-icon"><svg viewBox="0 0 24 24"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></div>
+      <div class="b-title">File Converter</div>
+      <div class="b-desc">PDF, image, doc — convert anything in one click, in-browser, zero friction.</div>
+    </div>
+  </div>
+</section>
 
-        class Particle {
-            constructor() { this.init(); }
-            init() {
-                const u = Math.random(), v = Math.random();
-                const theta = 2 * Math.PI * u;
-                const phi   = Math.acos(2 * v - 1);
-                this.ox = Math.sin(phi) * Math.cos(theta);
-                this.oy = Math.sin(phi) * Math.sin(theta);
-                this.oz = Math.cos(phi);
-                this.size   = Math.random() * 1.6 + 0.2;
-                this.twinkle = Math.random() * Math.PI * 2; // phase for twinkling
-                this.twinkleSpeed = Math.random() * 0.04 + 0.01;
-                // Some particles are "bright stars"
-                this.isStar = Math.random() < 0.08;
-            }
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="how-head">
+    <div class="reveal-l">
+      <div class="sec-chip" style="margin-bottom:16px"><span class="sec-chip-dot"></span>How It Works</div>
+      <h2 class="sec-h">Four steps to<br><span class="pur">exam mastery</span></h2>
+    </div>
+    <p class="reveal-r">No complex onboarding. Sign up and start — the platform adapts to you from day one.</p>
+  </div>
+  <div class="timeline stagger">
+    <div class="tl-step">
+      <div class="tl-num">01</div>
+      <div class="tl-t">Create Account</div>
+      <div class="tl-d">Sign up in seconds. No credit card, no setup — you're inside instantly.</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-num">02</div>
+      <div class="tl-t">Pick Your Tools</div>
+      <div class="tl-d">Quiz, summarise, convert, or explore PYQs — whatever fits your session today.</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-num">03</div>
+      <div class="tl-t">Study &amp; Iterate</div>
+      <div class="tl-d">Practice, review your gaps, and let AI guide your next optimal move.</div>
+    </div>
+    <div class="tl-step">
+      <div class="tl-num">04</div>
+      <div class="tl-t">Ace Your Exams</div>
+      <div class="tl-d">Walk in backed by data, confidence, and thousands of hours of prep distilled.</div>
+    </div>
+  </div>
+</section>
 
-            project() {
-                // Rotate around Y
-                const cy = Math.cos(sharedRotY), sy = Math.sin(sharedRotY);
-                const x1 =  this.ox * cy + this.oz * sy;
-                const z1 = -this.ox * sy + this.oz * cy;
-                // Rotate around X
-                const cx = Math.cos(sharedRotX), sx = Math.sin(sharedRotX);
-                const y2 =  this.oy * cx - z1 * sx;
-                const z2 =  this.oy * sx + z1 * cx;
+<!-- TOOLS -->
+<section id="tools">
+  <div class="tools-head reveal">
+    <div class="sec-chip" style="margin-bottom:16px"><span class="sec-chip-dot"></span>Toolkit</div>
+    <h2 class="sec-h">Four tools.<br><span class="pur">Infinite possibilities.</span></h2>
+  </div>
+  <div class="tools-grid stagger">
+    <div class="tool-card">
+      <div class="tc-icon"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></div>
+      <div><div class="tc-tag">01 — Learn</div><div class="tc-title">Learn</div><div class="tc-desc">Concept-first AI explanations that adapt to any subject, difficulty, and your personal learning pace.</div>
+      <div class="tc-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Saves avg. 3 hrs/week</div></div>
+    </div>
+    <div class="tool-card">
+      <div class="tc-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+      <div><div class="tc-tag">02 — Quiz</div><div class="tc-title">Quiz</div><div class="tc-desc">Timed, topic-based, or adaptive quizzes that sharpen your knowledge under real exam pressure.</div>
+      <div class="tc-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>500+ topic categories</div></div>
+    </div>
+    <div class="tool-card">
+      <div class="tc-icon"><svg viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+      <div><div class="tc-tag">03 — Summarise</div><div class="tc-title">Summarise</div><div class="tc-desc">Instantly condense long chapters, notes, or PDFs into digestible, exam-ready bullet summaries.</div>
+      <div class="tc-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>Any file, any size</div></div>
+    </div>
+    <div class="tool-card">
+      <div class="tc-icon"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+      <div><div class="tc-tag">04 — Convert</div><div class="tc-title">Converter</div><div class="tc-desc">Transform PDFs, images, and documents between formats — instantly in-browser, zero friction.</div>
+      <div class="tc-pill"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>PDF, JPG, DOCX &amp; more</div></div>
+    </div>
+  </div>
+</section>
 
-                this.px = x1;
-                this.py = y2;
-                this.pz = z2; // -1 back, +1 front
-            }
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="cta-ring"></div><div class="cta-ring"></div><div class="cta-ring"></div>
+  <div class="sec-chip reveal" style="display:inline-flex;margin-bottom:22px"><span class="sec-chip-dot"></span>Start Today — It's Free</div>
+  <h2 class="cta-title reveal">Ready to study<br><span class="pur">smarter?</span></h2>
+  <p class="cta-sub reveal">Join thousands of students already crushing their exams with Qerrastar.</p>
+  <div class="cta-btns reveal">
+    <button class="btn-mag" id="btn-cta1" onclick="window.open('https://www.qerrastar.online','_blank')">
+      <span class="mag-glow" id="cta1-glow"></span>
+      Get Started — It's Free
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+    </button>
+    <button class="btn-mag-ghost" id="btn-cta2">
+      <span class="mag-glow" id="cta2-glow"></span>
+      Explore Features
+    </button>
+  </div>
+</section>
 
-            draw() {
-                const cx = canvas.width / 2, cy = canvas.height / 2;
-                const depth = (this.pz + 1) / 2; // 0..1
-                const x = cx + this.px * SPHERE_RADIUS;
-                const y = cy + this.py * SPHERE_RADIUS;
+<!-- FOOTER -->
+<footer>
+  <div class="foot-top">
+    <div>
+      <div class="foot-brand">QERRASTAR</div>
+      <div class="foot-tag">The smart assistant for every student.</div>
+    </div>
+    <div class="foot-links">
+      <div class="foot-col">
+        <div class="foot-col-title">Platform</div>
+        <ul><li><a href="#">Learn</a></li><li><a href="#">Quiz</a></li><li><a href="#">Summarise</a></li><li><a href="#">Converter</a></li></ul>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-title">Company</div>
+        <ul><li><a href="#">About Us</a></li><li><a href="#">Contact Us</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Disclaimer</a></li></ul>
+      </div>
+      <div class="foot-col">
+        <div class="foot-col-title">Legal</div>
+        <ul><li><a href="#">Terms &amp; Conditions</a></li><li><a href="#">Cookie Policy</a></li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <div class="foot-copy">&#169; 2026 <a href="https://www.qerrastar.online" target="_blank">Qerrastar</a>. All rights reserved.</div>
+    <div class="foot-copy" style="color:rgba(255,255,255,0.18);font-size:.72rem">Built for students, by builders.</div>
+  </div>
+</footer>
 
-                // Twinkling opacity
-                this.twinkle += this.twinkleSpeed;
-                const twinkFactor = 0.5 + 0.5 * Math.sin(this.twinkle);
-                const opacity = (0.15 + depth * 0.7) * (this.isStar ? (0.6 + 0.4 * twinkFactor) : 1);
-                const size = this.size * (0.3 + depth * 0.9);
+<script>
+// ── CURSOR ──
+const cursorEl=document.getElementById('cursor');
+const dot=cursorEl.querySelector('.cursor-dot');
+const ring=cursorEl.querySelector('.cursor-ring');
+const cglow=document.getElementById('cursor-glow');
+let mx=-300,my=-300,rx=-300,ry=-300;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+(function tick(){
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  dot.style.left=mx+'px';dot.style.top=my+'px';
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  cglow.style.left=mx+'px';cglow.style.top=my+'px';
+  requestAnimationFrame(tick);
+})();
 
-                if (this.isStar && depth > 0.5) {
-                    // Draw a glowing cross/star shape for bright particles
-                    const glow = ctx.createRadialGradient(x, y, 0, x, y, size * 4);
-                    glow.addColorStop(0, `rgba(220,180,255,${opacity})`);
-                    glow.addColorStop(1, `rgba(138,43,226,0)`);
-                    ctx.beginPath();
-                    ctx.arc(x, y, size * 4, 0, Math.PI * 2);
-                    ctx.fillStyle = glow;
-                    ctx.fill();
-                }
+// ── MAGNETIC GLOW BUTTONS — Huly-style: glow blob follows cursor inside button ──
+function magneticBtn(btnId,glowId){
+  const btn=document.getElementById(btnId);
+  const glow=document.getElementById(glowId);
+  if(!btn||!glow) return;
+  btn.addEventListener('mousemove',e=>{
+    const r=btn.getBoundingClientRect();
+    const x=e.clientX-r.left;
+    const y=e.clientY-r.top;
+    glow.style.left=x+'px';
+    glow.style.top=y+'px';
+  });
+}
+['btn-gs,gs-glow','btn-doc,doc-glow','btn-cta1,cta1-glow','btn-cta2,cta2-glow','btn-signup,signup-glow']
+  .forEach(p=>{const[a,b]=p.split(',');magneticBtn(a,b)});
 
-                // Core dot — color: white-purple gradient by depth
-                const r = Math.floor(160 + 80 * depth);
-                const g = Math.floor(100 + 80 * depth);
-                const b = 255;
-                ctx.beginPath();
-                ctx.arc(x, y, Math.max(0.15, size), 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${r},${g},${b},${opacity})`;
-                ctx.fill();
-            }
-        }
+// ── NAV ──
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scrolled',scrollY>40));
 
-        function drawGlowCore() {
-            // Soft purple glow at the center of the sphere
-            const cx = canvas.width / 2, cy = canvas.height / 2;
-            const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, SPHERE_RADIUS * 0.8);
-            glow.addColorStop(0,   'rgba(138,43,226,0.07)');
-            glow.addColorStop(0.5, 'rgba(94,23,235,0.04)');
-            glow.addColorStop(1,   'rgba(0,0,0,0)');
-            ctx.beginPath();
-            ctx.arc(cx, cy, SPHERE_RADIUS * 0.8, 0, Math.PI * 2);
-            ctx.fillStyle = glow;
-            ctx.fill();
-        }
+// ── SCROLL REVEAL ──
+const revEls=document.querySelectorAll('.reveal,.reveal-l,.reveal-r,.stagger');
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:0.1});
+revEls.forEach(el=>revObs.observe(el));
 
-        function init() {
-            resize();
-            particles = [];
-            for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(new Particle());
-        }
+// ── COUNT UP ──
+document.querySelectorAll('.sc-num[data-target]').forEach(el=>{
+  new IntersectionObserver(([entry],obs)=>{
+    if(!entry.isIntersecting)return;obs.unobserve(el);
+    const target=+el.dataset.target,dur=1800,t0=performance.now();
+    const suffix=target>=99&&target<200?'%':'+';
+    (function frame(t){
+      const p=Math.min((t-t0)/dur,1);
+      el.textContent=Math.floor((1-Math.pow(1-p,3))*target).toLocaleString()+(p>=1?suffix:'');
+      if(p<1)requestAnimationFrame(frame);
+    })(t0);
+  },{threshold:0.5}).observe(el);
+});
 
-        function animate() {
-            time += 0.01;
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
+// ── TILE CURSOR GLOW ──
+document.querySelectorAll('.bento-card,.tool-card,.stat-card').forEach(el=>{
+  el.addEventListener('mousemove',e=>{
+    const r=el.getBoundingClientRect();
+    el.style.setProperty('--mx',((e.clientX-r.left)/r.width*100).toFixed(1)+'%');
+    el.style.setProperty('--my',((e.clientY-r.top)/r.height*100).toFixed(1)+'%');
+  });
+});
 
-            // Smooth rotation towards target
-            if (mouse.x !== null) {
-                const cx = canvas.width / 2, cy = canvas.height / 2;
-                targetRotY = (mouse.x - cx) / cx * 0.6;
-                targetRotX = (mouse.y - cy) / cy * 0.4;
-            } else {
-                targetRotY = 0;
-                targetRotX = 0;
-            }
-            globalRotY += 0.006; // continuous auto-spin
-            sharedRotY = globalRotY + targetRotY * 0.3;
-            sharedRotX = 0.3 + targetRotX * 0.2;
+// ── LEFT SPINE ──
+const spineFill=document.getElementById('spine-fill');
+const spineDots=document.querySelectorAll('.spine-dot');
+const sectionIds=['hero','stats','features','how','tools'];
+function updateSpine(){
+  const total=document.body.scrollHeight-innerHeight;
+  spineFill.style.height=(total>0?(scrollY/total)*100:0)+'%';
+  let active=0;
+  sectionIds.forEach((id,i)=>{
+    const el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<=innerHeight*.5)active=i;
+  });
+  spineDots.forEach((d,i)=>d.classList.toggle('active',i===active));
+}
+window.addEventListener('scroll',updateSpine);updateSpine();
 
-            // Project all first, then sort by Z
-            particles.forEach(p => p.project());
-            particles.sort((a, b) => a.pz - b.pz);
-
-            drawGlowCore();
-            particles.forEach(p => p.draw());
-
-            requestAnimationFrame(animate);
-        }
-
-        // Mouse
-        canvas.addEventListener('mousemove', e => {
-            const r = canvas.getBoundingClientRect();
-            mouse.x = e.clientX - r.left;
-            mouse.y = e.clientY - r.top;
-        });
-        canvas.addEventListener('mouseleave', () => { mouse.x = null; mouse.y = null; });
-
-        // Touch — tilt sphere with finger
-        canvas.addEventListener('touchmove', e => {
-            e.preventDefault();
-            const r = canvas.getBoundingClientRect();
-            mouse.x = e.touches[0].clientX - r.left;
-            mouse.y = e.touches[0].clientY - r.top;
-        }, { passive: false });
-        canvas.addEventListener('touchend', () => { mouse.x = null; mouse.y = null; });
-
-        window.addEventListener('resize', init);
-        init();
-        animate();
-    }
-    </script>
-
+// ── PARTICLES ──
+const canvas=document.getElementById('particle-canvas');
+const ctx=canvas.getContext('2d');
+let W,H;
+const mouse={x:-9999,y:-9999};
+function resize(){W=canvas.offsetWidth;H=canvas.offsetHeight;canvas.width=W;canvas.height=H}
+resize();window.addEventListener('resize',resize);
+document.addEventListener('mousemove',e=>{
+  const r=canvas.getBoundingClientRect();
+  mouse.x=e.clientX-r.left;mouse.y=e.clientY-r.top;
+});
+class P{
+  constructor(){this.spawn()}
+  spawn(){
+    this.x=Math.random()*(W||800);this.y=Math.random()*(H||600);
+    const a=Math.random()*Math.PI*2,s=Math.random()*.13+.03;
+    this.vx=Math.cos(a)*s;this.vy=Math.sin(a)*s;
+    this.r=Math.random()*1.3+.25;this.alpha=Math.random()*.38+.1;
+  }
+  update(){
+    const dx=this.x-mouse.x,dy=this.y-mouse.y,d2=dx*dx+dy*dy;
+    if(d2<140*140&&d2>0){const d=Math.sqrt(d2);const f=(140-d)/140*.8;this.vx+=dx/d*f;this.vy+=dy/d*f}
+    const spd=Math.sqrt(this.vx*this.vx+this.vy*this.vy);
+    if(spd>.18){this.vx*=.96;this.vy*=.96}
+    this.x+=this.vx;this.y+=this.vy;
+    if(this.x<-6)this.x=W+6;if(this.x>W+6)this.x=-6;
+    if(this.y<-6)this.y=H+6;if(this.y>H+6)this.y=-6;
+  }
+  draw(){ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);ctx.fillStyle=`rgba(215,205,245,${this.alpha})`;ctx.fill()}
+}
+const parts=Array.from({length:200},()=>new P());
+const CONN=92;
+(function loop(){
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<parts.length;i++)for(let j=i+1;j<parts.length;j++){
+    const dx=parts[i].x-parts[j].x,dy=parts[i].y-parts[j].y,d2=dx*dx+dy*dy;
+    if(d2<CONN*CONN){const a=(1-Math.sqrt(d2)/CONN)*.1;ctx.beginPath();ctx.moveTo(parts[i].x,parts[i].y);ctx.lineTo(parts[j].x,parts[j].y);ctx.strokeStyle=`rgba(147,51,234,${a})`;ctx.lineWidth=.5;ctx.stroke()}
+  }
+  parts.forEach(p=>{p.update();p.draw()});
+  requestAnimationFrame(loop);
+})();
+</script>
 </body>
 </html>
