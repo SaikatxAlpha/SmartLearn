@@ -125,15 +125,21 @@ def send_contact_email(name, email, subject, body):
 
 
 app = Flask(__name__)
-app.secret_key = "change-this-later"
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.secret_key = os.environ.get("SECRET_KEY", "change-this-later")
+
+# ── DATABASE CONFIG ──
+# Use DATABASE_URL env var for production (PostgreSQL on Supabase/Neon/etc.)
+# Falls back to SQLite only for local development
+database_url = os.environ.get("DATABASE_URL", "sqlite:///users.db")
+# Some providers give postgres:// instead of postgresql:// — fix that
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 
 from models import db, User
-
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///users.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db.init_app(app)
 

@@ -16,3 +16,4 @@ Flask-Mail
 Flask-SQLAlchemy
 itsdangerous
 razorpay
+psycopg2-binary
