@@ -287,6 +287,13 @@
       transition: transform .3s ease, opacity .3s ease
     }
 
+    .nav-hamburger.open {
+      position: fixed;
+      top: 16px;
+      right: 20px;
+      z-index: 250
+    }
+
     .nav-hamburger.open span:nth-child(1) {
       transform: translateY(7px) rotate(45deg)
     }
@@ -351,7 +358,9 @@
       cursor: none;
       position: relative;
       overflow: hidden;
-      transition: border-color .35s, box-shadow .4s
+      transition: border-color .35s, box-shadow .4s;
+      white-space: nowrap;
+      flex-shrink: 0
     }
 
     .btn-signup .btn-glow {
@@ -1892,7 +1901,9 @@
       }
 
       .btn-signup {
-        display: none
+        padding: 8px 18px;
+        font-size: .72rem;
+        letter-spacing: .06em
       }
 
       .nav-hamburger {
