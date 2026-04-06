@@ -227,8 +227,6 @@ def api_search():
 
 
 # ======================= QUIZ =======================
-
-# Temporary sample question generator
 tavily = TavilyClient(api_key=os.getenv("TAVILY_API_KEY"))
 def generate_quiz(topic):
 
@@ -476,7 +474,7 @@ app.config["PYQ_FOLDER"] = PYQ_FOLDER
 @app.route("/pyq")  #ROUTE
 def pyq():
     return render_template("pyq.html")
-app.config['MAX_CONTENT_LENGTH'] = 3 * 1024 * 1024  # 3MB limit
+app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024  # 50MB limit
 #++++++++++++++ Search & Download ++++++++++++++++
 @app.route("/pyq/search", methods=["POST"])
 def search_pyq():
@@ -510,13 +508,23 @@ def upload_pyq():
     year = request.form.get("year")
     subject = request.form.get("subject")
     file = request.files.get("file")
+    
+
+# ✅ FILE SIZE VALIDATION
+    if file:
+        file.seek(0, os.SEEK_END)
+        size = file.tell()
+        file.seek(0)
+
+        if size > 50 * 1024 * 1024:  # 50MB
+            return "File too large (max 50MB)"
 
     if not all([university_input, degree, department, year, subject, file]):
         return "Missing required fields"
 
     base_root = app.config["PYQ_FOLDER"]
 
-    # 🔥 Case-insensitive match for existing university
+    # Case-insensitive match for existing university
     matched_university = None
     for folder in os.listdir(base_root):
         if folder.lower() == university_input.lower():
@@ -524,7 +532,7 @@ def upload_pyq():
             break
 
     if not matched_university:
-        # If not exists → create new
+        # If not exists then create new
         matched_university = secure_filename(university_input)
 
     # Clean inputs
@@ -543,7 +551,7 @@ def upload_pyq():
 
     os.makedirs(folder_path, exist_ok=True)
 
-    # 🔥 Prevent overwrite (auto-numbering)
+    #Prevent overwrite (auto-numbering)
     file_path = os.path.join(folder_path, f"{subject}.pdf")
     counter = 1
 
@@ -554,6 +562,12 @@ def upload_pyq():
     file.save(file_path)
 
     return "Uploaded Successfully"
+
+from werkzeug.exceptions import RequestEntityTooLarge
+
+@app.errorhandler(RequestEntityTooLarge)
+def handle_large_file(e):
+    return "File too large! Max allowed is 50MB.", 413
     
 #======================= LIST ======================
 @app.route("/pyq/list", methods=["POST"])
@@ -565,7 +579,7 @@ def list_pyq():
 
     base_root = app.config["PYQ_FOLDER"]
 
-    # 🔥 Case-insensitive match for university folder
+    # Case-insensitive match for university folder
     matched_university = None
     for folder in os.listdir(base_root):
         if folder.lower() == university_input.lower():
@@ -579,7 +593,7 @@ def list_pyq():
 
     files = []
 
-    # 🔥 Walk through ALL subfolders
+    # Walk through ALL subfolders
     for root, dirs, filenames in os.walk(base_path):
         for filename in filenames:
             if filename.endswith(".pdf"):
