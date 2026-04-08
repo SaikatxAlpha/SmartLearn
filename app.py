@@ -166,7 +166,7 @@ with app.app_context():
 @app.route('/sitemap.xml')
 def sitemap():
     return send_from_directory(os.getcwd(), 'sitemap.xml')
-#----------------------------------------------------------------
+
 
 # ---------------- LOGIN REQUIRED DECORATOR ----------------
 def login_required(f):
